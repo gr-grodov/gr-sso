@@ -1,3 +1,26 @@
 spring:
   application:
     name: gr-sso
+  datasource:
+    url: jdbc:postgresql://localhost:5432/gr-sso-db
+    username: postgres
+    password: brbawwjp239606!
+  security:
+    oauth2:
+      authorizationserver:
+        issuer: http://localhost:8080
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+logging:
+  level:
+    root: DEBUG
+    org.apache.tomcat.util.net.NioEndpoint: ERROR
+    sun.rmi: ERROR
+    java.io: ERROR
+    javax.management: ERROR
+
+server:
+  port: 9000
