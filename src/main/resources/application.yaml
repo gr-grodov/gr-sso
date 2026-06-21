@@ -1,15 +1,16 @@
 spring:
   application:
     name: gr-sso
+
   datasource:
     url: jdbc:postgresql://localhost:5432/gr-sso-db
     username: postgres
     password: brbawwjp239606!
+
   security:
     oauth2:
       authorizationserver:
         issuer: http://localhost:8080
-
   jpa:
     hibernate:
       ddl-auto: validate
