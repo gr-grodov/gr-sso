@@ -3,6 +3,7 @@ package gr.grodov.grsso.service;
 import gr.grodov.grsso.dto.UserInfoDto;
 import gr.grodov.grsso.mapper.UserInfoMapper;
 import gr.grodov.grsso.repo.UserInfoRepo;
+import gr.grodov.grsso.security.exceptions.EmailAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,7 +27,11 @@ public class UserInfoService {
     }
 
     @Transactional
-    public UserInfoDto createNewUser(String email, String password) {
+    public UserInfoDto createNewUser(String email, String password) throws EmailAlreadyExistsException {
+        if (userInfoRepo.existsByEmail(email)) {
+            throw new EmailAlreadyExistsException();
+        }
+
         return UserInfoMapper.fromDB(
             userInfoRepo.save(UserInfoMapper.toDB(
                 UserInfoDto.builder()

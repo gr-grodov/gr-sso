@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка провайдера | GrSSO</title>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" th:href="@{/css/error-page.css}"/>
+    <link rel="stylesheet" th:href="@{/css/page-elements.css}"/>
+    <link rel="stylesheet" th:href="@{/css/icons/css/icons.css}">
+</head>
+<body>
+
+<main class="auth-page">
+
+    <div class="auth-card">
+        <section th:insert="~{page-banner :: auth-banner}">
+        </section>
+
+        <section class="error-section">
+
+            <div class="error-badge">
+                <span>!</span>
+                <span th:text="@{provider_error.title}"></span>
+            </div>
+
+            <h2>Не удалось войти</h2>
+            <p class="error-subtitle">
+                <span th:text="@{provider_error.error_subtitle}"></span>
+            </p>
+
+            <div class="error-message" th:if="${param.error != null}">
+                <span th:text="#{errors.oauth. + ${param.error}}"></span>
+            </div>
+
+            <div class="social-buttons">
+                <button class="social-btn" onclick="window.location.href='/oauth2/authorization/google'">
+                    <i class="fa-brands fa-google" style="color: var(--primary)"></i>
+                    <span th:text="@{login.entry.google}"></span>
+                </button>
+
+                <button class="social-btn" onclick="window.location.href='/oauth2/authorization/github'">
+                    <i class="fa-brands fa-github" style="color: var(--primary)"></i>
+                    <span th:text="@{login.entry.github}"></span>
+                </button>
+            </div>
+
+            <button class="social-btn cancel-btn" onclick="window.location.href='/login'">
+                <span th:text="@{provider_error.actions.cancel}"></span>
+            </button>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer th:insert="~{page-footer :: page-footer}">
+</footer>
+
+</body>
+</html>

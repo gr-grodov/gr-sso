@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <div class="auth-banner" th:fragment="auth-banner">
+        <div class="logo">
+            GrSSO
+        </div>
+
+        <div class="banner-content">
+            <span class="banner-label" th:text="#{banner.title}">
+            </span>
+
+            <h1 th:text="#{banner.h1}"></h1>
+
+            <p th:text="#{banner.text}"></p>
+        </div>
+
+        <ul class="banner-features">
+            <li th:text="#{banner.footer.it1}"></li>
+            <li th:text="#{banner.footer.it2}"></li>
+            <li th:text="#{banner.footer.it3}"></li>
+        </ul>
+    </div>
+</body>
+</html>

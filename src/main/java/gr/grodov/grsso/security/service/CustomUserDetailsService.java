@@ -1,4 +1,4 @@
-package gr.grodov.grsso.security;
+package gr.grodov.grsso.security.service;
 
 import gr.grodov.grsso.dto.UserInfoDto;
 import gr.grodov.grsso.service.UserInfoService;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class UserDetailsServiceImpl implements UserDetailsService {
+public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserInfoService userInfoService;
 

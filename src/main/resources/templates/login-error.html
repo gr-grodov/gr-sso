@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ошибка входа | GrSSO</title>
+
+    <link rel="stylesheet" th:href="@{/css/main.css}">
+    <link rel="stylesheet" th:href="@{/css/error-page.css}"/>
+    <link rel="stylesheet" th:href="@{/css/page-elements.css}"/>
+    <link rel="stylesheet" th:href="@{/css/icons/css/icons.css}">
+</head>
+<body>
+
+<main class="auth-page">
+
+    <div class="auth-card">
+        <section th:insert="~{page-banner :: auth-banner}">
+        </section>
+
+        <section class="error-section">
+
+            <div class="error-badge">
+                <span>!</span>
+                ОШИБКА ВХОДА
+            </div>
+
+            <h2>Неверные данные</h2>
+
+            <p class="error-subtitle">
+                Проверьте адрес почты и пароль
+            </p>
+
+            <div class="error-message">
+                Адрес электронной почты или пароль введены неверно.
+                Убедитесь, что клавиша Caps Lock отключена.
+            </div>
+
+            <button class="retry-btn" onclick="window.location.href='/login'">
+                Попробовать снова
+            </button>
+
+            <a href="#" class="reset-link">
+                Восстановить пароль
+            </a>
+
+            <div class="attempts">
+                Осталось попыток:
+                <strong>4 из 5</strong>
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+<footer th:insert="~{page-footer :: page-footer}">
+</footer>
+
+</body>
+</html>

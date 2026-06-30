@@ -2,18 +2,60 @@ spring:
   application:
     name: gr-sso
 
+  thymeleaf:
+    cache: false
+
+  web:
+    resources:
+      cache:
+        cachecontrol:
+          no-cache: true
+
   datasource:
     url: jdbc:postgresql://localhost:5432/gr-sso-db
     username: postgres
     password: brbawwjp239606!
 
-  security:
-    oauth2:
-      authorizationserver:
-        issuer: http://localhost:8080
   jpa:
     hibernate:
       ddl-auto: validate
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 129564153904-ktqcclfcffjtakulipm66b7od0raja86.apps.googleusercontent.com
+            client-secret: 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
+            scope:
+              - openid
+              - email
+
+          github:
+            client-id: Ov23liY8BTn2x3lWqgm3
+            client-secret: fd19ae7bdd01fe42a79abc32463f3d6c68ae9930
+            scope:
+              - openid
+              - read:user
+              - user:email
+
+      authorizationserver:
+        client:
+          my-client:
+            registration:
+              client-id: client-app
+              client-secret: secret
+              client-authentication-methods:
+                - client_secret_basic
+              authorization-grant-types:
+                - authorization_code
+                - refresh_token
+              redirect-uris:
+                - http://localhost:3000/login/oauth2/code/client-app
+              scopes:
+                - openid
+                - profile
+                - email
 
 logging:
   level:
@@ -24,4 +66,4 @@ logging:
     javax.management: ERROR
 
 server:
-  port: 9000
+  port: 9090
