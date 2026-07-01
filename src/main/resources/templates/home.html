@@ -93,9 +93,9 @@
                         you@example.com
                     </span>
                 </div>
-                <a href="#" class="logout">
-                    Выйти
-                </a>
+                <form th:action="@{/logout}" method="post">
+                    <button class="logout" type="submit">Выйти</button>
+                </form>
             </div>
 
         </section>

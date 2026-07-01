@@ -16,8 +16,8 @@ public class CustomOAuthUserService extends DefaultOAuth2UserService {
         OAuth2User oauthUser = super.loadUser(request);
 
         oauthUser.toString();
-        log.debug("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa");
-        log.debug(String.format("AAAAAAAAAAAAAAAAAAAAAA %s", oauthUser.toString()));
+        System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAaa");
+        System.out.println(String.format("AAAAAAAAAAAAAAAAAAAAAA %s", oauthUser.toString()));
         // создать пользователя в БД,
         // обновить данные,
         // получить email через GitHub API

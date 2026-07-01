@@ -3,6 +3,7 @@ package gr.grodov.grsso.security.config;
 import gr.grodov.grsso.security.handler.AuthFailureHandler;
 import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
 import gr.grodov.grsso.security.service.CustomOAuthUserService;
+import gr.grodov.grsso.security.service.CustomOidcUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -22,6 +23,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(
         HttpSecurity http,
         CustomOAuthUserService oAuthUserService,
+        CustomOidcUserService oidcUserService,
         AuthFailureHandler authFailureHandler,
         OAuth2FailureHandler oAuth2FailureHandler
     ) {
@@ -41,22 +43,27 @@ public class SecurityConfig {
             .formLogin(form -> form
                 .loginPage("/login").loginProcessingUrl("/login").permitAll()
                 .failureHandler(authFailureHandler)
-                .defaultSuccessUrl("/", true)
             )
             .oauth2Login(oauth -> oauth
                 .loginPage("/login").permitAll()
                 .failureHandler(oAuth2FailureHandler)
-                .userInfoEndpoint(config ->
-                    config.userService(oAuthUserService)
+                .userInfoEndpoint(config -> config
+                    .userService(oAuthUserService)
+                    .oidcUserService(oidcUserService)
                 )
-                .defaultSuccessUrl("/", true)
             )
 //            .csrf(csrf ->
 //                csrf.ignoringRequestMatchers(authorizationServerConfigurer.getEndpointsMatcher())
 //            )
+            .logout(logout -> logout
+                .logoutSuccessUrl("/login?logout")
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
+            )
             .oauth2AuthorizationServer((authorizationServer) -> authorizationServer
                 .oidc(Customizer.withDefaults())
-            );;
+            );
 
         return http.build();
 

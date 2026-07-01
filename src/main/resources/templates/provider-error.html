@@ -22,12 +22,12 @@
 
             <div class="error-badge">
                 <span>!</span>
-                <span th:text="@{provider_error.title}"></span>
+                <p th:text="#{provider_error.title}"></p>
             </div>
 
             <h2>Не удалось войти</h2>
             <p class="error-subtitle">
-                <span th:text="@{provider_error.error_subtitle}"></span>
+                <span th:text="#{provider_error.error_subtitle}"></span>
             </p>
 
             <div class="error-message" th:if="${param.error != null}">
@@ -37,17 +37,17 @@
             <div class="social-buttons">
                 <button class="social-btn" onclick="window.location.href='/oauth2/authorization/google'">
                     <i class="fa-brands fa-google" style="color: var(--primary)"></i>
-                    <span th:text="@{login.entry.google}"></span>
+                    <span th:text="#{login.entry.google}"></span>
                 </button>
 
                 <button class="social-btn" onclick="window.location.href='/oauth2/authorization/github'">
                     <i class="fa-brands fa-github" style="color: var(--primary)"></i>
-                    <span th:text="@{login.entry.github}"></span>
+                    <span th:text="#{login.entry.github}"></span>
                 </button>
             </div>
 
             <button class="social-btn cancel-btn" onclick="window.location.href='/login'">
-                <span th:text="@{provider_error.actions.cancel}"></span>
+                <span th:text="#{provider_error.actions.cancel}"></span>
             </button>
 
         </section>

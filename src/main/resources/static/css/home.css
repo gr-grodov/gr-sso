@@ -204,6 +204,7 @@
 .logout {
     color: #6f7f7d;
     text-decoration: none;
+    background: transparent;
 
     font-size: 13px;
     font-weight: 600;
