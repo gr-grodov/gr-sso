@@ -40,22 +40,17 @@ spring:
               - user:email
 
       authorizationserver:
+        issuer: http://localhost:9090
         client:
-          my-client:
+          crm-client:
             registration:
-              client-id: client-app
+              client-id: crm-client
               client-secret: secret
-              client-authentication-methods:
-                - client_secret_basic
-              authorization-grant-types:
-                - authorization_code
-                - refresh_token
-              redirect-uris:
-                - http://localhost:3000/login/oauth2/code/client-app
+              client-authentication-methods: client_secret_basic
+              authorization-grant-types: authorization_code
+              redirect-uris: http://localhost:8080/login/oauth2/code/crm-client
               scopes:
                 - openid
-                - profile
-                - email
 
 logging:
   level:
@@ -64,6 +59,8 @@ logging:
     sun.rmi: ERROR
     java.io: ERROR
     javax.management: ERROR
+    org.springframework.security: TRACE
+    org.springframework.web.client: TRACE
 
 server:
   port: 9090
