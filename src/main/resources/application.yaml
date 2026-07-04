@@ -45,10 +45,10 @@ spring:
           crm-client:
             registration:
               client-id: crm-client
-              client-secret: secret
+              client-secret: "{noop}secret"
               client-authentication-methods: client_secret_basic
               authorization-grant-types: authorization_code
-              redirect-uris: http://localhost:8080/login/oauth2/code/crm-client
+              redirect-uris: http://127.0.0.1:8080/login/oauth2/code/grsso
               scopes:
                 - openid
 
@@ -61,6 +61,7 @@ logging:
     javax.management: ERROR
     org.springframework.security: TRACE
     org.springframework.web.client: TRACE
+    org.springframework.security.oauth2: TRACE
 
 server:
   port: 9090
