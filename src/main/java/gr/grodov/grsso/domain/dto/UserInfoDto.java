@@ -1,5 +1,7 @@
-package gr.grodov.grsso.dto;
+package gr.grodov.grsso.domain.dto;
 
+import gr.grodov.grsso.domain.entities.AuthProvider;
+import gr.grodov.grsso.domain.entities.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
@@ -15,6 +17,12 @@ public record UserInfoDto(
 
     String password,
 
-    Boolean enabled
+    Boolean enabled,
+
+    String externalId,
+
+    AuthProvider provider,
+
+    Role role
 ) {
 }

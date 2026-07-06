@@ -1,6 +1,7 @@
 package gr.grodov.grsso.controller;
 
 import gr.grodov.grsso.controller.dto.RegistrationRequest;
+import gr.grodov.grsso.domain.entities.AuthProvider;
 import gr.grodov.grsso.security.exceptions.EmailAlreadyExistsException;
 import gr.grodov.grsso.service.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -71,13 +72,17 @@ public class AuthController {
         }
 
         try {
-            userInfoService.createNewUser(request.getEmail(), request.getPassword());
+            userInfoService.createNewUser(request.getEmail(), request.getPassword(), AuthProvider.LOCAL);
         } catch (EmailAlreadyExistsException _) {
+            System.out.println("AAAAAAAAAAAAAAAAAAA");
             bindingResult.rejectValue("email", "errors.email_exist");
-        } catch (Exception _) {
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("BBBBBBBBBBBBBBBBBBB");
             bindingResult.rejectValue("email", "errors.unknown_registration");
         }
-
+        System.out.println(bindingResult.hasErrors());
+        System.out.println(bindingResult.getErrorCount());
         if (bindingResult.hasErrors()) {
             return "register";
         }

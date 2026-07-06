@@ -31,13 +31,13 @@ spring:
               - openid
               - email
 
-          github:
-            client-id: Ov23liY8BTn2x3lWqgm3
-            client-secret: fd19ae7bdd01fe42a79abc32463f3d6c68ae9930
-            scope:
-              - openid
-              - read:user
-              - user:email
+#          github:
+#            client-id: Ov23liY8BTn2x3lWqgm3
+#            client-secret: fd19ae7bdd01fe42a79abc32463f3d6c68ae9930
+#            scope:
+#              - openid
+#              - read:user
+#              - user:email
 
       authorizationserver:
         issuer: http://localhost:9090

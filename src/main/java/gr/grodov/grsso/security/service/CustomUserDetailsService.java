@@ -1,6 +1,6 @@
 package gr.grodov.grsso.security.service;
 
-import gr.grodov.grsso.dto.UserInfoDto;
+import gr.grodov.grsso.domain.dto.UserInfoDto;
 import gr.grodov.grsso.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return User.withUsername(user.email())
             .password(user.password())
-            .roles("USER")
+            .roles(user.role().name())
             .build();
     }
 }
