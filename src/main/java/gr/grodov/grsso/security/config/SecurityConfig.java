@@ -1,16 +1,20 @@
 package gr.grodov.grsso.security.config;
 
-import gr.grodov.grsso.security.handler.AuthFailureHandler;
 import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
 import gr.grodov.grsso.security.service.CustomOAuthUserService;
 import gr.grodov.grsso.security.service.CustomOidcUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcOperations;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
@@ -18,6 +22,11 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRepository;
+import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
 
 @Configuration
 @EnableWebSecurity
@@ -25,27 +34,32 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilterChain securityFilterChain(
+    public SecurityFilterChain oauthFilterChain(
         HttpSecurity http,
         CustomOAuthUserService oAuthUserService,
         CustomOidcUserService oidcUserService,
-        AuthFailureHandler authFailureHandler,
         OAuth2FailureHandler oAuth2FailureHandler
     ) {
         http
+            .csrf((csrf) -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+            )
+            //.addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+            .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(
-                    "/login",
-                        "/register",
-                        "/login-error",
-                        "/provider-error",
-                        "/css/**", "/js/**", "/images/**"
-                ).permitAll()
+                .requestMatchers("/api/config/**", "/error/**").permitAll()
+                .requestMatchers("/api/auth/login", "/api/auth/register").anonymous()
                 .anyRequest().authenticated()
             )
-            .formLogin(form -> form
-                .loginPage("/login").loginProcessingUrl("/login").permitAll()
-                .failureHandler(authFailureHandler)
+            .formLogin(AbstractHttpConfigurer::disable)
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .logout(logout -> logout
+                .invalidateHttpSession(true)
+                .clearAuthentication(true)
+                .deleteCookies("JSESSIONID")
             )
             .oauth2Login(oauth -> oauth
                 .loginPage("/login").permitAll()
@@ -55,18 +69,16 @@ public class SecurityConfig {
                     .oidcUserService(oidcUserService)
                 )
             )
-            .logout(logout -> logout
-                .logoutSuccessUrl("/login?logout")
-                .invalidateHttpSession(true)
-                .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
-            )
             .oauth2AuthorizationServer((authorizationServer) -> authorizationServer
                 .oidc(Customizer.withDefaults())
             );
 
         return http.build();
+    }
 
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
+        return configuration.getAuthenticationManager();
     }
 
     @Bean

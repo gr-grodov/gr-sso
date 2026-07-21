@@ -1,7 +1,7 @@
-package gr.grodov.grsso.controller.dto;
+package gr.grodov.grsso.api.dto.request;
 
 import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.AllArgsConstructor;
@@ -13,15 +13,16 @@ import org.hibernate.validator.constraints.Length;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RegistrationRequest{
-    @NotNull
-    @Email(message = "{email.invalid}")
+
+    @NotBlank(message = "empty")
+    @Email(message = "invalid")
     String email;
 
-    @NotNull
-    @Length(min = 8)
+    @NotBlank(message = "empty")
+    @Length(min = 8, message = "min")
     @Pattern(
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$",
-        message = "{password.invalid}"
+        message = "invalid"
     )
     String password;
 }

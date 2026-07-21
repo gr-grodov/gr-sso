@@ -1,5 +1,6 @@
 package gr.grodov.grsso.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import gr.grodov.grsso.domain.entities.AuthProvider;
 import gr.grodov.grsso.domain.entities.Role;
 import jakarta.validation.constraints.Email;
@@ -15,6 +16,7 @@ public record UserInfoDto(
     @Email
     String email,
 
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     String password,
 
     Boolean enabled,

@@ -1,10 +1,7 @@
 package gr.grodov.grsso.domain.entities;
 
 import gr.grodov.grsso.domain.config.StringSetConverter;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
@@ -17,6 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name = "oauth2_registered_client")
 public class OAuthClient {
 
     @Id

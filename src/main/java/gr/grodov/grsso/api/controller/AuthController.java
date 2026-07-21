@@ -1,23 +1,18 @@
-package gr.grodov.grsso.controller;
+package gr.grodov.grsso.api.controller;
 
-import gr.grodov.grsso.controller.dto.RegistrationRequest;
+import gr.grodov.grsso.api.dto.request.RegistrationRequest;
 import gr.grodov.grsso.domain.entities.AuthProvider;
 import gr.grodov.grsso.security.exceptions.EmailAlreadyExistsException;
 import gr.grodov.grsso.service.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.web.firewall.FirewalledRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @Controller
 @RequiredArgsConstructor

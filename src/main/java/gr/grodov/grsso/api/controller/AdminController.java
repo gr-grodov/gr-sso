@@ -1,4 +1,4 @@
-package gr.grodov.grsso.controller;
+package gr.grodov.grsso.api.controller;
 
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
 import gr.grodov.grsso.service.OAuthClientsService;
