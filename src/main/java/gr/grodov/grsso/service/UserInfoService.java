@@ -23,11 +23,16 @@ public class UserInfoService {
     private final Mapper<UserInfo, UserInfoDto> userInfoMapper;
 
     @Transactional(readOnly = true)
-    public UserInfoDto findByEmail(String email) throws UsernameNotFoundException {
-        return userInfoRepo.findByEmail(email)
+    public UserInfoDto findByUserInfo(String email, AuthProvider provider) throws UsernameNotFoundException {
+        return userInfoRepo.findByEmailAndProvider(email, provider)
             .map(userInfoMapper::fromDB)
             .orElseThrow(() -> new UsernameNotFoundException(email)
         );
+    }
+
+    @Transactional(readOnly = true)
+    public boolean existUser(String email) throws UsernameNotFoundException {
+        return userInfoRepo.existsByEmail(email);
     }
 
     @Transactional

@@ -1,11 +1,16 @@
 package gr.grodov.grsso.security.config;
 
+import gr.grodov.grsso.props.AppProperties;
+import gr.grodov.grsso.security.entrypoint.ApiAuthenticationEntryPoint;
+import gr.grodov.grsso.security.handler.ApiAccessDeniedHandler;
 import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
+import gr.grodov.grsso.security.handler.OAuth2SuccessHandler;
 import gr.grodov.grsso.security.service.CustomOAuthUserService;
 import gr.grodov.grsso.security.service.CustomOidcUserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -22,6 +27,7 @@ import org.springframework.security.oauth2.server.authorization.OAuth2Authorizat
 import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
@@ -38,14 +44,20 @@ public class SecurityConfig {
         HttpSecurity http,
         CustomOAuthUserService oAuthUserService,
         CustomOidcUserService oidcUserService,
-        OAuth2FailureHandler oAuth2FailureHandler
+        OAuth2FailureHandler oAuth2FailureHandler,
+        ApiAccessDeniedHandler apiAccessDeniedHandler,
+        ApiAuthenticationEntryPoint authenticationEntryPoint,
+        OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         http
             .csrf((csrf) -> csrf
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
             )
-            //.addFilterAfter(new CookieCsrfFilter(), BasicAuthenticationFilter.class)
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(apiAccessDeniedHandler)
+            )
             .cors(Customizer.withDefaults())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/config/**", "/error/**").permitAll()
@@ -62,8 +74,8 @@ public class SecurityConfig {
                 .deleteCookies("JSESSIONID")
             )
             .oauth2Login(oauth -> oauth
-                .loginPage("/login").permitAll()
                 .failureHandler(oAuth2FailureHandler)
+                .successHandler(oAuth2SuccessHandler)
                 .userInfoEndpoint(config -> config
                     .userService(oAuthUserService)
                     .oidcUserService(oidcUserService)

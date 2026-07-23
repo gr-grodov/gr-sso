@@ -26,4 +26,6 @@ public class AuthExceptionAdvice {
         ErrorFieldDto errorField = new ErrorFieldDto("email", "already_exist");
         return ErrorResponse.of("email_invalid", List.of(errorField));
     }
+
+
 }

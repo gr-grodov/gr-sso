@@ -2,15 +2,6 @@ spring:
   application:
     name: gr-sso
 
-  thymeleaf:
-    cache: false
-
-  web:
-    resources:
-      cache:
-        cachecontrol:
-          no-cache: true
-
   datasource:
     url: jdbc:postgresql://localhost:5432/gr-sso-db
     username: postgres
@@ -26,7 +17,7 @@ spring:
         registration:
           google:
             client-id: 129564153904-ktqcclfcffjtakulipm66b7od0raja86.apps.googleusercontent.com
-            client-secret: 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
+            client-secret: OCSPX-GTcC__xixAUzWQGCbuymZbJGLDUN
             scope:
               - openid
               - email

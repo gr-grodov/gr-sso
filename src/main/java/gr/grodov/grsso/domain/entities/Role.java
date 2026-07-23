@@ -1,6 +1,14 @@
 package gr.grodov.grsso.domain.entities;
 
-public enum Role {
+import org.jspecify.annotations.NonNull;
+import org.springframework.security.core.GrantedAuthority;
+
+public enum Role implements GrantedAuthority {
     USER,
-    ADMIN
+    ADMIN;
+
+    @Override
+    public @NonNull String getAuthority() {
+        return name();
+    }
 }

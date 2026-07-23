@@ -11,6 +11,7 @@ public class UserInfoMapper implements Mapper<UserInfo, UserInfoDto> {
         return UserInfoDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
+                .password(user.getPassword())
                 .enabled(user.getEnabled())
                 .externalId(user.getExternalId())
                 .provider(user.getProvider())

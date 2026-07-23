@@ -3,6 +3,7 @@ package gr.grodov.grsso.api.advice;
 import gr.grodov.grsso.api.dto.response.ErrorFieldDto;
 import gr.grodov.grsso.api.dto.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -29,7 +30,6 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(Exception ex) {
-        System.out.println(ex);
         return ErrorResponse.of("unknown", ex.getMessage());
     }
 }

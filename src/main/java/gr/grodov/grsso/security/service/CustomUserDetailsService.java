@@ -1,6 +1,7 @@
 package gr.grodov.grsso.security.service;
 
 import gr.grodov.grsso.domain.dto.UserInfoDto;
+import gr.grodov.grsso.domain.entities.AuthProvider;
 import gr.grodov.grsso.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
@@ -17,12 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) {
-
-        UserInfoDto user = userInfoService.findByEmail(username);
-
-        return User.withUsername(user.email())
-            .password(user.password())
-            .roles(user.role().name())
-            .build();
+        UserInfoDto user = userInfoService.findByUserInfo(username, AuthProvider.LOCAL);
+        return UserPrincipal.local(user);
     }
 }

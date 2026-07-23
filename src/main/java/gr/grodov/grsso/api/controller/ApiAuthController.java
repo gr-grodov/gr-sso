@@ -3,16 +3,22 @@ package gr.grodov.grsso.api.controller;
 import gr.grodov.grsso.api.dto.request.LoginRequest;
 import gr.grodov.grsso.api.dto.request.RegistrationRequest;
 import gr.grodov.grsso.api.dto.response.SuccessResponse;
+import gr.grodov.grsso.domain.dto.UserInfoDto;
 import gr.grodov.grsso.domain.entities.AuthProvider;
-import gr.grodov.grsso.security.exceptions.EmailAlreadyExistsException;
+import gr.grodov.grsso.security.service.UserPrincipal;
 import gr.grodov.grsso.service.UserInfoService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,35 +28,34 @@ public class ApiAuthController {
 
     private final UserInfoService userInfoService;
     private final AuthenticationManager authenticationManager;
-
-    @GetMapping("/a")
-    public ResponseEntity<SuccessResponse<Void>> a() {
-        return ResponseEntity.ok(SuccessResponse.of(true));
-    }
+    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     @GetMapping("/user-info")
-    public ResponseEntity<?> getUserInfo(Authentication authentication) {
-        return ResponseEntity.ok(userInfoService.findByEmail(authentication.getName()));
+    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserPrincipal principal) {
+        return userInfoService.findByUserInfo(principal.getName(), principal.getProvider());
     }
 
     @PostMapping("/login")
-    public ResponseEntity<SuccessResponse<Void>> login(@RequestBody LoginRequest request, Authentication authentication) {
-        Authentication auth = authenticationManager.authenticate(
-            UsernamePasswordAuthenticationToken.unauthenticated(
-                request.getEmail(),
-                request.getPassword()
-            )
-        );
+    public SuccessResponse<Void> login(
+        @RequestBody LoginRequest request,
+        HttpServletRequest httpRequest,
+        HttpServletResponse httpResponse
+    ) {
+        Authentication authRequest = new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword());
 
-        SecurityContextHolder.getContext().setAuthentication(auth);
+        Authentication authResult = authenticationManager.authenticate(authRequest);
+        SecurityContext context = SecurityContextHolder.createEmptyContext();
 
+        context.setAuthentication(authResult);
+        SecurityContextHolder.setContext(context);
+        securityContextRepository.saveContext(context, httpRequest, httpResponse);
 
-        return ResponseEntity.ok(SuccessResponse.of(true));
+        return SuccessResponse.of(true);
     }
 
     @PostMapping("/register")
-    public ResponseEntity<?> register(@Valid @RequestBody RegistrationRequest request) {
+    public SuccessResponse<Void> register(@Valid @RequestBody RegistrationRequest request) {
         userInfoService.createNewUser(request.getEmail(), request.getPassword(), AuthProvider.LOCAL);
-        return ResponseEntity.ok(SuccessResponse.of(true));
+        return SuccessResponse.of(true);
     }
 }
