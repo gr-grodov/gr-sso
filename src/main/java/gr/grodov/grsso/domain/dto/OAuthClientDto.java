@@ -1,5 +1,6 @@
 package gr.grodov.grsso.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.grodov.grsso.domain.entities.oauth.OAuthAuthorizationGrantType;
 import gr.grodov.grsso.domain.entities.oauth.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
@@ -16,8 +17,11 @@ import java.util.Set;
 public record OAuthClientDto(
     String id,
     String clientId,
+    @JsonIgnore
     Instant clientIdIssuedAt,
+    @JsonIgnore
     String clientSecret,
+    @JsonIgnore
     Instant clientSecretExpiresAt,
     String clientName,
     Set<OAuthClientAuthenticationMethod> clientAuthenticationMethods,
@@ -25,7 +29,9 @@ public record OAuthClientDto(
     Set<String> redirectUris,
     Set<String> postLogoutRedirectUris,
     Set<String> scopes,
+    @JsonIgnore
     Map<String, Object> clientSettings,
+    @JsonIgnore
     Map<String, Object> tokenSettings,
     OAuthClientStatus status,
     LocalDateTime createdAt,

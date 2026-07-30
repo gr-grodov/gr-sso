@@ -3,6 +3,7 @@ package gr.grodov.grsso.service;
 import gr.grodov.grsso.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
+import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
 import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
 import gr.grodov.grsso.domain.entities.oauth.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
@@ -12,8 +13,6 @@ import gr.grodov.grsso.service.exceptions.OAuthClientNameExistsException;
 import gr.grodov.grsso.service.utils.IDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
-import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,10 +29,11 @@ public class OAuthClientsService {
     private final PasswordEncoder passwordEncoder;
     private final OAuthClientRepo oAuthClientRepo;
     private final Mapper<OAuthClient, OAuthClientDto> oAuthClientMapper;
+    private final Mapper<OAuthClient, OAuthClientShortDto> oAuthClientShortMapper;
 
     @Transactional(readOnly = true)
-    public List<OAuthClientDto> list() {
-        return oAuthClientRepo.findAll().stream().map(oAuthClientMapper::fromDB).toList();
+    public List<OAuthClientShortDto> list() {
+        return oAuthClientRepo.findAll().stream().map(oAuthClientShortMapper::fromDB).toList();
     }
 
     @Transactional

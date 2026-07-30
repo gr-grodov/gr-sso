@@ -1,5 +1,6 @@
 package gr.grodov.grsso.domain.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gr.grodov.grsso.domain.entities.user.AuthProvider;
 import gr.grodov.grsso.domain.entities.user.Role;
