@@ -1,8 +1,8 @@
 package gr.grodov.grsso.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import gr.grodov.grsso.domain.entities.AuthProvider;
-import gr.grodov.grsso.domain.entities.Role;
+import gr.grodov.grsso.domain.entities.user.AuthProvider;
+import gr.grodov.grsso.domain.entities.user.Role;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;

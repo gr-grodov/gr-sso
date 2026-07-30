@@ -17,7 +17,7 @@ spring:
         registration:
           google:
             client-id: 129564153904-ktqcclfcffjtakulipm66b7od0raja86.apps.googleusercontent.com
-            client-secret: OCSPX-GTcC__xixAUzWQGCbuymZbJGLDUN
+            client-secret: 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
             scope:
               - openid
               - email

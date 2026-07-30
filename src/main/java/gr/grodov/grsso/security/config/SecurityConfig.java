@@ -7,6 +7,7 @@ import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
 import gr.grodov.grsso.security.handler.OAuth2SuccessHandler;
 import gr.grodov.grsso.security.service.CustomOAuthUserService;
 import gr.grodov.grsso.security.service.CustomOidcUserService;
+import gr.grodov.grsso.security.service.CustomRegisteredClientRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -91,11 +92,6 @@ public class SecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
         return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public RegisteredClientRepository registeredClientRepository(JdbcOperations jdbc) {
-        return new JdbcRegisteredClientRepository(jdbc);
     }
 
     @Bean

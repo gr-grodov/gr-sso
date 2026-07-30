@@ -1,16 +1,14 @@
 package gr.grodov.grsso.security.service;
 
 import gr.grodov.grsso.domain.dto.UserInfoDto;
-import gr.grodov.grsso.domain.entities.AuthProvider;
+import gr.grodov.grsso.domain.entities.user.AuthProvider;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.jspecify.annotations.Nullable;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.util.Collection;
 import java.util.List;
@@ -22,6 +20,7 @@ public class UserPrincipal implements UserDetails, OidcUser {
 
     private final Long id;
     private final String email;
+    private final String password;
     private final AuthProvider provider;
     private final Collection<? extends GrantedAuthority> authorities;
 
@@ -65,13 +64,14 @@ public class UserPrincipal implements UserDetails, OidcUser {
 
     @Override
     public String getPassword() {
-        return null;
+        return password;
     }
 
     public static UserPrincipal local(UserInfoDto user) {
         return new UserPrincipal(
             user.id(),
             user.email(),
+            user.password(),
             user.provider(),
             List.of(user.role()),
             Map.of(),
@@ -84,6 +84,7 @@ public class UserPrincipal implements UserDetails, OidcUser {
         return new UserPrincipal(
             user.id(),
             user.email(),
+            null,
             user.provider(),
             List.of(user.role()),
             oidcUser.getAttributes(),

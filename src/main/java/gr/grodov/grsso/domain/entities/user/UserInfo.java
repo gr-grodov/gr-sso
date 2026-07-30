@@ -1,5 +1,6 @@
-package gr.grodov.grsso.domain.entities;
+package gr.grodov.grsso.domain.entities.user;
 
+import gr.grodov.grsso.domain.entities.BaseEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

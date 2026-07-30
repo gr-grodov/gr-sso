@@ -1,7 +1,7 @@
 package gr.grodov.grsso.domain.mapper;
 
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
-import gr.grodov.grsso.domain.entities.OAuthClient;
+import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,7 +19,13 @@ public class OAuthClientMapper implements Mapper<OAuthClient, OAuthClientDto> {
             .clientAuthenticationMethods(oAuthClient.getClientAuthenticationMethods())
             .authorizationGrantTypes(oAuthClient.getAuthorizationGrantTypes())
             .redirectUris(oAuthClient.getRedirectUris())
+            .postLogoutRedirectUris(oAuthClient.getPostLogoutRedirectUris())
             .scopes(oAuthClient.getScopes())
+            .clientSettings(oAuthClient.getClientSettings())
+            .tokenSettings(oAuthClient.getTokenSettings())
+            .status(oAuthClient.getStatus())
+            .createdAt(oAuthClient.getCreatedAt())
+            .updatedAt(oAuthClient.getUpdatedAt())
         .build();
     }
 
@@ -35,7 +41,13 @@ public class OAuthClientMapper implements Mapper<OAuthClient, OAuthClientDto> {
             .clientAuthenticationMethods(oAuthClient.clientAuthenticationMethods())
             .authorizationGrantTypes(oAuthClient.authorizationGrantTypes())
             .redirectUris(oAuthClient.redirectUris())
+            .postLogoutRedirectUris(oAuthClient.postLogoutRedirectUris())
             .scopes(oAuthClient.scopes())
+            .clientSecret(oAuthClient.clientSecret())
+            .tokenSettings(oAuthClient.tokenSettings())
+            .status(oAuthClient.status())
+            .createdAt(oAuthClient.createdAt())
+            .updatedAt(oAuthClient.updatedAt())
         .build();
     }
 }

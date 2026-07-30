@@ -1,12 +1,12 @@
 package gr.grodov.grsso.service;
 
 import gr.grodov.grsso.domain.dto.UserInfoDto;
-import gr.grodov.grsso.domain.entities.AuthProvider;
-import gr.grodov.grsso.domain.entities.Role;
-import gr.grodov.grsso.domain.entities.UserInfo;
+import gr.grodov.grsso.domain.entities.user.AuthProvider;
+import gr.grodov.grsso.domain.entities.user.Role;
+import gr.grodov.grsso.domain.entities.user.UserInfo;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.UserInfoRepo;
-import gr.grodov.grsso.security.exceptions.EmailAlreadyExistsException;
+import gr.grodov.grsso.service.exceptions.EmailAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -38,7 +38,7 @@ public class UserInfoService {
     @Transactional
     public UserInfoDto createNewUser(String email, String password, AuthProvider provider) throws EmailAlreadyExistsException {
         if (userInfoRepo.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException();
+            throw new EmailAlreadyExistsException("email_invalid", "email", "already_exist");
         }
 
         return userInfoMapper.fromDB(
@@ -46,7 +46,7 @@ public class UserInfoService {
                 UserInfoDto.builder()
                     .email(email)
                     .password(passwordEncoder.encode(password))
-                    .role(Role.USER)
+                    .role(Role.ADMIN)
                     .provider(provider)
                     .enabled(true)
                 .build())

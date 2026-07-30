@@ -1,9 +1,8 @@
 package gr.grodov.grsso.domain.repo;
 
-import gr.grodov.grsso.domain.entities.AuthProvider;
-import gr.grodov.grsso.domain.entities.UserInfo;
+import gr.grodov.grsso.domain.entities.user.AuthProvider;
+import gr.grodov.grsso.domain.entities.user.UserInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;

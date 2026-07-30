@@ -1,4 +1,4 @@
-package gr.grodov.grsso.domain.entities;
+package gr.grodov.grsso.domain.entities.user;
 
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.core.GrantedAuthority;

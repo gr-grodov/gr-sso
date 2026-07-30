@@ -1,4 +1,4 @@
-package gr.grodov.grsso.domain.config;
+package gr.grodov.grsso.domain.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
