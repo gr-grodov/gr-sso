@@ -17,7 +17,7 @@ public record OAuthClientShortDto(
     Set<String> redirectUris,
     Set<String> scopes,
     OAuthClientStatus status,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    Instant createdAt,
+    Instant updatedAt
 ) {
 }

@@ -34,7 +34,7 @@ public record OAuthClientDto(
     @JsonIgnore
     Map<String, Object> tokenSettings,
     OAuthClientStatus status,
-    LocalDateTime createdAt,
-    LocalDateTime updatedAt
+    Instant createdAt,
+    Instant updatedAt
 ) {
 }

@@ -1,5 +1,6 @@
 package gr.grodov.grsso.service;
 
+import gr.grodov.grsso.api.dto.request.OAuthClientChangeStatusRequest;
 import gr.grodov.grsso.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
@@ -10,6 +11,7 @@ import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.OAuthClientRepo;
 import gr.grodov.grsso.service.exceptions.OAuthClientNameExistsException;
+import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
 import gr.grodov.grsso.service.utils.IDGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -33,17 +35,17 @@ public class OAuthClientsService {
 
     @Transactional(readOnly = true)
     public List<OAuthClientShortDto> list() {
-        return oAuthClientRepo.findAll().stream().map(oAuthClientShortMapper::fromDB).toList();
+        return oAuthClientRepo.findAllByOrderByUpdatedAtDesc().stream().map(oAuthClientShortMapper::fromDB).toList();
     }
 
     @Transactional
     public OAuthClientSecretInfoResponse save(OAuthClientRequest clientInfo) {
         if (oAuthClientRepo.existsByClientName(clientInfo.getClientName())) {
-            throw new OAuthClientNameExistsException("oauth_client_name_inlavid", "oauth_client.clientName", "exists");
+            throw new OAuthClientNameExistsException();
         }
 
-        String clientID = getClientID(clientInfo.getClientName());
-        String clientSecret = getClientSecret();
+        String clientID = IDGenerator.randomID(clientInfo.getClientName());
+        String clientSecret = UUID.randomUUID().toString();
 
         OAuthClient client = OAuthClient.builder()
             .clientName(clientInfo.getClientName())
@@ -65,16 +67,40 @@ public class OAuthClientsService {
         return new OAuthClientSecretInfoResponse(clientID, clientSecret);
     }
 
+    @Transactional
+    public OAuthClientDto edit(OAuthClientRequest clientInfo) {
+        OAuthClient client = oAuthClientRepo.findById(clientInfo.getId()).orElseThrow(OAuthClientNotFoundException::new);
 
+        client.setClientName(clientInfo.getClientName());
+        client.setRedirectUris(clientInfo.getRedirectUris());
+        client.setScopes(clientInfo.getScopes());
+        client.setAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
 
-    private String getClientID(String name) {
-        return String.format("%s_%s",
-            name.toLowerCase().replace(" ", "-"),
-            IDGenerator.randomID()
-        );
+        return oAuthClientMapper.fromDB(oAuthClientRepo.save(client));
     }
 
-    private String getClientSecret() {
-        return UUID.randomUUID().toString();
+    @Transactional(readOnly = true)
+    public OAuthClientDto getById(String id) {
+        OAuthClient client = oAuthClientRepo.findById(id).orElseThrow(OAuthClientNotFoundException::new);
+        return oAuthClientMapper.fromDB(client);
+    }
+
+    @Transactional
+    public OAuthClientShortDto changeStatus(OAuthClientChangeStatusRequest statusInfo) {
+        OAuthClient client = oAuthClientRepo.findById(statusInfo.getId()).orElseThrow(OAuthClientNotFoundException::new);
+
+        client.setStatus(statusInfo.getStatus());
+        oAuthClientRepo.save(client);
+
+        return oAuthClientShortMapper.fromDB(client);
+    }
+
+    @Transactional
+    public void delete(String id) {
+        if (!oAuthClientRepo.existsById(id)) {
+            throw new OAuthClientNotFoundException();
+        }
+
+        oAuthClientRepo.deleteById(id);
     }
 }

@@ -81,11 +81,11 @@ public class OAuthClient {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @LastModifiedDate
     @Column(name = "update_at")
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @Version
     private Long version;

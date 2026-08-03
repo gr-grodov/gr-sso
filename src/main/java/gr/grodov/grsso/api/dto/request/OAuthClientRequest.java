@@ -13,6 +13,7 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OAuthClientRequest {
+    private String id;
     private String clientName;
     private Set<String> redirectUris;
     private Set<String> scopes;

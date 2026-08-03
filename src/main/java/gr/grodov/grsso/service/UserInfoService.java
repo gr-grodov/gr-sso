@@ -38,7 +38,7 @@ public class UserInfoService {
     @Transactional
     public UserInfoDto createNewUser(String email, String password, AuthProvider provider) throws EmailAlreadyExistsException {
         if (userInfoRepo.existsByEmail(email)) {
-            throw new EmailAlreadyExistsException("email_invalid", "email", "already_exist");
+            throw new EmailAlreadyExistsException();
         }
 
         return userInfoMapper.fromDB(

@@ -10,6 +10,11 @@ public abstract class BaseErrorFieldException extends RuntimeException {
     private final String code;
     private final List<ErrorFieldDto> errorsField;
 
+    public BaseErrorFieldException(String code) {
+        this.code = code;
+        this.errorsField = List.of();
+    }
+
     public BaseErrorFieldException(String code, List<ErrorFieldDto> errorsField) {
         this.code = code;
         this.errorsField = errorsField;

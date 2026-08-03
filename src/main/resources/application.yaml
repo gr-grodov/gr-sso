@@ -36,7 +36,7 @@ spring:
           crm-client:
             registration:
               client-id: crm-client
-              client-secret: "{noop}secret"
+              client-secret: b4efd0df-04fa-4fca-8a78-ee0a8c89cd5d
               client-authentication-methods: client_secret_basic
               authorization-grant-types: authorization_code
               redirect-uris: http://127.0.0.1:8080/login/oauth2/code/grsso

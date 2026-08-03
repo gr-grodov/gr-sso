@@ -18,4 +18,11 @@ public class IDGenerator {
         return ENCODER.encodeToString(buffer);
     }
 
+    public static String randomID(String prefix) {
+        return String.format("%s_%s",
+            prefix.toLowerCase().replace(" ", "-"),
+            randomID()
+        );
+    }
+
 }
