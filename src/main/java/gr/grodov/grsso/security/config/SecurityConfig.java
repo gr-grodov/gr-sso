@@ -1,5 +1,6 @@
 package gr.grodov.grsso.security.config;
 
+import gr.grodov.grsso.domain.entities.user.Role;
 import gr.grodov.grsso.props.AppProperties;
 import gr.grodov.grsso.security.entrypoint.ApiAuthenticationEntryPoint;
 import gr.grodov.grsso.security.handler.ApiAccessDeniedHandler;
@@ -63,9 +64,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/config/**", "/error/**").permitAll()
                 .requestMatchers("/api/auth/login", "/api/auth/register").anonymous()
+                .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.getAuthority())
                 .anyRequest().authenticated()
             )
             .formLogin(AbstractHttpConfigurer::disable)
+            .logout(config ->
+                config.logoutUrl("/api/auth/logout")
+            )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             )

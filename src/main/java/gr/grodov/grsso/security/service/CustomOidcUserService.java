@@ -5,6 +5,7 @@ import gr.grodov.grsso.domain.entities.user.AuthProvider;
 import gr.grodov.grsso.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -29,8 +30,10 @@ public class CustomOidcUserService extends OidcUserService {
             throw new OAuth2AuthenticationException(new OAuth2Error("unknown_provider"));
         }
 
-        UserInfoDto userInfo = userInfoService.findByUserInfo(oidcUser.getEmail(), provider);
-        if (userInfo == null) {
+        UserInfoDto userInfo;
+        try {
+            userInfo = userInfoService.findByUserInfo(oidcUser.getEmail(), provider);
+        } catch (UsernameNotFoundException e) {
             userInfo = userInfoService.createNewUser(oidcUser.getEmail(), null, provider);
         }
 
