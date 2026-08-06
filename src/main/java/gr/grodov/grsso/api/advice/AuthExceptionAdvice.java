@@ -4,6 +4,7 @@ import gr.grodov.grsso.api.dto.response.ErrorFieldDto;
 import gr.grodov.grsso.api.dto.response.ErrorResponse;
 import gr.grodov.grsso.service.exceptions.BaseErrorFieldException;
 import gr.grodov.grsso.service.exceptions.EmailAlreadyExistsException;
+import gr.grodov.grsso.service.exceptions.OAuthAuthorizationGoneException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -25,6 +26,12 @@ public class AuthExceptionAdvice {
     @ExceptionHandler(BaseErrorFieldException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(BaseErrorFieldException ex) {
+        return ErrorResponse.of(ex.getCode(), ex.getErrorsField());
+    }
+
+    @ExceptionHandler(OAuthAuthorizationGoneException.class)
+    @ResponseStatus(HttpStatus.GONE)
+    public ErrorResponse handle(OAuthAuthorizationGoneException ex) {
         return ErrorResponse.of(ex.getCode(), ex.getErrorsField());
     }
 

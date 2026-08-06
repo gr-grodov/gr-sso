@@ -1,6 +1,7 @@
 package gr.grodov.grsso.security.service;
 
 import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
+import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.OAuthClientRepo;
 import gr.grodov.grsso.service.OAuthClientsService;
@@ -16,10 +17,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomRegisteredClientRepository implements RegisteredClientRepository {
 
-    private final Mapper<OAuthClient, RegisteredClient> registeredClientMapper;
-    private final OAuthClientsService oAuthClientsService;
-
     private final OAuthClientRepo oAuthClientRepo;
+    private final Mapper<OAuthClient, RegisteredClient> registeredClientMapper;
 
     @Override
     public void save(@NonNull RegisteredClient registeredClient) {
@@ -28,11 +27,15 @@ public class CustomRegisteredClientRepository implements RegisteredClientReposit
 
     @Override
     public @Nullable RegisteredClient findById(@NonNull String id) {
-        return oAuthClientRepo.findById(id).map(registeredClientMapper::fromDB).orElse(null);
+        return oAuthClientRepo.findByIdAndStatus(id, OAuthClientStatus.ACTIVE)
+            .map(registeredClientMapper::fromDB)
+            .orElse(null);
     }
 
     @Override
     public @Nullable RegisteredClient findByClientId(@NonNull String clientId) {
-        return oAuthClientRepo.findByClientId(clientId).map(registeredClientMapper::fromDB).orElse(null);
+        return oAuthClientRepo.findByClientIdAndStatus(clientId, OAuthClientStatus.ACTIVE)
+            .map(registeredClientMapper::fromDB)
+            .orElse(null);
     }
 }

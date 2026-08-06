@@ -1,18 +1,20 @@
 package gr.grodov.grsso.security.config;
 
 import gr.grodov.grsso.domain.entities.user.Role;
-import gr.grodov.grsso.props.AppProperties;
 import gr.grodov.grsso.security.entrypoint.ApiAuthenticationEntryPoint;
+import gr.grodov.grsso.security.entrypoint.OAuthAuthenticationEntryPoint;
 import gr.grodov.grsso.security.handler.ApiAccessDeniedHandler;
 import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
 import gr.grodov.grsso.security.handler.OAuth2SuccessHandler;
+import gr.grodov.grsso.security.jackson.UserPrincipalJacksonModule;
 import gr.grodov.grsso.security.service.CustomOAuthUserService;
 import gr.grodov.grsso.security.service.CustomOidcUserService;
-import gr.grodov.grsso.security.service.CustomRegisteredClientRepository;
+import gr.grodov.grsso.security.service.UserPrincipal;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -24,21 +26,21 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.*;
+import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
-import org.springframework.security.oauth2.server.authorization.client.JdbcRegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.csrf.HttpSessionCsrfTokenRepository;
+import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
+import tools.jackson.databind.json.JsonMapper;
+import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     @Bean
@@ -49,6 +51,7 @@ public class SecurityConfig {
         OAuth2FailureHandler oAuth2FailureHandler,
         ApiAccessDeniedHandler apiAccessDeniedHandler,
         ApiAuthenticationEntryPoint authenticationEntryPoint,
+        OAuthAuthenticationEntryPoint oauthEntryPoint,
         OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         http
@@ -57,6 +60,18 @@ public class SecurityConfig {
                 .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
             )
             .exceptionHandling(exception -> exception
+                .defaultAuthenticationEntryPointFor(
+                        oauthEntryPoint,
+                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/oauth2/**")
+                )
+                .defaultAuthenticationEntryPointFor(
+                        oauthEntryPoint,
+                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/connect/**")
+                )
+                .defaultAuthenticationEntryPointFor(
+                        oauthEntryPoint,
+                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/.well-known/**")
+                )
                 .authenticationEntryPoint(authenticationEntryPoint)
                 .accessDeniedHandler(apiAccessDeniedHandler)
             )
@@ -99,9 +114,41 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+/*    @Bean("oauthAuthorizationJsonMapper")
+    JsonMapper oauthAuthorizationJsonMapper() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        BasicPolymorphicTypeValidator.Builder validator = BasicPolymorphicTypeValidator.builder()
+            .allowIfSubType(UserPrincipal.class)
+            .allowIfSubType(Role.class);
+
+        return JsonMapper.builder()
+            .addModules(SecurityJacksonModules.getModules(classLoader, validator))
+            .addModule(new UserPrincipalJacksonModule())
+        .build();
+    }*/
+
     @Bean
-    public OAuth2AuthorizationService oAuth2AuthorizationService(JdbcOperations jdbc, RegisteredClientRepository clientRepository) {
-        return new JdbcOAuth2AuthorizationService(jdbc, clientRepository);
+    public OAuth2AuthorizationService oAuth2AuthorizationService(
+        JdbcOperations jdbc,
+        RegisteredClientRepository clientRepository
+    ) {
+        ClassLoader classLoader = getClass().getClassLoader();
+        BasicPolymorphicTypeValidator.Builder validator = BasicPolymorphicTypeValidator.builder()
+                .allowIfSubType(UserPrincipal.class)
+                .allowIfSubType(Role.class);
+
+        JsonMapper mapper = JsonMapper.builder()
+                .addModules(SecurityJacksonModules.getModules(classLoader, validator))
+                .addModule(new UserPrincipalJacksonModule())
+                .build();
+
+
+        JdbcOAuth2AuthorizationService service = new JdbcOAuth2AuthorizationService(jdbc, clientRepository);
+
+        service.setAuthorizationParametersMapper(new JdbcOAuth2AuthorizationService.JsonMapperOAuth2AuthorizationParametersMapper(mapper));
+        service.setAuthorizationRowMapper(new JdbcOAuth2AuthorizationService.JsonMapperOAuth2AuthorizationRowMapper(clientRepository, mapper));
+
+        return service;
     }
 
     @Bean

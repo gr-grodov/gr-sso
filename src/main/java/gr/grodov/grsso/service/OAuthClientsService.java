@@ -5,14 +5,13 @@ import gr.grodov.grsso.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
 import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
+import gr.grodov.grsso.domain.entities.oauth.*;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.OAuthClientRepo;
 import gr.grodov.grsso.service.exceptions.OAuthClientNameExistsException;
 import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
 import gr.grodov.grsso.service.utils.IDGenerator;
+import gr.grodov.grsso.service.utils.OAuthClientSettingsUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -58,8 +57,8 @@ public class OAuthClientsService {
             .clientIdIssuedAt(Instant.now())
             .clientSecret(passwordEncoder.encode(clientSecret))
             .clientAuthenticationMethods(Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC))
-            .clientSettings(Map.of())
-            .tokenSettings(Map.of())
+            .clientSettings(OAuthClientSettings.builder().build())
+            .tokenSettings(OAuthTokenSettings.builder().build())
             .status(OAuthClientStatus.ACTIVE)
         .build();
 

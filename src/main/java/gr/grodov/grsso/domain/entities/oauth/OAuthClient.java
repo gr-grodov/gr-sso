@@ -69,11 +69,11 @@ public class OAuthClient {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "client_settings", length = 2000, nullable = false)
-    private Map<String, Object> clientSettings;
+    private OAuthClientSettings clientSettings;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "token_settings", length = 2000, nullable = false)
-    private Map<String, Object> tokenSettings;
+    private OAuthTokenSettings tokenSettings;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

@@ -1,10 +1,12 @@
 package gr.grodov.grsso.domain.mapper;
 
-import gr.grodov.grsso.domain.entities.oauth.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClientAuthenticationMethod;
+import com.nimbusds.jose.JWSAlgorithm;
+import gr.grodov.grsso.domain.entities.oauth.*;
+import org.jspecify.annotations.Nullable;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
+import org.springframework.security.oauth2.jose.jws.JwsAlgorithm;
+import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;
 import org.springframework.security.oauth2.server.authorization.settings.ClientSettings;
 import org.springframework.security.oauth2.server.authorization.settings.ConfigurationSettingNames;
@@ -12,6 +14,7 @@ import org.springframework.security.oauth2.server.authorization.settings.OAuth2T
 import org.springframework.security.oauth2.server.authorization.settings.TokenSettings;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +40,7 @@ public class RegisteredClientMapper implements Mapper<OAuthClient, RegisteredCli
             .postLogoutRedirectUris(uris -> uris.addAll(client.getPostLogoutRedirectUris()))
             .scopes(scopes -> scopes.addAll(client.getScopes()))
             .clientSettings(fromClientSettings(client.getClientSettings()))
-            .tokenSettings(fromTokenSettings(client.getClientSettings()))
+            .tokenSettings(fromTokenSettings(client.getTokenSettings()))
         .build();
     }
 
@@ -60,24 +63,50 @@ public class RegisteredClientMapper implements Mapper<OAuthClient, RegisteredCli
         .build();
     }
 
-    private ClientSettings fromClientSettings(Map<String, Object> settings) {
-        return ClientSettings.withSettings(settings).build();
-    }
+    private ClientSettings fromClientSettings(OAuthClientSettings settings) {
+        ClientSettings.Builder builder = ClientSettings.builder()
+            .requireAuthorizationConsent(settings.isRequireAuthorizationConsent())
+            .requireProofKey(settings.isRequireProofKey());
 
-    private Map<String, Object> toClientSettings(ClientSettings settings) {
-        return settings.getSettings();
-    }
-
-    private TokenSettings fromTokenSettings(Map<String, Object> settings) {
-        TokenSettings.Builder tokenSettingBuilder = TokenSettings.withSettings(settings);
-        if (!settings.containsKey(ConfigurationSettingNames.Token.ACCESS_TOKEN_FORMAT)) {
-            tokenSettingBuilder.accessTokenFormat(OAuth2TokenFormat.SELF_CONTAINED);
+        if (settings.getJwkSetUrl() != null) {
+            builder.jwkSetUrl(settings.getJwkSetUrl());
         }
-        return tokenSettingBuilder.build();
+
+        String signingAlgorithm = settings.getTokenEndpointAuthenticationSigningAlgorithm();
+        if (signingAlgorithm != null) {
+            builder.tokenEndpointAuthenticationSigningAlgorithm(SignatureAlgorithm.from(signingAlgorithm));
+        }
+
+        return builder.build();
     }
 
-    private Map<String, Object> toTokenSettings(TokenSettings settings) {
-        return settings.getSettings();
+    private OAuthClientSettings toClientSettings(ClientSettings settings) {
+        JwsAlgorithm algorithm = settings.getTokenEndpointAuthenticationSigningAlgorithm();
+
+        return OAuthClientSettings.builder()
+            .requireAuthorizationConsent(settings.isRequireAuthorizationConsent())
+            .requireProofKey(settings.isRequireProofKey())
+            .jwkSetUrl(settings.getJwkSetUrl())
+            .tokenEndpointAuthenticationSigningAlgorithm(algorithm != null ? algorithm.getName() : "null")
+        .build();
+    }
+
+    private TokenSettings fromTokenSettings(OAuthTokenSettings settings) {
+        return TokenSettings.builder()
+            .authorizationCodeTimeToLive(Duration.ofSeconds(settings.getAuthorizationCodeTimeToLive()))
+            .accessTokenTimeToLive(Duration.ofSeconds(settings.getAccessTokenTimeToLive()))
+            .refreshTokenTimeToLive(Duration.ofSeconds(settings.getRefreshTokenTimeToLive()))
+            .reuseRefreshTokens(settings.isReuseRefreshTokens())
+        .build();
+    }
+
+    private OAuthTokenSettings toTokenSettings(TokenSettings settings) {
+        return OAuthTokenSettings.builder()
+            .authorizationCodeTimeToLive(settings.getAuthorizationCodeTimeToLive().getSeconds())
+            .accessTokenTimeToLive(settings.getAccessTokenTimeToLive().getSeconds())
+            .refreshTokenTimeToLive(settings.getRefreshTokenTimeToLive().getSeconds())
+            .reuseRefreshTokens(settings.isReuseRefreshTokens())
+        .build();
     }
 
     private Set<ClientAuthenticationMethod> fromClientAuthenticationMethods(Set<OAuthClientAuthenticationMethod> methods) {
