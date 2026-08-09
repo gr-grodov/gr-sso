@@ -35,7 +35,7 @@ public class OAuthAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
 
         System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAa");
-        String id = authorizationService.saveRequest(URLEncoder.encode(requestURI, StandardCharsets.UTF_8));
+        String id = authorizationService.saveRequest(requestURI);
         sessionService.setAttribute(SessionService.Attributes.OAUTH_FLOW, id);
         response.sendRedirect("http://localhost:5173/login");
     }

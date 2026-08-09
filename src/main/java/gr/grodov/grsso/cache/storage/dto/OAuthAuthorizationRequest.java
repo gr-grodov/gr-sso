@@ -1,8 +1,15 @@
 package gr.grodov.grsso.cache.storage.dto;
 
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
 import java.time.Instant;
 
-public record OAuthAuthorizationRequest(
-    String requestUri,
-    Instant createdAt
-) {}
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class OAuthAuthorizationRequest {
+    private String requestUri;
+    private Instant createdAt;
+}

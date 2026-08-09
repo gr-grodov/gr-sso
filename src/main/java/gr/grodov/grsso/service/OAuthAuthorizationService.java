@@ -32,6 +32,6 @@ public class OAuthAuthorizationService {
         }
 
         oAuthRequestStorage.delete(code);
-        return request.requestUri();
+        return request.getRequestUri();
     }
 }

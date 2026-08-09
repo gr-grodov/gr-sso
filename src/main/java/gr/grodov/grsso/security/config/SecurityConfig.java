@@ -51,48 +51,36 @@ public class SecurityConfig {
         OAuth2FailureHandler oAuth2FailureHandler,
         ApiAccessDeniedHandler apiAccessDeniedHandler,
         ApiAuthenticationEntryPoint authenticationEntryPoint,
-        OAuthAuthenticationEntryPoint oauthEntryPoint,
         OAuth2SuccessHandler oAuth2SuccessHandler
     ) {
         http
-            .csrf((csrf) -> csrf
-                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
-            )
-            .exceptionHandling(exception -> exception
-                .defaultAuthenticationEntryPointFor(
-                        oauthEntryPoint,
-                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/oauth2/**")
-                )
-                .defaultAuthenticationEntryPointFor(
-                        oauthEntryPoint,
-                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/connect/**")
-                )
-                .defaultAuthenticationEntryPointFor(
-                        oauthEntryPoint,
-                        PathPatternRequestMatcher.pathPattern(HttpMethod.GET, "/.well-known/**")
-                )
-                .authenticationEntryPoint(authenticationEntryPoint)
-                .accessDeniedHandler(apiAccessDeniedHandler)
-            )
-            .cors(Customizer.withDefaults())
+            .securityMatcher("/api/**")
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/config/**", "/error/**").permitAll()
                 .requestMatchers("/api/auth/login", "/api/auth/register").anonymous()
                 .requestMatchers("/api/admin/**").hasAuthority(Role.ADMIN.getAuthority())
                 .anyRequest().authenticated()
             )
+            .csrf((csrf) -> csrf
+                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
+                .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler())
+            )
+            .cors(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(config ->
                 config.logoutUrl("/api/auth/logout")
-            )
-            .sessionManagement(session ->
-                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
             )
             .logout(logout -> logout
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
                 .deleteCookies("JSESSIONID")
+            )
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authenticationEntryPoint)
+                .accessDeniedHandler(apiAccessDeniedHandler)
             )
             .oauth2Login(oauth -> oauth
                 .failureHandler(oAuth2FailureHandler)
@@ -101,6 +89,23 @@ public class SecurityConfig {
                     .userService(oAuthUserService)
                     .oidcUserService(oidcUserService)
                 )
+            );
+
+        return http.build();
+    }
+
+    @Bean
+    public SecurityFilterChain ssoFilterChain(
+        HttpSecurity http,
+        OAuthAuthenticationEntryPoint authAuthenticationEntryPoint
+    ) {
+        http
+            .securityMatcher("/oauth2/**", "/connect/**", "/.well-known/**")
+            .authorizeHttpRequests(auth -> auth
+                .anyRequest().authenticated()
+            )
+            .exceptionHandling(exception -> exception
+                .authenticationEntryPoint(authAuthenticationEntryPoint)
             )
             .oauth2AuthorizationServer((authorizationServer) -> authorizationServer
                 .oidc(Customizer.withDefaults())

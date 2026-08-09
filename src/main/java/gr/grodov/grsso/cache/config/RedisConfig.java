@@ -1,5 +1,6 @@
 package gr.grodov.grsso.cache.config;
 
+import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import gr.grodov.grsso.cache.storage.dto.OAuthAuthorizationRequest;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
@@ -11,6 +12,8 @@ import org.springframework.data.redis.serializer.GenericJacksonJsonRedisSerializ
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.security.jackson.SecurityJacksonModules;
+import tools.jackson.databind.DefaultTyping;
+import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
@@ -39,13 +42,14 @@ public class RedisConfig {
     public RedisTemplate<String, OAuthAuthorizationRequest> redisTemplate(
         RedisConnectionFactory factory
     ) {
-        ClassLoader classLoader = getClass().getClassLoader();
-        BasicPolymorphicTypeValidator.Builder validator = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType(OAuthAuthorizationRequest.class);
+        BasicPolymorphicTypeValidator validator = BasicPolymorphicTypeValidator.builder()
+            .allowIfSubType(OAuthAuthorizationRequest.class)
+            .build();
 
         JsonMapper objectMapper = JsonMapper.builder()
-                .addModules(SecurityJacksonModules.getModules(classLoader, validator))
-                .build();
+            .activateDefaultTyping(validator, DefaultTyping.NON_FINAL, JsonTypeInfo.As.PROPERTY)
+            .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false)
+            .build();
 
         RedisTemplate<String, OAuthAuthorizationRequest> template = new RedisTemplate<>();
         RedisSerializer<Object> valueSerializer = new GenericJacksonJsonRedisSerializer(objectMapper);
