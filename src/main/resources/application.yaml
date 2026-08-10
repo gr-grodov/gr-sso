@@ -66,6 +66,7 @@ server:
     session:
       cookie:
         secure: false
+        name: SSO_SESSION
   error: #TODO Сделать env для разработки и прода
     include-stacktrace: never
     include-message: never

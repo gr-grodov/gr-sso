@@ -30,7 +30,9 @@ import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
@@ -100,7 +102,7 @@ public class SecurityConfig {
         OAuthAuthenticationEntryPoint authAuthenticationEntryPoint
     ) {
         http
-            .securityMatcher("/oauth2/**", "/connect/**", "/.well-known/**")
+            .securityMatcher("/oauth2/**", "/connect/**", "/.well-known/**", "/userinfo")
             .authorizeHttpRequests(auth -> auth
                 .anyRequest().authenticated()
             )
@@ -119,18 +121,10 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-/*    @Bean("oauthAuthorizationJsonMapper")
-    JsonMapper oauthAuthorizationJsonMapper() {
-        ClassLoader classLoader = getClass().getClassLoader();
-        BasicPolymorphicTypeValidator.Builder validator = BasicPolymorphicTypeValidator.builder()
-            .allowIfSubType(UserPrincipal.class)
-            .allowIfSubType(Role.class);
-
-        return JsonMapper.builder()
-            .addModules(SecurityJacksonModules.getModules(classLoader, validator))
-            .addModule(new UserPrincipalJacksonModule())
-        .build();
-    }*/
+    @Bean
+    SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
+        return new SavedRequestAwareAuthenticationSuccessHandler();
+    }
 
     @Bean
     public OAuth2AuthorizationService oAuth2AuthorizationService(

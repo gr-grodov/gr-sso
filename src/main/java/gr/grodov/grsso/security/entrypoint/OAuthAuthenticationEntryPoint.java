@@ -28,7 +28,7 @@ public class OAuthAuthenticationEntryPoint implements AuthenticationEntryPoint {
         @NonNull AuthenticationException authException
     ) throws IOException {
 
-        String requestURI = request.getRequestURI();
+        String requestURI = request.getRequestURL().toString();
         if (request.getQueryString() != null) {
             requestURI += "?" + request.getQueryString();
         }

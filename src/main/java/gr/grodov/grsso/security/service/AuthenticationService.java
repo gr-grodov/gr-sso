@@ -1,6 +1,7 @@
 package gr.grodov.grsso.security.service;
 
 import gr.grodov.grsso.api.dto.request.LoginRequest;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -9,15 +10,20 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
+    private final SavedRequestAwareAuthenticationSuccessHandler authenticationSuccessHandler;
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
 
     public void authenticate(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {

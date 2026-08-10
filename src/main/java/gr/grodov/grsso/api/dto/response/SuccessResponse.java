@@ -16,4 +16,8 @@ public record SuccessResponse<T>(
     public static <T> SuccessResponse<T> of(String message, T data) {
         return new SuccessResponse<>(true, message, data);
     }
+
+    public static <T> SuccessResponse<T> of(T data) {
+        return new SuccessResponse<>(true, null, data);
+    }
 }
