@@ -11,10 +11,8 @@ import gr.grodov.grsso.security.service.CustomOAuthUserService;
 import gr.grodov.grsso.security.service.CustomOidcUserService;
 import gr.grodov.grsso.security.service.UserPrincipal;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.Customizer;
@@ -30,12 +28,10 @@ import org.springframework.security.jackson.SecurityJacksonModules;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
-import org.springframework.security.oauth2.server.authorization.web.OAuth2AuthorizationEndpointFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
-import org.springframework.security.web.servlet.util.matcher.PathPatternRequestMatcher;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 
@@ -111,6 +107,10 @@ public class SecurityConfig {
             )
             .oauth2AuthorizationServer((authorizationServer) -> authorizationServer
                 .oidc(Customizer.withDefaults())
+                .authorizationEndpoint(conf -> conf
+                    // TODO вынести в config
+                    .consentPage("http://localhost:5173/oauth2/consent")
+                )
             );
 
         return http.build();

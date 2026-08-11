@@ -9,6 +9,7 @@ import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
 import gr.grodov.grsso.service.OAuthClientsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -46,6 +47,12 @@ public class ApiAdminOAuthClientController {
     public OAuthClientDto get(@PathVariable String id) throws InterruptedException {
         Thread.sleep(2000);
         return oAuthClientsService.getById(id);
+    }
+
+    @GetMapping("/search")
+    public OAuthClientDto search(@RequestParam(required = false) String clientId) throws InterruptedException {
+        Thread.sleep(2000);
+        return oAuthClientsService.getByClientId(clientId);
     }
 
     @PatchMapping("/status")

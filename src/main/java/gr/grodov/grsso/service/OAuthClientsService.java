@@ -10,8 +10,7 @@ import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.OAuthClientRepo;
 import gr.grodov.grsso.service.exceptions.OAuthClientNameExistsException;
 import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
-import gr.grodov.grsso.service.utils.IDGenerator;
-import gr.grodov.grsso.service.utils.OAuthClientSettingsUtils;
+import gr.grodov.grsso.service.utils.IDGeneratorUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -43,7 +41,7 @@ public class OAuthClientsService {
             throw new OAuthClientNameExistsException();
         }
 
-        String clientID = IDGenerator.randomID(clientInfo.getClientName());
+        String clientID = IDGeneratorUtils.randomID(clientInfo.getClientName());
         String clientSecret = UUID.randomUUID().toString();
 
         OAuthClient client = OAuthClient.builder()
@@ -81,6 +79,12 @@ public class OAuthClientsService {
     @Transactional(readOnly = true)
     public OAuthClientDto getById(String id) {
         OAuthClient client = oAuthClientRepo.findById(id).orElseThrow(OAuthClientNotFoundException::new);
+        return oAuthClientMapper.fromDB(client);
+    }
+
+    @Transactional(readOnly = true)
+    public OAuthClientDto getByClientId(String clientId) {
+        OAuthClient client = oAuthClientRepo.findByClientId(clientId).orElseThrow(OAuthClientNotFoundException::new);
         return oAuthClientMapper.fromDB(client);
     }
 

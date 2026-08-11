@@ -10,7 +10,7 @@ import lombok.*;
 public class OAuthClientSettings {
 
     @Builder.Default
-    private boolean requireAuthorizationConsent = false;
+    private boolean requireAuthorizationConsent = true;
 
     @Builder.Default
     private boolean requireProofKey = false;

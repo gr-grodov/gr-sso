@@ -3,7 +3,7 @@ package gr.grodov.grsso.service.utils;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class IDGenerator {
+public class IDGeneratorUtils {
 
     private static final SecureRandom RANDOM = new SecureRandom();
     private static final Base64.Encoder ENCODER = Base64.getUrlEncoder().withoutPadding();
