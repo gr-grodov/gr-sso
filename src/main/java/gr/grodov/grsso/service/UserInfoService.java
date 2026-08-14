@@ -32,7 +32,14 @@ public class UserInfoService {
 
     @Transactional(readOnly = true)
     public UserInfoDto findById(String id) {
-        return userInfoRepo.findById(Long.valueOf(id))
+        long userId;
+        try {
+            userId = Long.parseLong(id);
+        } catch (NumberFormatException ex) {
+            throw new UserNotFoundException(); // или отдельное InvalidIdException
+        }
+
+        return userInfoRepo.findById(userId)
             .map(userInfoMapper::fromDB)
             .orElseThrow(UserNotFoundException::new);
     }
@@ -53,7 +60,7 @@ public class UserInfoService {
                 UserInfoDto.builder()
                     .email(email)
                     .password(passwordEncoder.encode(password))
-                    .role(Role.ADMIN)
+                    .role(Role.USER)
                     .provider(provider)
                     .enabled(true)
                 .build())
