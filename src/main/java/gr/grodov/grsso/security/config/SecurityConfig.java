@@ -5,6 +5,7 @@ import gr.grodov.grsso.props.FrontendAppProperties;
 import gr.grodov.grsso.security.entrypoint.ApiAuthenticationEntryPoint;
 import gr.grodov.grsso.security.entrypoint.OAuthAuthenticationEntryPoint;
 import gr.grodov.grsso.security.handler.ApiAccessDeniedHandler;
+import gr.grodov.grsso.security.handler.AuthLogoutSuccessHandler;
 import gr.grodov.grsso.security.handler.OAuthFailureHandler;
 import gr.grodov.grsso.security.handler.OAuthSuccessHandler;
 import gr.grodov.grsso.security.principal.jackson.UserPrincipalJacksonModule;
@@ -38,6 +39,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.servlet.function.ServerRequest;
 import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
@@ -61,7 +63,9 @@ public class SecurityConfig {
         OAuthFailureHandler oAuthFailureHandler,
         ApiAccessDeniedHandler apiAccessDeniedHandler,
         ApiAuthenticationEntryPoint authenticationEntryPoint,
-        OAuthSuccessHandler oAuthSuccessHandler
+        OAuthSuccessHandler oAuthSuccessHandler,
+        AuthLogoutSuccessHandler authLogoutSuccessHandler,
+        FrontendAppProperties frontendProperties
     ) {
         http
             .authorizeHttpRequests(auth -> auth
@@ -76,13 +80,13 @@ public class SecurityConfig {
             )
             .cors(Customizer.withDefaults())
             .formLogin(AbstractHttpConfigurer::disable)
-            .logout(config ->
-                config.logoutUrl("/api/auth/logout")
-            )
-            .logout(logout -> logout
+            .logout(config -> config
+                .logoutUrl("/api/auth/logout")
                 .invalidateHttpSession(true)
                 .clearAuthentication(true)
-                .deleteCookies("JSESSIONID")
+                .deleteCookies("SSO_SESSION", "XSRF-TOKEN")
+                .logoutSuccessHandler(authLogoutSuccessHandler)
+                .logoutSuccessUrl(frontendProperties.loginUrl())
             )
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
