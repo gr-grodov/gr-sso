@@ -7,6 +7,7 @@ import gr.grodov.grsso.domain.entities.user.UserInfo;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.UserInfoRepo;
 import gr.grodov.grsso.service.exceptions.EmailAlreadyExistsException;
+import gr.grodov.grsso.service.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,11 +24,17 @@ public class UserInfoService {
     private final Mapper<UserInfo, UserInfoDto> userInfoMapper;
 
     @Transactional(readOnly = true)
-    public UserInfoDto findByUserInfo(String email, AuthProvider provider) throws UsernameNotFoundException {
+    public UserInfoDto findByEmail(String email, AuthProvider provider) throws UsernameNotFoundException {
         return userInfoRepo.findByEmailAndProvider(email, provider)
             .map(userInfoMapper::fromDB)
-            .orElseThrow(() -> new UsernameNotFoundException(email)
-        );
+            .orElseThrow(() -> new UsernameNotFoundException(email));
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoDto findById(String id) {
+        return userInfoRepo.findById(Long.valueOf(id))
+            .map(userInfoMapper::fromDB)
+            .orElseThrow(UserNotFoundException::new);
     }
 
     @Transactional(readOnly = true)

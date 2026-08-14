@@ -31,12 +31,12 @@ public class UserPrincipal implements UserDetails, OidcUser {
 
     @Override
     public String getUsername() {
-        return email;
+        return id.toString();
     }
 
     @Override
     public String getName() {
-        return email;
+        return id.toString();
     }
 
     @Override

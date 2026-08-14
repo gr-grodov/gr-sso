@@ -22,13 +22,14 @@ public class GlobalExceptionAdvice {
                 err.getField(),
                 err.getDefaultMessage()
             )).toList();
-
+        ex.printStackTrace();
         return ErrorResponse.of("validation_error", errors);
     }
 
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(Exception ex) {
+        ex.printStackTrace();
         return ErrorResponse.of("unknown", ex.getMessage());
     }
 }

@@ -25,7 +25,7 @@ public class ApiAuthController {
 
     @GetMapping("/user-info")
     public UserInfoDto getUserInfo(@AuthenticationPrincipal UserPrincipal principal) {
-        return userInfoService.findByUserInfo(principal.getName(), principal.getProvider());
+        return userInfoService.findById(principal.getName());
     }
 
     @PostMapping("/login")

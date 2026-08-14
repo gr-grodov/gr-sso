@@ -25,6 +25,6 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         HttpServletResponse response,
         @NonNull Authentication authentication
     ) throws IOException {
-        response.sendRedirect(properties.loginUrl());
+        response.sendRedirect(properties.url());
     }
 }
