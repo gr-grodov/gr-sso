@@ -1,7 +1,7 @@
 package gr.grodov.grsso.domain.mapper;
 
 import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClient;
 import org.springframework.stereotype.Component;
 
 @Component

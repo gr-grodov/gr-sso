@@ -1,7 +1,7 @@
 package gr.grodov.grsso.domain.repo;
 
-import gr.grodov.grsso.domain.entities.oauth.OAuthClient;
-import gr.grodov.grsso.domain.entities.oauth.OAuthClientStatus;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClient;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

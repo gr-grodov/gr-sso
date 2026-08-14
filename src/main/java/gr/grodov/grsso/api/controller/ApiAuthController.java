@@ -5,19 +5,15 @@ import gr.grodov.grsso.api.dto.request.RegistrationRequest;
 import gr.grodov.grsso.api.dto.response.SuccessResponse;
 import gr.grodov.grsso.domain.dto.UserInfoDto;
 import gr.grodov.grsso.domain.entities.user.AuthProvider;
-import gr.grodov.grsso.security.service.AuthenticationService;
-import gr.grodov.grsso.security.service.UserPrincipal;
-import gr.grodov.grsso.service.OAuth2FlowService;
+import gr.grodov.grsso.security.service.auth.AuthenticationService;
+import gr.grodov.grsso.security.principal.UserPrincipal;
 import gr.grodov.grsso.service.UserInfoService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor

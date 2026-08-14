@@ -17,7 +17,6 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handle(MethodArgumentNotValidException ex) {
-        System.out.println(ex);
         List<ErrorFieldDto> errors = ex.getFieldErrors().stream()
             .map(err -> new ErrorFieldDto(
                 err.getField(),

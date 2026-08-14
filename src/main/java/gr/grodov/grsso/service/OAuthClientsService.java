@@ -5,10 +5,10 @@ import gr.grodov.grsso.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
 import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
-import gr.grodov.grsso.domain.entities.oauth.*;
+import gr.grodov.grsso.domain.entities.oauth_client.*;
 import gr.grodov.grsso.domain.mapper.Mapper;
 import gr.grodov.grsso.domain.repo.OAuthClientRepo;
-import gr.grodov.grsso.service.exceptions.OAuthClientNameExistsException;
+import gr.grodov.grsso.service.exceptions.OAuthClientInvalidException;
 import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
 import gr.grodov.grsso.service.utils.IDGeneratorUtils;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +29,7 @@ public class OAuthClientsService {
     private final OAuthClientRepo oAuthClientRepo;
     private final Mapper<OAuthClient, OAuthClientDto> oAuthClientMapper;
     private final Mapper<OAuthClient, OAuthClientShortDto> oAuthClientShortMapper;
+    private final OAuthPropertiesService oauthPropertiesService;
 
     @Transactional(readOnly = true)
     public List<OAuthClientShortDto> list() {
@@ -38,8 +39,11 @@ public class OAuthClientsService {
     @Transactional
     public OAuthClientSecretInfoResponse save(OAuthClientRequest clientInfo) {
         if (oAuthClientRepo.existsByClientName(clientInfo.getClientName())) {
-            throw new OAuthClientNameExistsException();
+            throw new OAuthClientInvalidException("oauth_client.clientName", "exists");
         }
+
+        Set<OAuthAuthorizationGrantType> grantTypes = oauthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
+        Set<OAuthClientAuthenticationMethod> methods = oauthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
 
         String clientID = IDGeneratorUtils.randomID(clientInfo.getClientName());
         String clientSecret = UUID.randomUUID().toString();
@@ -48,13 +52,13 @@ public class OAuthClientsService {
             .clientName(clientInfo.getClientName())
             .redirectUris(clientInfo.getRedirectUris())
             .scopes(clientInfo.getScopes())
-            .authorizationGrantTypes(clientInfo.getAuthorizationGrantTypes())
+            .authorizationGrantTypes(grantTypes)
+            .clientAuthenticationMethods(methods)
 
             .id(UUID.randomUUID().toString())
             .clientId(clientID)
             .clientIdIssuedAt(Instant.now())
             .clientSecret(passwordEncoder.encode(clientSecret))
-            .clientAuthenticationMethods(Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC))
             .clientSettings(OAuthClientSettings.builder().build())
             .tokenSettings(OAuthTokenSettings.builder().build())
             .status(OAuthClientStatus.ACTIVE)
@@ -68,10 +72,14 @@ public class OAuthClientsService {
     public OAuthClientDto edit(OAuthClientRequest clientInfo) {
         OAuthClient client = oAuthClientRepo.findById(clientInfo.getId()).orElseThrow(OAuthClientNotFoundException::new);
 
+        Set<OAuthAuthorizationGrantType> grantTypes = oauthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
+        Set<OAuthClientAuthenticationMethod> methods = oauthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
+
         client.setClientName(clientInfo.getClientName());
         client.setRedirectUris(clientInfo.getRedirectUris());
         client.setScopes(clientInfo.getScopes());
-        client.setAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
+        client.setAuthorizationGrantTypes(grantTypes);
+        client.setClientAuthenticationMethods(methods);
 
         return oAuthClientMapper.fromDB(oAuthClientRepo.save(client));
     }

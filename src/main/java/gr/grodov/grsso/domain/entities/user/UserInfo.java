@@ -18,6 +18,10 @@ import lombok.experimental.SuperBuilder;
 )
 @Table(name = "users")
 public class UserInfo extends BaseEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+
     @NotNull
     String email;
 

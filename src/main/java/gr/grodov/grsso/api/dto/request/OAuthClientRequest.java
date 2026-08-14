@@ -1,11 +1,16 @@
 package gr.grodov.grsso.api.dto.request;
 
-import gr.grodov.grsso.domain.entities.oauth.OAuthAuthorizationGrantType;
+import gr.grodov.grsso.api.validator.annotation.AllowAuthGrantTypes;
+import gr.grodov.grsso.api.validator.annotation.AllowAuthMethods;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClient;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.security.oauth2.core.AuthorizationGrantType;
-import tools.jackson.databind.annotation.EnumNaming;
 
 import java.util.Set;
 
@@ -13,9 +18,21 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OAuthClientRequest {
+
     private String id;
+
+    @NotBlank
     private String clientName;
+
+    @Min(1)
     private Set<String> redirectUris;
-    private Set<String> scopes;
+
+    @Min(1)
+    private Set<OAuthScope> scopes;
+
+    @AllowAuthGrantTypes
     private Set<OAuthAuthorizationGrantType> authorizationGrantTypes;
+
+    @AllowAuthMethods
+    private Set<OAuthClientAuthenticationMethod> clientAuthenticationMethods;
 }

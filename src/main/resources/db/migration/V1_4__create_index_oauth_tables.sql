@@ -1,0 +1,2 @@
+CREATE INDEX idx_oauth2_registered_client_client_id ON oauth2_registered_client (client_id);
+CREATE INDEX idx_oauth2_authorization_consent_principal ON oauth2_authorization_consent (principal_name);

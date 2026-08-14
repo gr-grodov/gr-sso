@@ -1,15 +1,16 @@
 package gr.grodov.grsso.security.config;
 
 import gr.grodov.grsso.domain.entities.user.Role;
+import gr.grodov.grsso.props.FrontendAppProperties;
 import gr.grodov.grsso.security.entrypoint.ApiAuthenticationEntryPoint;
 import gr.grodov.grsso.security.entrypoint.OAuthAuthenticationEntryPoint;
 import gr.grodov.grsso.security.handler.ApiAccessDeniedHandler;
-import gr.grodov.grsso.security.handler.OAuth2FailureHandler;
-import gr.grodov.grsso.security.handler.OAuth2SuccessHandler;
-import gr.grodov.grsso.security.jackson.UserPrincipalJacksonModule;
-import gr.grodov.grsso.security.service.CustomOAuthUserService;
-import gr.grodov.grsso.security.service.CustomOidcUserService;
-import gr.grodov.grsso.security.service.UserPrincipal;
+import gr.grodov.grsso.security.handler.OAuthFailureHandler;
+import gr.grodov.grsso.security.handler.OAuthSuccessHandler;
+import gr.grodov.grsso.security.principal.jackson.UserPrincipalJacksonModule;
+import gr.grodov.grsso.security.service.auth.CustomOAuthUserService;
+import gr.grodov.grsso.security.service.auth.CustomOidcUserService;
+import gr.grodov.grsso.security.principal.UserPrincipal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,8 +33,11 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.SavedRequestAwareAuthenticationSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.web.util.UriComponentsBuilder;
 import tools.jackson.databind.json.JsonMapper;
 import tools.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
+
+import java.net.URI;
 
 @Configuration
 @EnableWebSecurity
@@ -46,10 +50,10 @@ public class SecurityConfig {
         HttpSecurity http,
         CustomOAuthUserService oAuthUserService,
         CustomOidcUserService oidcUserService,
-        OAuth2FailureHandler oAuth2FailureHandler,
+        OAuthFailureHandler oAuthFailureHandler,
         ApiAccessDeniedHandler apiAccessDeniedHandler,
         ApiAuthenticationEntryPoint authenticationEntryPoint,
-        OAuth2SuccessHandler oAuth2SuccessHandler
+        OAuthSuccessHandler oAuthSuccessHandler
     ) {
         http
             .securityMatcher("/api/**")
@@ -81,8 +85,8 @@ public class SecurityConfig {
                 .accessDeniedHandler(apiAccessDeniedHandler)
             )
             .oauth2Login(oauth -> oauth
-                .failureHandler(oAuth2FailureHandler)
-                .successHandler(oAuth2SuccessHandler)
+                .failureHandler(oAuthFailureHandler)
+                .successHandler(oAuthSuccessHandler)
                 .userInfoEndpoint(config -> config
                     .userService(oAuthUserService)
                     .oidcUserService(oidcUserService)
@@ -95,7 +99,8 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain ssoFilterChain(
         HttpSecurity http,
-        OAuthAuthenticationEntryPoint authAuthenticationEntryPoint
+        OAuthAuthenticationEntryPoint authAuthenticationEntryPoint,
+        FrontendAppProperties properties
     ) {
         http
             .securityMatcher("/oauth2/**", "/connect/**", "/.well-known/**", "/userinfo")
@@ -108,8 +113,7 @@ public class SecurityConfig {
             .oauth2AuthorizationServer((authorizationServer) -> authorizationServer
                 .oidc(Customizer.withDefaults())
                 .authorizationEndpoint(conf -> conf
-                    // TODO вынести в config
-                    .consentPage("http://localhost:5173/oauth2/consent")
+                    .consentPage(properties.oauthConsentUrl())
                 )
             );
 
@@ -122,24 +126,19 @@ public class SecurityConfig {
     }
 
     @Bean
-    SavedRequestAwareAuthenticationSuccessHandler savedRequestAwareAuthenticationSuccessHandler() {
-        return new SavedRequestAwareAuthenticationSuccessHandler();
-    }
-
-    @Bean
     public OAuth2AuthorizationService oAuth2AuthorizationService(
         JdbcOperations jdbc,
         RegisteredClientRepository clientRepository
     ) {
         ClassLoader classLoader = getClass().getClassLoader();
         BasicPolymorphicTypeValidator.Builder validator = BasicPolymorphicTypeValidator.builder()
-                .allowIfSubType(UserPrincipal.class)
-                .allowIfSubType(Role.class);
+            .allowIfSubType(UserPrincipal.class)
+            .allowIfSubType(Role.class);
 
         JsonMapper mapper = JsonMapper.builder()
-                .addModules(SecurityJacksonModules.getModules(classLoader, validator))
-                .addModule(new UserPrincipalJacksonModule())
-                .build();
+            .addModules(SecurityJacksonModules.getModules(classLoader, validator))
+            .addModule(new UserPrincipalJacksonModule())
+            .build();
 
 
         JdbcOAuth2AuthorizationService service = new JdbcOAuth2AuthorizationService(jdbc, clientRepository);

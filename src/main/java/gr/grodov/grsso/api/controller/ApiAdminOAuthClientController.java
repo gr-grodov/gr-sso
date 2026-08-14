@@ -6,13 +6,18 @@ import gr.grodov.grsso.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.api.dto.response.SuccessResponse;
 import gr.grodov.grsso.domain.dto.OAuthClientDto;
 import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
+import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
 import gr.grodov.grsso.service.OAuthClientsService;
+import gr.grodov.grsso.service.OAuthPropertiesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ import java.util.List;
 public class ApiAdminOAuthClientController {
 
     private final OAuthClientsService oAuthClientsService;
+    private final OAuthPropertiesService oAuthPropertiesService;
 
     @PostMapping
     public OAuthClientSecretInfoResponse create(@RequestBody OAuthClientRequest oAuthClient) {
@@ -58,5 +64,20 @@ public class ApiAdminOAuthClientController {
     @PatchMapping("/status")
     public OAuthClientShortDto changeStatus(@RequestBody OAuthClientChangeStatusRequest statusInfo) {
         return oAuthClientsService.changeStatus(statusInfo);
+    }
+
+    @GetMapping("/scopes")
+    public OAuthScope[] scopes() {
+        return OAuthScope.values();
+    }
+
+    @GetMapping("/auth-grant-types")
+    public List<OAuthAuthorizationGrantType> grantType() {
+        return oAuthPropertiesService.authorizationGrantTypes().stream().toList();
+    }
+
+    @GetMapping("/auth-methods")
+    public List<OAuthClientAuthenticationMethod> authenticationMethods() {
+        return oAuthPropertiesService.authenticationMethods().stream().toList();
     }
 }

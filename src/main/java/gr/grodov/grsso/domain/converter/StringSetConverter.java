@@ -9,8 +9,6 @@ import java.util.Set;
 @Converter
 public class StringSetConverter implements AttributeConverter<Set<String>, String> {
 
-    private static final String DELIMITER = ",";
-
     @Override
     public String convertToDatabaseColumn(Set<String> attribute) {
         return StringUtils.collectionToCommaDelimitedString(attribute);

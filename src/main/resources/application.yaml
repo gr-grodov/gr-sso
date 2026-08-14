@@ -74,4 +74,25 @@ server:
 
 
 grsso:
-  front-url: http://localhost:5173
+  frontend:
+    url: http://localhost:5173
+    endpoints:
+      provider-error: /provider-error
+      login: /login
+      oauth-consent: /oauth2/consent
+
+  oauth:
+    authentication-grant-types:
+      - AUTHORIZATION_CODE
+      - REFRESH_TOKEN
+      - CLIENT_CREDENTIALS
+      - JWT_BEARER
+      - DEVICE_CODE
+      - TOKEN_EXCHANGE
+
+    authentication-methods:
+      - CLIENT_SECRET_BASIC
+      - CLIENT_SECRET_POST
+      - CLIENT_SECRET_JWT
+      - PRIVATE_KEY_JWT
+      - NONE
