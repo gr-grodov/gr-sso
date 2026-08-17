@@ -11,5 +11,5 @@ import java.util.Optional;
 public interface UserInfoRepo extends JpaRepository<UserInfo, Long> {
     Optional<UserInfo> findByEmailAndProvider(String email, AuthProvider provider);
     Optional<UserInfo> findByEmail(String email);
-    Boolean existsByEmail(String email);
+    Boolean existsByEmailAndProvider(String email, AuthProvider provider);
 }

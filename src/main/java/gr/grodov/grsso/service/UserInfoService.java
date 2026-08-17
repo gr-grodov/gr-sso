@@ -44,14 +44,9 @@ public class UserInfoService {
             .orElseThrow(UserNotFoundException::new);
     }
 
-    @Transactional(readOnly = true)
-    public boolean existUser(String email) throws UsernameNotFoundException {
-        return userInfoRepo.existsByEmail(email);
-    }
-
     @Transactional
     public UserInfoDto createNewUser(String email, String password, AuthProvider provider) throws EmailAlreadyExistsException {
-        if (userInfoRepo.existsByEmail(email)) {
+        if (userInfoRepo.existsByEmailAndProvider(email, provider)) {
             throw new EmailAlreadyExistsException();
         }
 

@@ -8,6 +8,8 @@ group = 'gr.grodov'
 version = '0.0.1-SNAPSHOT'
 description = 'gr-sso'
 
+ext['testcontainers.version'] = '2.0.5'
+
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(26)
@@ -39,6 +41,7 @@ dependencies {
     runtimeOnly 'org.postgresql:postgresql'
     runtimeOnly 'org.flywaydb:flyway-database-postgresql'
     annotationProcessor 'org.projectlombok:lombok'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-data-jpa-test'
     testImplementation 'org.springframework.boot:spring-boot-starter-flyway-test'

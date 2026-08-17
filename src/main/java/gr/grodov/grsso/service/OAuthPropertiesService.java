@@ -31,11 +31,21 @@ public class OAuthPropertiesService {
     }
 
     public boolean validAuthenticationMethods(@NotNull Set<OAuthClientAuthenticationMethod> methods) {
-        return authenticationMethods().stream().anyMatch(methods::contains);
+        for (OAuthClientAuthenticationMethod method: methods) {
+            if (!authenticationMethods().contains(method)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public boolean validAuthorizationGrantTypes(@NotNull Set<OAuthAuthorizationGrantType> types) {
-        return authorizationGrantTypes().stream().anyMatch(types::contains);
+        for (OAuthAuthorizationGrantType type: types) {
+            if (!authorizationGrantTypes().contains(type)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public Set<OAuthClientAuthenticationMethod> filterAuthenticationMethods(@NotNull Set<OAuthClientAuthenticationMethod> methods) {
