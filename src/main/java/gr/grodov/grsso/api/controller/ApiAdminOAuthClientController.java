@@ -11,6 +11,7 @@ import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMet
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
 import gr.grodov.grsso.service.OAuthClientsService;
 import gr.grodov.grsso.service.OAuthPropertiesService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
@@ -28,12 +29,12 @@ public class ApiAdminOAuthClientController {
     private final OAuthPropertiesService oAuthPropertiesService;
 
     @PostMapping
-    public OAuthClientSecretInfoResponse create(@RequestBody OAuthClientRequest oAuthClient) {
+    public OAuthClientSecretInfoResponse create(@Valid @RequestBody OAuthClientRequest oAuthClient) {
         return oAuthClientsService.save(oAuthClient);
     }
 
     @PatchMapping
-    public OAuthClientDto patch(@RequestBody OAuthClientRequest oAuthClient) {
+    public OAuthClientDto patch(@Valid @RequestBody OAuthClientRequest oAuthClient) {
         return oAuthClientsService.edit(oAuthClient);
     }
 
@@ -62,7 +63,7 @@ public class ApiAdminOAuthClientController {
     }
 
     @PatchMapping("/status")
-    public OAuthClientShortDto changeStatus(@RequestBody OAuthClientChangeStatusRequest statusInfo) {
+    public OAuthClientShortDto changeStatus(@Valid @RequestBody OAuthClientChangeStatusRequest statusInfo) {
         return oAuthClientsService.changeStatus(statusInfo);
     }
 

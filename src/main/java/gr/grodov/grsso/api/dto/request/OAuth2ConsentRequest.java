@@ -2,6 +2,7 @@ package gr.grodov.grsso.api.dto.request;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,10 +13,12 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OAuth2ConsentRequest {
-    @NotBlank
+    @NotBlank(message = "empty")
     private String clientId;
-    @NotBlank
+
+    @NotBlank(message = "empty")
     private String state;
-    @Min(1)
+
+    @Size(min = 1, message = "min")
     private Set<String> scopes;
 }

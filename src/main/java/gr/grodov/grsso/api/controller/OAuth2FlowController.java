@@ -6,6 +6,7 @@ import gr.grodov.grsso.api.dto.response.SuccessResponse;
 import gr.grodov.grsso.service.OAuth2ConsentService;
 import gr.grodov.grsso.service.OAuth2FlowService;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -25,7 +26,7 @@ public class OAuth2FlowController {
 
     @PostMapping("/consent")
     public SuccessResponse<Void> consent(
-        @RequestBody OAuth2ConsentRequest consentRequest,
+        @Valid @RequestBody OAuth2ConsentRequest consentRequest,
         HttpServletRequest httpRequest
     ) {
         String redirectUri = oAuth2ConsentService.requestAuthorizationRedirect(consentRequest, httpRequest);

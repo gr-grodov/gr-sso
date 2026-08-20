@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class OAuthClientChangeStatusRequest {
 
-    @NotBlank
+    @NotBlank(message = "empty")
     private String id;
 
-    @NotNull
+    @NotNull(message = "empty")
     private OAuthClientStatus status;
 }

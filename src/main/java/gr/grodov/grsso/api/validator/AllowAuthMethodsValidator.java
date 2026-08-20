@@ -1,6 +1,7 @@
 package gr.grodov.grsso.api.validator;
 
 import gr.grodov.grsso.api.validator.annotation.AllowAuthGrantTypes;
+import gr.grodov.grsso.api.validator.annotation.AllowAuthMethods;
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.service.OAuthPropertiesService;
@@ -13,7 +14,7 @@ import java.util.Set;
 
 @Component
 @RequiredArgsConstructor
-public class AllowAuthMethodsValidator implements ConstraintValidator<AllowAuthGrantTypes, Set<OAuthClientAuthenticationMethod>> {
+public class AllowAuthMethodsValidator implements ConstraintValidator<AllowAuthMethods, Set<OAuthClientAuthenticationMethod>> {
     private final OAuthPropertiesService oAuthPropertiesService;
 
     @Override

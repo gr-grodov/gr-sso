@@ -8,6 +8,7 @@ import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMet
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,10 +25,10 @@ public class OAuthClientRequest {
     @NotBlank
     private String clientName;
 
-    @Min(1)
+    @Size(min = 1, message = "min")
     private Set<String> redirectUris;
 
-    @Min(1)
+    @Size(min = 1, message = "min")
     private Set<OAuthScope> scopes;
 
     @AllowAuthGrantTypes

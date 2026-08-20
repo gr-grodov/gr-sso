@@ -8,6 +8,7 @@ import gr.grodov.grsso.domain.entities.user.AuthProvider;
 import gr.grodov.grsso.service.AuthenticationService;
 import gr.grodov.grsso.security.principal.UserPrincipal;
 import gr.grodov.grsso.service.UserInfoService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -30,7 +31,7 @@ public class ApiAuthController {
 
     @PostMapping("/login")
     public SuccessResponse<Void> login(
-        @RequestBody LoginRequest request,
+        @Valid @RequestBody LoginRequest request,
         HttpServletRequest httpRequest,
         HttpServletResponse httpResponse
     ) {
