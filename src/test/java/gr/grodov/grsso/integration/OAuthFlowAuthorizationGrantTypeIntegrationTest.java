@@ -9,7 +9,6 @@ import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
 import gr.grodov.grsso.domain.entities.user.AuthProvider;
-import gr.grodov.grsso.integration.flow_components.ImitationCookie;
 import gr.grodov.grsso.integration.flow_components.ImitationFrontendApplication;
 import gr.grodov.grsso.integration.flow_components.ImitationOAuthClientApplication;
 import gr.grodov.grsso.integration.flow_components.dto.request.OAuthClientAuthorizeRequest;
@@ -32,19 +31,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.*;
-import org.springframework.security.web.csrf.DefaultCsrfToken;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
 
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
