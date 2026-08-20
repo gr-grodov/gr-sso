@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '4.1.0'
     id 'io.spring.dependency-management' version '1.1.7'
+    id("jacoco")
 }
 
 group = 'gr.grodov'
@@ -10,9 +11,13 @@ description = 'gr-sso'
 
 ext['testcontainers.version'] = '1.21.4'
 
+jacoco {
+    toolVersion = "0.8.15"
+}
+
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(26)
+        languageVersion = JavaLanguageVersion.of(25)
     }
 }
 
