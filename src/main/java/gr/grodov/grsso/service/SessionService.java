@@ -29,18 +29,22 @@ public class SessionService {
     @Nullable
     public <T> T getAttribute(String name, Class<T> type) {
         HttpSession session = getSessionIfExists();
-
         if (session == null) {
             return null;
         }
 
         Object value = session.getAttribute(name);
-
         if (value == null) {
             return null;
         }
 
-        return type.cast(value);
+        T result;
+        try {
+            result = type.cast(value);
+        } catch (ClassCastException _) {
+            return null;
+        }
+        return result;
     }
 
     public void removeAttribute(String name) {
@@ -67,9 +71,5 @@ public class SessionService {
 
     public String getId() {
         return getSession().getId();
-    }
-
-    public static class Attributes {
-        public static final String OAUTH_FLOW = "oauth_flow";
     }
 }

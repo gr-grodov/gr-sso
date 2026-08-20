@@ -16,8 +16,8 @@ public class OAuthTokenSettings {
     private long accessTokenTimeToLive = 300;
 
     @Builder.Default
-    private long refreshTokenTimeToLive = 2592000;
+    private long refreshTokenTimeToLive = 2_592_000L;
 
     @Builder.Default
-    private boolean reuseRefreshTokens = true;
+    private boolean reuseRefreshTokens = false;
 }

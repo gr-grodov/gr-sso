@@ -33,7 +33,7 @@ public class CustomOidcUserService extends OidcUserService {
 
         UserInfoDto userInfo;
         try {
-            userInfo = userInfoService.findByEmail(oidcUser.getEmail(), provider);
+            userInfo = userInfoService.findByEmailAndProvider(oidcUser.getEmail(), provider);
         } catch (UsernameNotFoundException e) {
             userInfo = userInfoService.createNewUser(oidcUser.getEmail(), null, provider);
         }

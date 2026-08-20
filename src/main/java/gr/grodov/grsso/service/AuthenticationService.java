@@ -1,4 +1,4 @@
-package gr.grodov.grsso.security.service.auth;
+package gr.grodov.grsso.service;
 
 import gr.grodov.grsso.api.dto.request.LoginRequest;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,7 +18,7 @@ import org.springframework.stereotype.Service;
 public class AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
-    private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
+    private final SecurityContextRepository securityContextRepository;
 
     public void authenticate(LoginRequest loginRequest, HttpServletRequest request, HttpServletResponse response) {
         Authentication authRequest = new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword());

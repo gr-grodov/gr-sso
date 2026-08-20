@@ -5,12 +5,14 @@ import gr.grodov.grsso.service.exceptions.OAuth2ConsentException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.core.endpoint.OAuth2ParameterNames;
 import org.springframework.security.oauth2.server.authorization.settings.AuthorizationServerSettings;
+import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -26,6 +28,7 @@ import java.net.URI;
 @RequiredArgsConstructor
 public class OAuth2ConsentService {
 
+    @Qualifier("captureRedirectRestTemplate")
     private final RestTemplate captureRedirectRestTemplate;
     private final AuthorizationServerSettings authorizationServerSettings;
 

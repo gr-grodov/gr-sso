@@ -18,7 +18,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(@NonNull String username) {
-        UserInfoDto user = userInfoService.findByEmail(username, AuthProvider.LOCAL);
+        UserInfoDto user = userInfoService.findByEmailAndProvider(username, AuthProvider.LOCAL);
         return UserPrincipal.local(user);
     }
 }

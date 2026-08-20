@@ -1,6 +1,7 @@
 package gr.grodov.grsso.service;
 
 import lombok.RequiredArgsConstructor;
+import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -15,7 +16,7 @@ public class OAuth2FlowService {
         sessionService.setAttribute(SESSION_ATTR_REDIRECT_URI, request);
     }
 
-    public String getSavedRedirectRequest() {
+    public @Nullable String getSavedRedirectRequest() {
         String redirectRequest = sessionService.getAttribute(SESSION_ATTR_REDIRECT_URI, String.class);
         sessionService.removeAttribute(SESSION_ATTR_REDIRECT_URI);
         return redirectRequest;

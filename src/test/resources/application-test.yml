@@ -1,0 +1,9 @@
+spring:
+  flyway:
+    enabled: true
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+server:
+  port: 9090

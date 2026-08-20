@@ -9,5 +9,4 @@ class GrSsoApplicationTests {
     @Test
     void contextLoads() {
     }
-
 }

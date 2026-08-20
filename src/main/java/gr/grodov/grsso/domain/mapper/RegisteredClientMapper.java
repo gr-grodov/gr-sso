@@ -88,7 +88,7 @@ public class RegisteredClientMapper implements Mapper<OAuthClient, RegisteredCli
             .requireAuthorizationConsent(settings.isRequireAuthorizationConsent())
             .requireProofKey(settings.isRequireProofKey())
             .jwkSetUrl(settings.getJwkSetUrl())
-            .tokenEndpointAuthenticationSigningAlgorithm(algorithm != null ? algorithm.getName() : "null")
+            .tokenEndpointAuthenticationSigningAlgorithm(algorithm != null ? algorithm.getName() : null)
         .build();
     }
 
@@ -118,7 +118,13 @@ public class RegisteredClientMapper implements Mapper<OAuthClient, RegisteredCli
 
     private Set<OAuthClientAuthenticationMethod> toClientAuthenticationMethods(Set<ClientAuthenticationMethod> methods) {
         return methods.stream()
-            .map(method -> OAuthClientAuthenticationMethod.getByValue(method.getValue()))
+            .map(method -> {
+                OAuthClientAuthenticationMethod oauthMethod = OAuthClientAuthenticationMethod.getByValue(method.getValue());
+                if (oauthMethod == null) {
+                    throw new IllegalArgumentException("Unsupported authorization methods: " + method.getValue());
+                }
+                return oauthMethod;
+            })
             .collect(Collectors.toSet());
     }
 
@@ -130,7 +136,13 @@ public class RegisteredClientMapper implements Mapper<OAuthClient, RegisteredCli
 
     private Set<OAuthAuthorizationGrantType> toAuthorizationGrantTypes(Set<AuthorizationGrantType> types) {
         return types.stream()
-            .map(type -> OAuthAuthorizationGrantType.getByValue(type.getValue()))
+            .map(type -> {
+                OAuthAuthorizationGrantType oauthType = OAuthAuthorizationGrantType.getByValue(type.getValue());
+                if (oauthType == null) {
+                    throw new IllegalArgumentException("Unsupported authorization grant type: " + type.getValue());
+                }
+                return oauthType;
+            })
             .collect(Collectors.toSet());
     }
 

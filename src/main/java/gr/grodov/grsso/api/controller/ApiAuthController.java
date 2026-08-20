@@ -5,7 +5,7 @@ import gr.grodov.grsso.api.dto.request.RegistrationRequest;
 import gr.grodov.grsso.api.dto.response.SuccessResponse;
 import gr.grodov.grsso.domain.dto.UserInfoDto;
 import gr.grodov.grsso.domain.entities.user.AuthProvider;
-import gr.grodov.grsso.security.service.auth.AuthenticationService;
+import gr.grodov.grsso.service.AuthenticationService;
 import gr.grodov.grsso.security.principal.UserPrincipal;
 import gr.grodov.grsso.service.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;

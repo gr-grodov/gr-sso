@@ -11,7 +11,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 public class OAuthPropertiesServiceTest {
@@ -32,28 +32,28 @@ public class OAuthPropertiesServiceTest {
     class AuthenticationMethods {
 
         @Test
-        void validAuthenticationMethods_IncludeIncorrectMethods() {
+        void validAuthenticationMethods_withIncorrectMethods_returnFalse() {
             var methods = Set.of(
                 OAuthClientAuthenticationMethod.CLIENT_SECRET_JWT,
                 OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC,
                 OAuthClientAuthenticationMethod.NONE
             );
 
-            assertFalse(oAuthPropertiesService.validAuthenticationMethods(methods));
+            assertThat(oAuthPropertiesService.validAuthenticationMethods(methods)).isFalse();
         }
 
 
         @Test
-        void validAuthenticationMethods_IncludeOnlyCorrectMethods() {
+        void validAuthenticationMethods_withIncludeOnlyCorrectMethods_returnTrue() {
             var methods = Set.of(
                 OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC
             );
 
-            assertTrue(oAuthPropertiesService.validAuthenticationMethods(methods));
+            assertThat(oAuthPropertiesService.validAuthenticationMethods(methods)).isTrue();
         }
 
         @Test
-        void filterAuthenticationMethods_WithIncorrectMethods() {
+        void filterAuthenticationMethods_withIncorrectMethods_returnMethods() {
             var expectedMethods = Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC);
             var methods = Set.of(
                 OAuthClientAuthenticationMethod.CLIENT_SECRET_JWT,
@@ -63,32 +63,33 @@ public class OAuthPropertiesServiceTest {
 
             var result = oAuthPropertiesService.filterAuthenticationMethods(methods);
 
-            assertEquals(expectedMethods, result);
+            assertThat(result).isEqualTo(expectedMethods);
         }
     }
 
     @Nested
     class AuthorizationGrantTypes {
         @Test
-        void validAuthorizationGrantTypes_IncludeIncorrectGrantTypes() {
+        void validAuthorizationGrantTypes_withIncludeIncorrectGrantTypes_returnFalse() {
             var types = Set.of(
                 OAuthAuthorizationGrantType.AUTHORIZATION_CODE,
                 OAuthAuthorizationGrantType.DEVICE_CODE
             );
 
-            assertFalse(oAuthPropertiesService.validAuthorizationGrantTypes(types));
+            assertThat(oAuthPropertiesService.validAuthorizationGrantTypes(types)).isFalse();
         }
 
         @Test
-        void validAuthorizationGrantTypes_IncludeOnlyCorrectGrantTypes() {
+        void validAuthorizationGrantTypes_withIncludeOnlyCorrectGrantTypes_returnFalse() {
             var types = Set.of(
                 OAuthAuthorizationGrantType.AUTHORIZATION_CODE
             );
 
-            assertTrue(oAuthPropertiesService.validAuthorizationGrantTypes(types));
+            assertThat(oAuthPropertiesService.validAuthorizationGrantTypes(types)).isTrue();
         }
 
-        void filterAuthorizationGrantTypes_WithIncorrectTypes() {
+        @Test
+        void filterAuthorizationGrantTypes_withIncorrectTypes_returnMethods() {
             var expectedTypes = Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE);
             var types = Set.of(
                 OAuthAuthorizationGrantType.AUTHORIZATION_CODE,
@@ -97,7 +98,7 @@ public class OAuthPropertiesServiceTest {
 
             var result = oAuthPropertiesService.filterAuthorizationGrantTypes(types);
 
-            assertEquals(expectedTypes, result);
+            assertThat(result).isEqualTo(expectedTypes);
         }
     }
 

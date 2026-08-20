@@ -29,7 +29,7 @@ public class OAuthClientsService {
     private final OAuthClientRepo oAuthClientRepo;
     private final Mapper<OAuthClient, OAuthClientDto> oAuthClientMapper;
     private final Mapper<OAuthClient, OAuthClientShortDto> oAuthClientShortMapper;
-    private final OAuthPropertiesService oauthPropertiesService;
+    private final OAuthPropertiesService oAuthPropertiesService;
 
     @Transactional(readOnly = true)
     public List<OAuthClientShortDto> list() {
@@ -39,11 +39,11 @@ public class OAuthClientsService {
     @Transactional
     public OAuthClientSecretInfoResponse save(OAuthClientRequest clientInfo) {
         if (oAuthClientRepo.existsByClientName(clientInfo.getClientName())) {
-            throw new OAuthClientInvalidException("oauth_client.clientName", "exists");
+            throw new OAuthClientInvalidException("clientName", "exists");
         }
 
-        Set<OAuthAuthorizationGrantType> grantTypes = oauthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
-        Set<OAuthClientAuthenticationMethod> methods = oauthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
+        Set<OAuthAuthorizationGrantType> grantTypes = oAuthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
+        Set<OAuthClientAuthenticationMethod> methods = oAuthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
 
         String clientID = IDGeneratorUtils.randomID(clientInfo.getClientName());
         String clientSecret = UUID.randomUUID().toString();
@@ -72,8 +72,8 @@ public class OAuthClientsService {
     public OAuthClientDto edit(OAuthClientRequest clientInfo) {
         OAuthClient client = oAuthClientRepo.findById(clientInfo.getId()).orElseThrow(OAuthClientNotFoundException::new);
 
-        Set<OAuthAuthorizationGrantType> grantTypes = oauthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
-        Set<OAuthClientAuthenticationMethod> methods = oauthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
+        Set<OAuthAuthorizationGrantType> grantTypes = oAuthPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
+        Set<OAuthClientAuthenticationMethod> methods = oAuthPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
 
         client.setClientName(clientInfo.getClientName());
         client.setRedirectUris(clientInfo.getRedirectUris());
