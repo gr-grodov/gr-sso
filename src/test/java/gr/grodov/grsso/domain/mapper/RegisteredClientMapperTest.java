@@ -26,7 +26,7 @@ class RegisteredClientMapperTest {
     private final RegisteredClientMapper mapper = new RegisteredClientMapper();
 
     @Test
-    void fromDB_mapsAllScalarFieldsCorrectly() {
+    void fromDB_withCorrectData_successMapper() {
         OAuthClient client = buildOAuthClient();
 
         RegisteredClient result = mapper.fromDB(client);
@@ -40,33 +40,30 @@ class RegisteredClientMapperTest {
     }
 
     @Test
-    void fromDB_mapsRedirectUrisAndPostLogoutUris() {
+    void fromDB_withRedirectUris_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.setRedirectUris(Set.of("http://localhost:8080/login/oauth2/code/grsso"));
         client.setPostLogoutRedirectUris(Set.of("http://localhost:8080/logout-success"));
 
         RegisteredClient result = mapper.fromDB(client);
 
-        assertThat(result.getRedirectUris())
-            .containsExactly("http://localhost:8080/login/oauth2/code/grsso");
-        assertThat(result.getPostLogoutRedirectUris())
-            .containsExactly("http://localhost:8080/logout-success");
+        assertThat(result.getRedirectUris()).containsExactly("http://localhost:8080/login/oauth2/code/grsso");
+        assertThat(result.getPostLogoutRedirectUris()).containsExactly("http://localhost:8080/logout-success");
     }
 
     @Test
-    void fromDB_mapsScopesFromScopeValue() {
+    void fromDB_withScopes_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.setScopes(Set.of(OAuthScope.OPEN_ID, OAuthScope.PROFILE));
 
         RegisteredClient result = mapper.fromDB(client);
 
-        assertThat(result.getScopes())
-            .containsExactlyInAnyOrder(OAuthScope.OPEN_ID.getScopeValue(), OAuthScope.PROFILE.getScopeValue());
+        assertThat(result.getScopes()).containsExactlyInAnyOrder(OAuthScope.OPEN_ID.getScopeValue(), OAuthScope.PROFILE.getScopeValue());
     }
 
     @ParameterizedTest
     @EnumSource(OAuthAuthorizationGrantType.class)
-    void fromDB_mapsEveryKnownGrantType_toMatchingSpringType(OAuthAuthorizationGrantType dbType) {
+    void fromDB_withGrantTypes_successMapper(OAuthAuthorizationGrantType dbType) {
         OAuthClient client = buildOAuthClient();
         client.setAuthorizationGrantTypes(Set.of(dbType));
 
@@ -79,7 +76,7 @@ class RegisteredClientMapperTest {
 
     @ParameterizedTest
     @EnumSource(OAuthClientAuthenticationMethod.class)
-    void fromDB_mapsEveryKnownAuthenticationMethod_toMatchingSpringType(OAuthClientAuthenticationMethod dbMethod) {
+    void fromDB_withAuthenticationMethods_successMapper(OAuthClientAuthenticationMethod dbMethod) {
         OAuthClient client = buildOAuthClient();
         client.setClientAuthenticationMethods(Set.of(dbMethod));
 
@@ -91,7 +88,7 @@ class RegisteredClientMapperTest {
     }
 
     @Test
-    void fromDB_clientSettings_mapsBooleanFlags() {
+    void fromDB_withClientSettings_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.getClientSettings().setRequireAuthorizationConsent(true);
         client.getClientSettings().setRequireProofKey(true);
@@ -103,7 +100,7 @@ class RegisteredClientMapperTest {
     }
 
     @Test
-    void fromDB_clientSettings_omitsJwkSetUrl_whenNull() {
+    void fromDB_withClientSettingsWithNullableJwkSetUrl_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.getClientSettings().setJwkSetUrl(null);
 
@@ -113,7 +110,7 @@ class RegisteredClientMapperTest {
     }
 
     @Test
-    void fromDB_clientSettings_omitsSigningAlgorithm_whenNull() {
+    void fromDB_withClientSettingsWithNullableSigningAlgorithm_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.getClientSettings().setTokenEndpointAuthenticationSigningAlgorithm(null);
 
@@ -124,7 +121,7 @@ class RegisteredClientMapperTest {
 
 
     @Test
-    void fromDB_tokenSettings_convertsSecondsToDuration() {
+    void fromDB_withTokenSettings_successMapper() {
         OAuthClient client = buildOAuthClient();
         client.getTokenSettings().setAccessTokenTimeToLive(300L);
         client.getTokenSettings().setRefreshTokenTimeToLive(2_592_000L);
@@ -141,7 +138,7 @@ class RegisteredClientMapperTest {
 
 
     @Test
-    void toDB_mapsAllScalarFieldsCorrectly() {
+    void toDB_withCorrectData_successMapper() {
         RegisteredClient client = buildRegisteredClient();
 
         OAuthClient result = mapper.toDB(client);
@@ -155,7 +152,7 @@ class RegisteredClientMapperTest {
 
     @ParameterizedTest
     @EnumSource(OAuthAuthorizationGrantType.class)
-    void toDB_mapsEveryKnownGrantType_backToDbEnum(OAuthAuthorizationGrantType dbType) {
+    void toDB_withGrantTypes_successMapper(OAuthAuthorizationGrantType dbType) {
         RegisteredClient client = buildRegisteredClient(builder -> builder
             .authorizationGrantTypes(types -> {
                 types.clear();
@@ -184,14 +181,14 @@ class RegisteredClientMapperTest {
             .clientSettings(OAuthClientSettings.builder()
                 .requireAuthorizationConsent(false)
                 .requireProofKey(false)
-                .build())
+            .build())
             .tokenSettings(OAuthTokenSettings.builder()
                 .authorizationCodeTimeToLive(300L)
                 .accessTokenTimeToLive(300L)
                 .refreshTokenTimeToLive(2_592_000L)
                 .reuseRefreshTokens(false)
-                .build())
-            .build();
+            .build())
+        .build();
     }
 
     private RegisteredClient buildRegisteredClient() {
@@ -213,7 +210,7 @@ class RegisteredClientMapperTest {
                 .authorizationCodeTimeToLive(Duration.ofMinutes(5))
                 .accessTokenTimeToLive(Duration.ofMinutes(5))
                 .refreshTokenTimeToLive(Duration.ofDays(30))
-                .build());
+            .build());
 
         customizer.accept(builder);
         return builder.build();
