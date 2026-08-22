@@ -22,7 +22,6 @@ import tools.jackson.databind.json.JsonMapper;
 
 import java.util.Map;
 
-@NamedInterface("security")
 @Configuration
 @EnableWebSecurity
 public class OAuth2SecurityConfig {
