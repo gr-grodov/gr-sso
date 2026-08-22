@@ -1,11 +1,12 @@
 package gr.grodov.grsso.api.dto.request;
 
-import gr.grodov.grsso.api.validator.AllowAuthGrantTypesValidator;
-import gr.grodov.grsso.api.validator.AllowAuthMethodsValidator;
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthScope;
-import gr.grodov.grsso.service.OAuthPropertiesService;
+import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthGrantTypesValidator;
+import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthMethodsValidator;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
+import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
+import gr.grodov.grsso.oauth_client.service.OAuthClientPropertiesService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
@@ -33,7 +34,7 @@ class OAuthClientRequestTest {
     private Validator validator;
 
     @MockitoBean
-    private OAuthPropertiesService oAuthPropertiesService;
+    private OAuthClientPropertiesService oAuthClientPropertiesService;
 
     @Configuration
     @Import({AllowAuthGrantTypesValidator.class, AllowAuthMethodsValidator.class})
@@ -46,8 +47,8 @@ class OAuthClientRequestTest {
 
     @Test
     void validate_withCorrectParameres_returnValidRequest() {
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
-        when(oAuthPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
         var request = buildValidRequest();
 
         Set<ConstraintViolation<OAuthClientRequest>> violations = validator.validate(request);
@@ -57,8 +58,8 @@ class OAuthClientRequestTest {
 
     @Test
     void validate_withEmptyClientName_returnInvalidRequest() {
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
-        when(oAuthPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
         var request = buildValidRequest();
         request.setClientName(" ");
 
@@ -72,8 +73,8 @@ class OAuthClientRequestTest {
 
     @Test
     void validate_withEmptyRedirectUris_returnInvalidRequest() {
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
-        when(oAuthPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
         var request = buildValidRequest();
         request.setRedirectUris(Set.of());
 
@@ -88,8 +89,8 @@ class OAuthClientRequestTest {
 
     @Test
     void validate_withIncorrectTypes_returnInvalidRequest() {
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(false);
-        when(oAuthPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(false);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(any())).thenReturn(true);
         var request = buildValidRequest();
 
         Set<ConstraintViolation<OAuthClientRequest>> violations = validator.validate(request);
@@ -115,8 +116,8 @@ class OAuthClientRequestTest {
 
     @Test
     void validate_withIncorrectMethods_returnInvalidRequest() {
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
-        when(oAuthPropertiesService.validAuthenticationMethods(any())).thenReturn(false);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(any())).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(any())).thenReturn(false);
         var request = buildValidRequest();
 
         Set<ConstraintViolation<OAuthClientRequest>> violations = validator.validate(request);

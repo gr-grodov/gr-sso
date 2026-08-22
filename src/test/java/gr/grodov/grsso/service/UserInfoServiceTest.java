@@ -1,16 +1,15 @@
 package gr.grodov.grsso.service;
 
-import gr.grodov.grsso.api.dto.response.ErrorFieldDto;
-import gr.grodov.grsso.domain.dto.UserInfoDto;
-import gr.grodov.grsso.domain.entities.user.AuthProvider;
-import gr.grodov.grsso.domain.entities.user.Role;
-import gr.grodov.grsso.domain.entities.user.UserInfo;
-import gr.grodov.grsso.domain.mapper.Mapper;
-import gr.grodov.grsso.domain.repo.UserInfoRepo;
-import gr.grodov.grsso.service.exceptions.EmailAlreadyExistsException;
-import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
-import gr.grodov.grsso.service.exceptions.UserNotFoundException;
-import org.junit.jupiter.api.Assertions;
+import gr.grodov.grsso.common.api.ErrorFieldDto;
+import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.domain.entity.AuthProvider;
+import gr.grodov.grsso.user.domain.entity.Role;
+import gr.grodov.grsso.user.domain.entity.UserInfo;
+import gr.grodov.grsso.common.mapper.Mapper;
+import gr.grodov.grsso.user.domain.repo.UserInfoRepo;
+import gr.grodov.grsso.user.exception.EmailAlreadyExistsException;
+import gr.grodov.grsso.user.exception.UserNotFoundException;
+import gr.grodov.grsso.user.service.UserInfoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;

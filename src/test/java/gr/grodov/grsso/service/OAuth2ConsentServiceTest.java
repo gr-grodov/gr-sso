@@ -1,7 +1,8 @@
 package gr.grodov.grsso.service;
 
-import gr.grodov.grsso.api.dto.request.OAuth2ConsentRequest;
-import gr.grodov.grsso.service.exceptions.OAuth2ConsentException;
+import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.service.OAuth2ConsentService;
+import gr.grodov.grsso.authorization_sso.exception.OAuth2ConsentException;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

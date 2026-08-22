@@ -1,12 +1,12 @@
 package gr.grodov.grsso.service;
 
-import gr.grodov.grsso.api.dto.request.LoginRequest;
+import gr.grodov.grsso.authentication.api.dto.LoginRequest;
+import gr.grodov.grsso.authentication.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;

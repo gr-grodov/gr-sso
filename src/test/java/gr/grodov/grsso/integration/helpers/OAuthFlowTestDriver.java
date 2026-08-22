@@ -1,8 +1,8 @@
 package gr.grodov.grsso.integration.helpers;
 
-import gr.grodov.grsso.api.dto.request.LoginRequest;
-import gr.grodov.grsso.api.dto.request.OAuth2ConsentRequest;
-import gr.grodov.grsso.api.dto.response.RedirectURIResponse;
+import gr.grodov.grsso.authentication.api.dto.LoginRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.RedirectURIResponse;
 import gr.grodov.grsso.integration.flow_components.ImitationCookie;
 import gr.grodov.grsso.integration.flow_components.ImitationFrontendApplication;
 import gr.grodov.grsso.integration.flow_components.ImitationOAuthClientApplication;

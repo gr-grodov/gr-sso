@@ -1,5 +1,7 @@
 package gr.grodov.grsso.service;
 
+import gr.grodov.grsso.authentication.service.SessionService;
+import gr.grodov.grsso.authorization_sso.service.OAuth2FlowService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

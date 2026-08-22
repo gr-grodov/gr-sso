@@ -1,17 +1,17 @@
 package gr.grodov.grsso.service;
 
-import gr.grodov.grsso.api.dto.request.OAuthClientChangeStatusRequest;
-import gr.grodov.grsso.api.dto.request.OAuthClientRequest;
-import gr.grodov.grsso.api.dto.response.ErrorFieldDto;
-import gr.grodov.grsso.domain.dto.OAuthClientDto;
-import gr.grodov.grsso.domain.dto.OAuthClientShortDto;
-import gr.grodov.grsso.domain.entities.oauth_client.*;
-import gr.grodov.grsso.domain.mapper.Mapper;
-import gr.grodov.grsso.domain.repo.OAuthClientRepo;
-import gr.grodov.grsso.service.exceptions.OAuth2ConsentException;
-import gr.grodov.grsso.service.exceptions.OAuthClientInvalidException;
-import gr.grodov.grsso.service.exceptions.OAuthClientNotFoundException;
-import org.junit.jupiter.api.Assertions;
+import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusRequest;
+import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
+import gr.grodov.grsso.common.api.ErrorFieldDto;
+import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
+import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientShortDto;
+import gr.grodov.grsso.common.mapper.Mapper;
+import gr.grodov.grsso.oauth_client.domain.repo.OAuthClientRepo;
+import gr.grodov.grsso.oauth_client.domain.entity.*;
+import gr.grodov.grsso.oauth_client.service.OAuthClientsService;
+import gr.grodov.grsso.oauth_client.exception.OAuthClientInvalidException;
+import gr.grodov.grsso.oauth_client.exception.OAuthClientNotFoundException;
+import gr.grodov.grsso.oauth_client.service.OAuthClientPropertiesService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,7 +40,7 @@ class OAuthClientsServiceTest {
     @Mock
     private Mapper<OAuthClient, OAuthClientShortDto> clientShortMapper;
     @Mock
-    private OAuthPropertiesService propertiesService;
+    private OAuthClientPropertiesService propertiesService;
     private OAuthClientsService service;
 
     @BeforeEach

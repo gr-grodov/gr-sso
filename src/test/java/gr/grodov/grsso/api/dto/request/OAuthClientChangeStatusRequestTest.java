@@ -1,6 +1,7 @@
 package gr.grodov.grsso.api.dto.request;
 
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientStatus;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientStatus;
+import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

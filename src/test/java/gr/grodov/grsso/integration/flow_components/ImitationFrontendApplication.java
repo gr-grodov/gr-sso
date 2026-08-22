@@ -1,9 +1,9 @@
 package gr.grodov.grsso.integration.flow_components;
 
-import gr.grodov.grsso.api.dto.request.LoginRequest;
-import gr.grodov.grsso.api.dto.request.OAuth2ConsentRequest;
-import gr.grodov.grsso.api.dto.response.RedirectURIResponse;
-import gr.grodov.grsso.api.dto.response.SuccessResponse;
+import gr.grodov.grsso.authentication.api.dto.LoginRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.RedirectURIResponse;
+import gr.grodov.grsso.common.api.SuccessResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.context.annotation.Lazy;

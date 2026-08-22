@@ -1,9 +1,10 @@
 package gr.grodov.grsso.api.advice;
 
-import gr.grodov.grsso.api.controller.ApiAuthController;
-import gr.grodov.grsso.service.AuthenticationService;
-import gr.grodov.grsso.service.UserInfoService;
-import gr.grodov.grsso.service.exceptions.EmailAlreadyExistsException;
+import gr.grodov.grsso.authentication.api.ApiAuthController;
+import gr.grodov.grsso.common.exception.GlobalExceptionAdvice;
+import gr.grodov.grsso.authentication.service.AuthenticationService;
+import gr.grodov.grsso.user.service.UserInfoService;
+import gr.grodov.grsso.user.exception.EmailAlreadyExistsException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;

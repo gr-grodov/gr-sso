@@ -1,5 +1,6 @@
 package gr.grodov.grsso.api.dto.request;
 
+import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;

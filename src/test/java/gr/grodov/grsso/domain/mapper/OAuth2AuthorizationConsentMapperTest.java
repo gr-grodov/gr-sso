@@ -1,11 +1,11 @@
 package gr.grodov.grsso.domain.mapper;
 
-import gr.grodov.grsso.domain.entities.oauth_consent.OAuthConsent;
-import gr.grodov.grsso.domain.entities.oauth_consent.OAuthConsentId;
+import gr.grodov.grsso.authorization_sso.domain.entity.OAuthConsent;
+import gr.grodov.grsso.authorization_sso.domain.entity.OAuthConsentId;
+import gr.grodov.grsso.authorization_sso.domain.mapper.OAuth2AuthorizationConsentMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.junit.runners.Parameterized;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationConsent;

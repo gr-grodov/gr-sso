@@ -1,7 +1,8 @@
 package gr.grodov.grsso.api.validator;
 
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.service.OAuthPropertiesService;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
+import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthGrantTypesValidator;
+import gr.grodov.grsso.oauth_client.service.OAuthClientPropertiesService;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +21,7 @@ import static org.mockito.Mockito.verify;
 class AllowAuthGrantTypesValidatorTest {
 
     @Mock
-    private OAuthPropertiesService oAuthPropertiesService;
+    private OAuthClientPropertiesService oAuthClientPropertiesService;
     @InjectMocks
     private AllowAuthGrantTypesValidator validator;
 
@@ -33,28 +34,28 @@ class AllowAuthGrantTypesValidatorTest {
 
         assertThat(result).isFalse();
 
-        verifyNoInteractions(oAuthPropertiesService);
+        verifyNoInteractions(oAuthClientPropertiesService);
     }
 
     @Test
     void validator_withCorrectTypes_returnTrue() {
         var grantTypes = Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE);
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(grantTypes)).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(grantTypes)).thenReturn(true);
 
         var result = validator.isValid(grantTypes, context);
 
         assertThat(result).isTrue();
-        verify(oAuthPropertiesService).validAuthorizationGrantTypes(grantTypes);
+        verify(oAuthClientPropertiesService).validAuthorizationGrantTypes(grantTypes);
     }
 
     @Test
     void validator_withIncorrectTypes_returnFalse() {
         var grantTypes = Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE);
-        when(oAuthPropertiesService.validAuthorizationGrantTypes(grantTypes)).thenReturn(false);
+        when(oAuthClientPropertiesService.validAuthorizationGrantTypes(grantTypes)).thenReturn(false);
 
         var result = validator.isValid(grantTypes, context);
 
         assertThat(result).isFalse();
-        verify(oAuthPropertiesService).validAuthorizationGrantTypes(grantTypes);
+        verify(oAuthClientPropertiesService).validAuthorizationGrantTypes(grantTypes);
     }
 }

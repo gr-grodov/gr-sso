@@ -1,5 +1,6 @@
 package gr.grodov.grsso.service;
 
+import gr.grodov.grsso.authentication.service.SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.junit.jupiter.api.AfterEach;

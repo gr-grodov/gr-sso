@@ -1,12 +1,10 @@
 package gr.grodov.grsso.domain.mapper;
 
-import gr.grodov.grsso.domain.entities.oauth_client.*;
+import gr.grodov.grsso.oauth_client.domain.entity.*;
+import gr.grodov.grsso.oauth_client.domain.mapper.RegisteredClientMapper;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClient;

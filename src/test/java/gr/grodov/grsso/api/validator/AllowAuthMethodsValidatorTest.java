@@ -1,8 +1,8 @@
 package gr.grodov.grsso.api.validator;
 
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.domain.entities.oauth_client.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.service.OAuthPropertiesService;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
+import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthMethodsValidator;
+import gr.grodov.grsso.oauth_client.service.OAuthClientPropertiesService;
 import jakarta.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,7 +20,7 @@ import static org.mockito.Mockito.*;
 class AllowAuthMethodsValidatorTest {
 
     @Mock
-    private OAuthPropertiesService oAuthPropertiesService;
+    private OAuthClientPropertiesService oAuthClientPropertiesService;
     @InjectMocks
     private AllowAuthMethodsValidator validator;
 
@@ -33,28 +33,28 @@ class AllowAuthMethodsValidatorTest {
 
         assertThat(result).isFalse();
 
-        verifyNoInteractions(oAuthPropertiesService);
+        verifyNoInteractions(oAuthClientPropertiesService);
     }
 
     @Test
     void validator_withCorrectTypes_returnTrue() {
         var methods = Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-        when(oAuthPropertiesService.validAuthenticationMethods(methods)).thenReturn(true);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(methods)).thenReturn(true);
 
         var result = validator.isValid(methods, context);
 
         assertThat(result).isTrue();
-        verify(oAuthPropertiesService).validAuthenticationMethods(methods);
+        verify(oAuthClientPropertiesService).validAuthenticationMethods(methods);
     }
 
     @Test
     void validator_withIncorrectTypes_returnFalse() {
         var methods = Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC);
-        when(oAuthPropertiesService.validAuthenticationMethods(methods)).thenReturn(false);
+        when(oAuthClientPropertiesService.validAuthenticationMethods(methods)).thenReturn(false);
 
         var result = validator.isValid(methods, context);
 
         assertThat(result).isFalse();
-        verify(oAuthPropertiesService).validAuthenticationMethods(methods);
+        verify(oAuthClientPropertiesService).validAuthenticationMethods(methods);
     }
 }
