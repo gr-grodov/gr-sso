@@ -52,6 +52,7 @@ public class UserInfoService {
             throw new EmailAlreadyExistsException();
         }
 
+        boolean needVerify = provider == AuthProvider.LOCAL;
         return userInfoMapper.fromDB(
             userInfoRepo.save(userInfoMapper.toDB(
                 UserInfoDto.builder()
@@ -59,9 +60,17 @@ public class UserInfoService {
                     .password(passwordEncoder.encode(password))
                     .role(Role.USER)
                     .provider(provider)
-                    .enabled(true)
+                    .enabled(!needVerify)
                 .build())
             )
         );
+    }
+
+    @Transactional
+    public UserInfoDto enabledUserInfo(Long userId, boolean enabled) throws UsernameNotFoundException {
+        UserInfo userInfo = userInfoRepo.findById(userId).orElseThrow(UserNotFoundException::new);
+        userInfo.setEnabled(enabled);
+
+        return userInfoMapper.fromDB(userInfoRepo.save(userInfo));
     }
 }

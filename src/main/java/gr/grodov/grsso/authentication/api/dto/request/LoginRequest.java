@@ -1,4 +1,4 @@
-package gr.grodov.grsso.authentication.api.dto;
+package gr.grodov.grsso.authentication.api.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -14,7 +14,7 @@ import org.hibernate.validator.constraints.Length;
 public class LoginRequest {
     @NotBlank(message = "empty")
     @Email(message = "invalid")
-    String email;
+    private String email;
 
     @NotBlank(message = "empty")
     @Length(min = 8, message = "min")
@@ -22,5 +22,5 @@ public class LoginRequest {
         regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z\\d]).{8,}$",
         message = "invalid"
     )
-    String password;
+    private String password;
 }

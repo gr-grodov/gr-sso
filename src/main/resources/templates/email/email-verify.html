@@ -1,0 +1,117 @@
+<!doctype html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      font-family: &quot;DM Sans&quot;, Arial, sans-serif;
+    "
+  >
+    <table
+      role="presentation"
+      width="100%"
+      cellpadding="0"
+      cellspacing="0"
+      border="0"
+    >
+      <tr>
+        <td align="center" style="padding: 40px 20px">
+          <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="max-width: 480px"
+          >
+            <!-- Заголовок -->
+            <tr>
+              <td align="center" style="padding-bottom: 24px">
+                <h2 th:text="#{email.verify.title}" style="margin: 0 0 8px 0">
+                  Подтвердите вашу электронную почту
+                </h2>
+                <p
+                  th:text="#{email.verify.description}"
+                  style="margin: 0; color: #555"
+                >
+                  Для завершения регистрации в GrSSO введите код подтверждения
+                </p>
+              </td>
+            </tr>
+
+            <!-- Карточка с кодом -->
+            <tr>
+              <td align="center">
+                <table
+                  role="presentation"
+                  cellpadding="0"
+                  cellspacing="0"
+                  border="0"
+                  style="
+                    border: 2px solid #000;
+                    border-radius: 8px;
+                    width: 300px;
+                  "
+                >
+                  <tr>
+                    <td align="center" style="padding: 8px 48px">
+                      <p th:text="#{email.verify.code_title}" style="margin: 0">
+                        КОД ПОДТВЕРЖДЕНИЯ
+                      </p>
+                      <p
+                        th:text="${verifyCode}"
+                        style="
+                          letter-spacing: 8px;
+                          font-size: 2rem;
+                          margin: 24px 0;
+                        "
+                      >
+                        847293
+                      </p>
+                      <p
+                        th:text="#{email.verify.code_description(${expiresInMinutes})}"
+                        style="font-size: smaller; margin: 0"
+                      >
+                        Код действителен 15 минут
+                      </p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Дисклеймер -->
+            <tr>
+              <td align="center" style="padding: 24px 20px; font-size: smaller">
+                <p
+                  th:text="#{email.verify.ignore_hint}"
+                  style="margin: 0; color: #777"
+                >
+                  Если вы не запрашивали подтверждающий код, то игнорируйте
+                  данное письмо
+                </p>
+              </td>
+            </tr>
+
+            <!-- Футер -->
+            <tr>
+              <td
+                align="center"
+                style="padding-top: 36px; font-size: x-small; color: #999"
+              >
+                <span th:text="#{email.footer}">
+                  Это письмо отправлено автоматически сервисом GrSSO. Не
+                  отвечайте на него.
+                </span>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

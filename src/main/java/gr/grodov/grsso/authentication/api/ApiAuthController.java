@@ -1,32 +1,31 @@
 package gr.grodov.grsso.authentication.api;
 
-import gr.grodov.grsso.authentication.api.dto.LoginRequest;
-import gr.grodov.grsso.authentication.api.dto.RegistrationRequest;
+import gr.grodov.grsso.authentication.api.dto.request.LoginRequest;
+import gr.grodov.grsso.authentication.api.dto.request.RefreshVerifyCodeRequest;
+import gr.grodov.grsso.authentication.api.dto.request.RegistrationRequest;
+import gr.grodov.grsso.authentication.api.dto.request.VerifyEmailRequest;
+import gr.grodov.grsso.authentication.api.dto.response.RegistrationResponse;
+import gr.grodov.grsso.authentication.api.dto.response.VerifyEmailResponse;
+import gr.grodov.grsso.authentication.service.RegistrationService;
+import gr.grodov.grsso.authentication.service.VerifyEmailService;
 import gr.grodov.grsso.common.api.SuccessResponse;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
-import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.authentication.service.AuthenticationService;
-import gr.grodov.grsso.authentication.security.principal.UserPrincipal;
-import gr.grodov.grsso.user.service.UserInfoService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Locale;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class ApiAuthController {
 
-    private final UserInfoService userInfoService;
     private final AuthenticationService authenticationService;
-
-    @GetMapping("/user-info")
-    public UserInfoDto getUserInfo(@AuthenticationPrincipal UserPrincipal principal) {
-        return userInfoService.findById(principal.getName());
-    }
+    private final RegistrationService registrationService;
+    private final VerifyEmailService verifyEmailService;
 
     @PostMapping("/login")
     public SuccessResponse<Void> login(
@@ -39,8 +38,21 @@ public class ApiAuthController {
     }
 
     @PostMapping("/register")
-    public SuccessResponse<Void> register(@Valid @RequestBody RegistrationRequest request) {
-        userInfoService.createNewUser(request.getEmail(), request.getPassword(), AuthProvider.LOCAL);
+    public RegistrationResponse register(
+        @Valid @RequestBody RegistrationRequest request,
+        HttpServletRequest httpRequest
+    ) {
+        return registrationService.registration(request, httpRequest);
+    }
+
+    @PostMapping("/verify-email")
+    public SuccessResponse<Void> verifyEmail(@Valid @RequestBody VerifyEmailRequest request) {
+        return SuccessResponse.of(verifyEmailService.verifyEmail(request));
+    }
+
+    @PostMapping("/refresh-verify-code")
+    public SuccessResponse<Void> refreshVerifyCode(@Valid @RequestBody RefreshVerifyCodeRequest request, Locale locale) {
+        verifyEmailService.refreshCode(request, locale);
         return SuccessResponse.of(true);
     }
 }

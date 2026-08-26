@@ -17,6 +17,23 @@ spring:
     hibernate:
       ddl-auto: validate
 
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gr.sso.com@gmail.com
+    password: thddbdxpoglmaewa
+    transport:
+      protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
+
+
   security:
     oauth2:
       client:
@@ -80,6 +97,13 @@ grsso:
       provider-error: /provider-error
       login: /login
       oauth-consent: /oauth2/consent
+
+  verify-email:
+    minute-time: 15
+    attempt: 5
+    check-cron: "0 */15 * * * ?"
+    from-address: gr.sso.com@gmail.com
+    from-name: GrSSO
 
   oauth:
     authentication-grant-types:

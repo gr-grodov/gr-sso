@@ -1,6 +1,6 @@
 package gr.grodov.grsso.api.dto.request;
 
-import gr.grodov.grsso.authentication.api.dto.LoginRequest;
+import gr.grodov.grsso.authentication.api.dto.request.LoginRequest;
 import jakarta.validation.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,8 @@
 package gr.grodov.grsso.api.advice;
 
 import gr.grodov.grsso.authentication.api.ApiAuthController;
+import gr.grodov.grsso.authentication.service.RegistrationService;
+import gr.grodov.grsso.authentication.service.VerifyEmailService;
 import gr.grodov.grsso.common.exception.GlobalExceptionAdvice;
 import gr.grodov.grsso.authentication.service.AuthenticationService;
 import gr.grodov.grsso.user.service.UserInfoService;
@@ -30,9 +32,11 @@ class GlobalExceptionAdviceTest {
     private MockMvc mockMvc;
 
     @MockitoBean
-    private UserInfoService userInfoService;
+    private RegistrationService registrationService;
     @MockitoBean
     private AuthenticationService authenticationService;
+    @MockitoBean
+    private VerifyEmailService verifyEmailService;
 
     @Test
     @WithMockUser
@@ -56,7 +60,7 @@ class GlobalExceptionAdviceTest {
     @Test
     @WithMockUser
     void handle_BadCredentialsException() throws Exception {
-        when(userInfoService.createNewUser(any(), any(), any())).thenThrow(BadCredentialsException.class);
+        when(registrationService.registration(any(), any())).thenThrow(BadCredentialsException.class);
 
         mockMvc.perform(post("/api/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
@@ -74,7 +78,7 @@ class GlobalExceptionAdviceTest {
     @Test
     @WithMockUser
     void handle_BaseErrorFieldException() throws Exception {
-        when(userInfoService.createNewUser(any(), any(), any())).thenThrow(new EmailAlreadyExistsException());
+        when(registrationService.registration(any(), any())).thenThrow(new EmailAlreadyExistsException());
 
         mockMvc.perform(post("/api/auth/register")
             .contentType(MediaType.APPLICATION_JSON)
@@ -93,7 +97,7 @@ class GlobalExceptionAdviceTest {
     @Test
     @WithMockUser
     void handle_Exception() throws Exception {
-        when(userInfoService.createNewUser(any(), any(), any())).thenThrow(new RuntimeException());
+        when(registrationService.registration(any(), any())).thenThrow(new RuntimeException());
 
         mockMvc.perform(post("/api/auth/register")
             .contentType(MediaType.APPLICATION_JSON)

@@ -158,7 +158,7 @@ class UserInfoServiceTest {
         assertThat(result.provider()).isEqualTo(AuthProvider.LOCAL);
         assertThat(result.email()).isEqualTo("test@mail.com");
         assertThat(result.password()).isNotEqualTo("password");
-        assertThat(result.enabled()).isTrue();
+        assertThat(result.enabled()).isFalse();
         verify(userInfoRepo).save(any());
         verify(passwordEncoder).encode(anyString());
     }

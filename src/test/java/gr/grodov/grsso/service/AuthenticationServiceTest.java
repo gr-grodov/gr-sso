@@ -1,6 +1,6 @@
 package gr.grodov.grsso.service;
 
-import gr.grodov.grsso.authentication.api.dto.LoginRequest;
+import gr.grodov.grsso.authentication.api.dto.request.LoginRequest;
 import gr.grodov.grsso.authentication.service.AuthenticationService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;

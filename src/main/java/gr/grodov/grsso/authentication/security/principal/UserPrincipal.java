@@ -15,7 +15,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-@NamedInterface("principal")
 @Getter
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails, OidcUser {
