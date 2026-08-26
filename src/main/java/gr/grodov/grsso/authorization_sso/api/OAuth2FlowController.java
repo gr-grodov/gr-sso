@@ -1,7 +1,7 @@
 package gr.grodov.grsso.authorization_sso.api;
 
-import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
-import gr.grodov.grsso.authorization_sso.api.dto.RedirectURIResponse;
+import gr.grodov.grsso.authorization_sso.api.dto.request.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.response.RedirectURIResponse;
 import gr.grodov.grsso.common.api.SuccessResponse;
 import gr.grodov.grsso.authorization_sso.service.OAuth2ConsentService;
 import gr.grodov.grsso.authorization_sso.service.OAuth2FlowService;

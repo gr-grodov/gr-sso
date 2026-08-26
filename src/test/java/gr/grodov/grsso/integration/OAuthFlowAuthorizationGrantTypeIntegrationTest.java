@@ -1,10 +1,10 @@
 package gr.grodov.grsso.integration;
 
 import gr.grodov.grsso.authentication.api.dto.request.LoginRequest;
-import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.request.OAuth2ConsentRequest;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
-import gr.grodov.grsso.authorization_sso.api.dto.RedirectURIResponse;
+import gr.grodov.grsso.authorization_sso.api.dto.response.RedirectURIResponse;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
@@ -99,7 +99,8 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
         OAuthClientSecretInfoResponse clientInfo = oAuthClientsService.save(clientRequest);
         this.clientSecretInfo = new OAuthClientSecretInfo(clientInfo.clientID(), clientInfo.clientSecret());
 
-        userInfoService.createNewUser(TEST_EMAIL, TEST_PASSWORD, AuthProvider.LOCAL);
+        var user = userInfoService.createNewUser(TEST_EMAIL, TEST_PASSWORD, AuthProvider.LOCAL);
+        userInfoService.enabledUserInfo(user.id(), true);
 
         this.flowTestDriver = new OAuthFlowTestDriver(oAuthClientApplication, frontendApplication);
     }

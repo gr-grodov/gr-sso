@@ -41,6 +41,10 @@ public class ImitationCookie {
         return headers;
     }
 
+    /**
+     * {@link org.springframework.security.web.csrf.CookieCsrfTokenRepository CookieCsrfTokenRepository}
+     * Default cookie name get from CookieCsrfTokenRepository
+     */
     public HttpHeaders jsonHeaders() {
         HttpHeaders headers = headers();
         headers.set("X-XSRF-TOKEN", cookies.get("XSRF-TOKEN"));

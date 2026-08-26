@@ -1,6 +1,6 @@
 package gr.grodov.grsso.authorization_sso.service;
 
-import gr.grodov.grsso.authorization_sso.api.dto.OAuth2ConsentRequest;
+import gr.grodov.grsso.authorization_sso.api.dto.request.OAuth2ConsentRequest;
 import gr.grodov.grsso.authorization_sso.exception.OAuth2ConsentException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

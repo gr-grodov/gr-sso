@@ -33,12 +33,12 @@ public class UserInfoService {
     }
 
     @Transactional(readOnly = true)
-    public UserInfoDto findById(String id) {
+    public UserInfoDto findById(String id) throws UserNotFoundException {
         long userId;
         try {
             userId = Long.parseLong(id);
         } catch (NumberFormatException ex) {
-            throw new UserNotFoundException(); // или отдельное InvalidIdException
+            throw new UserNotFoundException();
         }
 
         return userInfoRepo.findById(userId)
@@ -64,6 +64,11 @@ public class UserInfoService {
                 .build())
             )
         );
+    }
+
+    @Transactional
+    public void delete(UserInfoDto userInfo) {
+        userInfoRepo.delete(userInfoMapper.toDB(userInfo));
     }
 
     @Transactional

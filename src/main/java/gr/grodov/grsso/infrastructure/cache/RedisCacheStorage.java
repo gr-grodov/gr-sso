@@ -20,13 +20,16 @@ public class RedisCacheStorage<T> implements CacheStorage<T> {
     private final RedisSerializer<String> keySerializer;
     private final RedisSerializer<T> valueSerializer;
     private final long ttlSeconds;
+    private final String namespace;
 
     public RedisCacheStorage(RedisConnectionFactory connectionFactory, Class<T> type) {
         this.keySerializer = new StringRedisSerializer();
         this.valueSerializer = new JacksonJsonRedisSerializer<>(type);
 
         this.redisTemplate = buildTemplate(connectionFactory);
-        this.ttlSeconds = type.getAnnotation(CacheEntry.class).ttlSeconds();
+        CacheEntry cacheEntry = type.getAnnotation(CacheEntry.class);
+        this.ttlSeconds = cacheEntry.ttlSeconds();
+        this.namespace = cacheEntry.keyPrefix();
     }
 
     private RedisTemplate<String, T> buildTemplate(RedisConnectionFactory factory) {
@@ -40,18 +43,18 @@ public class RedisCacheStorage<T> implements CacheStorage<T> {
 
     @Override
     public void save(String key, T entity) {
-        redisTemplate.opsForValue().set(key, entity, Duration.ofSeconds(ttlSeconds));
+        redisTemplate.opsForValue().set(namespacedKey(key), entity, Duration.ofSeconds(ttlSeconds));
     }
 
     @Override
     public void save(String key, T entity, Duration duration) {
-        redisTemplate.opsForValue().set(key, entity, duration);
+        redisTemplate.opsForValue().set(namespacedKey(key), entity, duration);
     }
 
     @Override
     public boolean update(String key, T entity) {
         return redisTemplate.execute((RedisCallback<Boolean>) conn -> conn.stringCommands().set(
-            keySerializer.serialize(key),
+            keySerializer.serialize(namespacedKey(key)),
             valueSerializer.serialize(entity),
             SetCondition.ifPresent(),
             Expiration.keepTtl()
@@ -60,11 +63,15 @@ public class RedisCacheStorage<T> implements CacheStorage<T> {
 
     @Override
     public Optional<T> get(String key) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(key));
+        return Optional.ofNullable(redisTemplate.opsForValue().get(namespacedKey(key)));
     }
 
     @Override
     public boolean delete(String key) {
-        return redisTemplate.delete(key);
+        return redisTemplate.delete(namespacedKey(key));
+    }
+
+    private String namespacedKey(String key) {
+        return namespace + ":" + key;
     }
 }

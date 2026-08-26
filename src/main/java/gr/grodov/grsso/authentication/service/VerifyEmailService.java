@@ -14,6 +14,7 @@ import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -76,6 +77,17 @@ public class VerifyEmailService {
         sendEmail(userInfo.email(), verifyCode, locale);
     }
 
+    public void handleExpireId(String expireId) {
+        try {
+            UserInfoDto userInfo = userInfoService.findById(getUserIdFromVerifyId(expireId));
+            if (!userInfo.enabled()) {
+                userInfoService.delete(userInfo);
+            }
+        } catch (Exception _) {
+            System.out.printf(">>>>>>>>>>>>>>>> Couldn't delete user from the system by expireId: %s%n", expireId);
+        }
+    }
+
     private void sendEmail(String userEmail, String verifyCode, Locale locale) {
         publisher.publishEvent(new FromResourceEmailEvent(
             userEmail,
@@ -92,5 +104,13 @@ public class VerifyEmailService {
     private String getVerifyCode() {
         Random random = new Random();
         return String.format("%06d", random.nextInt(999999));
+    }
+
+    private String generateVerifyId(Long userId) {
+        return "%d:%s".formatted(userId, UUID.randomUUID());
+    }
+
+    private String getUserIdFromVerifyId(String verifyId) {
+        return verifyId.split(":")[0];
     }
 }

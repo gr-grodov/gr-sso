@@ -6,4 +6,5 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CacheEntry {
     long ttlSeconds() default 900;
+    String keyPrefix();
 }
