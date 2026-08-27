@@ -31,8 +31,8 @@ public class UserInfoService {
             .map(userInfoMapper::fromDB)
             .orElseThrow(() -> new UsernameNotFoundException(email));
     }
-
     @Transactional(readOnly = true)
+
     public UserInfoDto findById(String id) throws UserNotFoundException {
         long userId;
         try {

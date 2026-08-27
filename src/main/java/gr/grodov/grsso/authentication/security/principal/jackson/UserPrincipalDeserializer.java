@@ -2,6 +2,7 @@ package gr.grodov.grsso.authentication.security.principal.jackson;
 
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.authentication.security.principal.UserPrincipal;
+import gr.grodov.grsso.user.domain.entity.Role;
 import org.jspecify.annotations.NonNull;
 import org.springframework.boot.jackson.ObjectValueDeserializer;
 import tools.jackson.core.JsonParser;
@@ -33,19 +34,16 @@ public class UserPrincipalDeserializer extends ObjectValueDeserializer<UserPrinc
             for (JsonNode authorityNode : authoritiesNode) {
 
                 String authority = authorityNode.asString();
-                authorities.add(() -> authority);
+                authorities.add(Role.valueOf(authority));
             }
         }
 
-        return new UserPrincipal(
-            id,
-            email,
-            null,
-            provider,
-            authorities,
-            Map.of(),
-            null,
-            null
-        );
+        return UserPrincipal.builder()
+            .id(id)
+            .email(email)
+            .provider(provider)
+            .authorities(authorities)
+            .attributes(Map.of())
+        .build();
     }
 }

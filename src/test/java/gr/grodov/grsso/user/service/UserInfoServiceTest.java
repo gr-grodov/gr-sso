@@ -161,4 +161,38 @@ class UserInfoServiceTest {
         verify(userInfoRepo).save(any());
         verify(passwordEncoder).encode(anyString());
     }
+
+    @Test
+    void createNewUser_withOtherProvider_returnSave() {
+        var user = new UserInfo();
+        var expectDto = UserInfoDto.builder()
+            .id(1L)
+            .email("test@mail.com")
+            .provider(AuthProvider.GOOGLE)
+            .build();
+        when(userInfoRepo.existsByEmailAndProvider("test@mail.com", AuthProvider.GOOGLE)).thenReturn(false);
+        when(mapper.toDB(any(UserInfoDto.class))).thenReturn(user);
+        when(userInfoRepo.save(user)).thenReturn(user);
+        when(mapper.fromDB(user)).thenReturn(expectDto);
+
+        userInfoService.createNewUser("test@mail.com",null,  AuthProvider.GOOGLE);
+
+        ArgumentCaptor<UserInfoDto> captor = ArgumentCaptor.forClass(UserInfoDto.class);
+        verify(mapper).toDB(captor.capture());
+        var result = captor.getValue();
+        assertThat(result.provider()).isEqualTo(AuthProvider.GOOGLE);
+        assertThat(result.enabled()).isTrue();
+        verify(userInfoRepo).save(any());
+    }
+
+    @Test
+    void delete_withCorrectData_callDelete() {
+        var user = new UserInfo();
+        var userInfo = UserInfoDto.builder().build();
+        when(mapper.toDB(userInfo)).thenReturn(user);
+
+        userInfoService.delete(userInfo);
+
+        verify(userInfoRepo).delete(user);
+    }
 }

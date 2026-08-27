@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.jspecify.annotations.NonNull;
-import org.springframework.modulith.NamedInterface;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -16,7 +15,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
 
-    private final FrontendAppProperties properties;
+    private final FrontendAppProperties frontendAppProperties;
 
     @Override
     public void onAuthenticationSuccess(
@@ -24,6 +23,6 @@ public class OAuthSuccessHandler implements AuthenticationSuccessHandler {
         HttpServletResponse response,
         @NonNull Authentication authentication
     ) throws IOException {
-        response.sendRedirect(properties.url());
+        response.sendRedirect(frontendAppProperties.url());
     }
 }

@@ -1,6 +1,6 @@
 package gr.grodov.grsso.user.job;
 
-import gr.grodov.grsso.common.props.VerifyEmailAppProperties;
+import gr.grodov.grsso.common.props.EmailAppProperties;
 import gr.grodov.grsso.user.domain.repo.UserInfoRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -13,14 +13,14 @@ import java.time.Instant;
 @Component
 @RequiredArgsConstructor
 public class UnverifiedUserDeleteJob {
-    private final VerifyEmailAppProperties appProperties;
+    private final EmailAppProperties appProperties;
     private final UserInfoRepo userInfoRepo;
 
-    @Scheduled(cron = "${grsso.verify-email.check-cron}")
+    @Scheduled(cron = "${grsso.email.verify-email-code.check-cron}")
     @Transactional
     public void deleteExpiredUnconfirmedUsers() {
         System.out.println(">>>>>>>>>>>>>>>>>>>>>> start UnverifiedUserDeleteJob");
-        Instant cutoff = Instant.now().minus(Duration.ofMinutes(appProperties.minuteTime()));
+        Instant cutoff = Instant.now().minus(Duration.ofMinutes(appProperties.verifyEmailCode().minuteTime()));
         userInfoRepo.deleteByEnabledFalseAndCreatedAtBefore(cutoff);
     }
 }

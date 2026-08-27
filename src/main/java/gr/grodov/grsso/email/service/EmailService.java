@@ -2,7 +2,7 @@ package gr.grodov.grsso.email.service;
 
 import gr.grodov.grsso.common.event.FromResourceEmailEvent;
 import gr.grodov.grsso.common.event.SimpleEmailEvent;
-import gr.grodov.grsso.common.props.VerifyEmailAppProperties;
+import gr.grodov.grsso.common.props.EmailAppProperties;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -25,7 +25,7 @@ public class EmailService {
     private final JavaMailSender emailSender;
     private final SpringTemplateEngine emailTemplateEngine;
     private final MessageSource messageSource;
-    private final VerifyEmailAppProperties emailProperties;
+    private final EmailAppProperties emailProperties;
 
     @ApplicationModuleListener
     public void handle(SimpleEmailEvent simpleEmailEvent) throws UnsupportedEncodingException {

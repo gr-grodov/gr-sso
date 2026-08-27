@@ -10,11 +10,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-@Component
-@RequiredArgsConstructor
 public class ScopedClaimsBuilder {
 
-    public Map<String, Object> idTokenClaims(UserInfoDto user, Set<String> scopes) {
+    public static Map<String, Object> idTokenClaims(UserInfoDto user, Set<String> scopes) {
         Map<String, Object> claims = new HashMap<>();
 
         if (scopes.contains(OAuthScope.OPEN_ID.getScopeValue())) {
@@ -28,7 +26,7 @@ public class ScopedClaimsBuilder {
         return claims;
     }
 
-    public Map<String, Object> accessTokenClaims(UserInfoDto user) {
+    public static Map<String, Object> accessTokenClaims(UserInfoDto user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put(StandardClaimNames.SUB, user.id().toString());
         return claims;

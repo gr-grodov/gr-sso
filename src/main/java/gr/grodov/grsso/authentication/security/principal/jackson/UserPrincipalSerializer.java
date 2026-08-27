@@ -14,7 +14,6 @@ public class UserPrincipalSerializer extends ValueSerializer<UserPrincipal> {
 
     @Override
     public void serialize(UserPrincipal principal, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
-        log();
         gen.writeStartObject();
 
         gen.writeNumberProperty("id", principal.getId());
@@ -34,7 +33,6 @@ public class UserPrincipalSerializer extends ValueSerializer<UserPrincipal> {
 
     @Override
     public void serializeWithType(UserPrincipal value, JsonGenerator gen, SerializationContext context, TypeSerializer typeSerializer) throws JacksonException {
-        log();
         WritableTypeId typeId = typeSerializer.writeTypePrefix(
             gen, context, typeSerializer.typeId(value, JsonToken.START_OBJECT)
         );
@@ -50,14 +48,5 @@ public class UserPrincipalSerializer extends ValueSerializer<UserPrincipal> {
         gen.writeEndArray();
 
         typeSerializer.writeTypeSuffix(gen, context, typeId);
-    }
-
-    private void log() {
-        try {
-            throw new Exception();
-        } catch (Exception e) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> LOG ");
-            e.printStackTrace();
-        }
     }
 }

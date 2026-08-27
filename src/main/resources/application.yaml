@@ -98,12 +98,13 @@ grsso:
       login: /login
       oauth-consent: /oauth2/consent
 
-  verify-email:
-    minute-time: 15
-    attempt: 5
-    check-cron: "0 */15 * * * ?"
+  email:
     from-address: gr.sso.com@gmail.com
     from-name: GrSSO
+    verify-email-code:
+      minute-time: 15
+      attempt: 5
+      check-cron: "0 */15 * * * ?"
 
   oauth:
     authentication-grant-types:

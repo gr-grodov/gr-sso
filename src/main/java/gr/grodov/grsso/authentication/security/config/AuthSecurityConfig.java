@@ -11,6 +11,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -45,6 +46,11 @@ public class AuthSecurityConfig {
     @Bean
     AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) {
         return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public OidcUserService defaultOidcUserService() {
+        return new OidcUserService();
     }
 
     @Bean

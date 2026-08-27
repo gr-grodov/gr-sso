@@ -2,19 +2,17 @@ package gr.grodov.grsso.authentication.service;
 
 import gr.grodov.grsso.authentication.api.dto.request.RefreshVerifyCodeRequest;
 import gr.grodov.grsso.authentication.api.dto.request.VerifyEmailRequest;
-import gr.grodov.grsso.authentication.api.dto.response.VerifyEmailResponse;
 import gr.grodov.grsso.authentication.cache.VerifyEmailCode;
 import gr.grodov.grsso.authentication.exception.VerifyEmailCodeEndAttemptException;
 import gr.grodov.grsso.authentication.exception.VerifyEmailCodeInvalidCodeException;
 import gr.grodov.grsso.authentication.exception.VerifyEmailCodeNotFoundException;
 import gr.grodov.grsso.common.cache.CacheStorage;
 import gr.grodov.grsso.common.event.FromResourceEmailEvent;
-import gr.grodov.grsso.common.props.VerifyEmailAppProperties;
+import gr.grodov.grsso.common.props.EmailAppProperties;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -27,14 +25,14 @@ public class VerifyEmailService {
     private final ApplicationEventPublisher publisher;
     private final CacheStorage<VerifyEmailCode> verifyEmailCodeStorage;
     private final UserInfoService userInfoService;
-    private final VerifyEmailAppProperties verifyEmailProperties;
+    private final EmailAppProperties emailProperties;
 
     public String sendVerifyCode(UserInfoDto userInfo, Locale locale) {
         String verifyCode = getVerifyCode();
-        String verifyId = UUID.randomUUID().toString();
+        String verifyId = generateVerifyId(userInfo.id());
 
-        VerifyEmailCode verifyEmailCode = new VerifyEmailCode(userInfo.id(), verifyCode, verifyEmailProperties.attempt());
-        verifyEmailCodeStorage.save(verifyId, verifyEmailCode, Duration.ofMinutes(verifyEmailProperties.minuteTime()));
+        VerifyEmailCode verifyEmailCode = new VerifyEmailCode(userInfo.id(), verifyCode, emailProperties.verifyEmailCode().attempt());
+        verifyEmailCodeStorage.save(verifyId, verifyEmailCode, Duration.ofMinutes(emailProperties.verifyEmailCode().minuteTime()));
 
         sendEmail(userInfo.email(), verifyCode, locale);
 
@@ -51,6 +49,7 @@ public class VerifyEmailService {
         }
 
         if (Objects.equals(verifyEmailCode.verifyCode(), request.getVerifyCode())) {
+            verifyEmailCodeStorage.delete(request.getVerifyId());
             userInfoService.enabledUserInfo(verifyEmailCode.userId(), true);
             return true;
         }
@@ -71,8 +70,8 @@ public class VerifyEmailService {
         UserInfoDto userInfo = userInfoService.findById(verifyEmailCode.userId().toString());
 
         String verifyCode = getVerifyCode();
-        VerifyEmailCode refreshVerifyEmailCode = new VerifyEmailCode(verifyEmailCode.userId(), verifyCode, verifyEmailProperties.attempt());
-        verifyEmailCodeStorage.save(request.getVerifyId(), refreshVerifyEmailCode, Duration.ofMinutes(verifyEmailProperties.minuteTime()));
+        VerifyEmailCode refreshVerifyEmailCode = new VerifyEmailCode(verifyEmailCode.userId(), verifyCode, emailProperties.verifyEmailCode().attempt());
+        verifyEmailCodeStorage.save(request.getVerifyId(), refreshVerifyEmailCode, Duration.ofMinutes(emailProperties.verifyEmailCode().minuteTime()));
 
         sendEmail(userInfo.email(), verifyCode, locale);
     }
@@ -95,7 +94,7 @@ public class VerifyEmailService {
             "email-verify",
             Map.of(
                 "verifyCode", verifyCode,
-                "expiresInMinutes", verifyEmailProperties.minuteTime()
+                "expiresInMinutes", emailProperties.verifyEmailCode().minuteTime()
             ),
             locale
         ));

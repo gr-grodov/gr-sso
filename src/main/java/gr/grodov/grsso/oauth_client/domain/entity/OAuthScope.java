@@ -20,7 +20,7 @@ public enum OAuthScope {
         this.scopeValue = value;
     }
 
-    public static OAuthScope scopeValueOf(String scopeValue) {
+    public static OAuthScope scopeValueOf(String scopeValue) throws OAuthInvalidScopeException {
         return Arrays.stream(OAuthScope.values())
             .filter(scope -> scope.scopeValue.equals(scopeValue))
             .findAny()

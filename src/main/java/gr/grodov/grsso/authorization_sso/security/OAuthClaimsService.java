@@ -20,7 +20,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class OAuthClaimsService {
 
-    private final ScopedClaimsBuilder claimsBuilder;
     private final UserInfoService userInfoService;
 
     public Map<String, Object> tokenClaims(OAuth2TokenContext context) {
@@ -28,10 +27,10 @@ public class OAuthClaimsService {
         UserInfoDto userInfo = userInfoService.findById(authentication.getName());
 
         if (context.getTokenType().equals(OAuth2TokenType.ACCESS_TOKEN)) {
-            return claimsBuilder.accessTokenClaims(userInfo);
+            return ScopedClaimsBuilder.accessTokenClaims(userInfo);
         }
 
-        return claimsBuilder.idTokenClaims(userInfo, context.getAuthorizedScopes());
+        return ScopedClaimsBuilder.idTokenClaims(userInfo, context.getAuthorizedScopes());
     }
 
     public Map<String, Object> userInfoClaims(OidcUserInfoAuthenticationContext context) {
@@ -39,18 +38,13 @@ public class OAuthClaimsService {
         Authentication authentication = getUserFromContext(authorization);
         UserInfoDto userInfo = userInfoService.findById(authentication.getName());
 
-        return claimsBuilder.idTokenClaims(userInfo, authorization.getAuthorizedScopes());
+        return ScopedClaimsBuilder.idTokenClaims(userInfo, authorization.getAuthorizedScopes());
     }
 
     private Authentication getUserFromContext(OAuth2TokenContext context) {
         if (context.getPrincipal() instanceof Authentication authentication) {
             return authentication;
         }
-
-        if (context.getPrincipal() != null && context.getPrincipal().getPrincipal() instanceof Authentication authentication) {
-            return authentication;
-        }
-
         throw new OAuthPrincipalNotFoundException();
     }
 
@@ -58,7 +52,6 @@ public class OAuthClaimsService {
         if (authorization.getAttribute(Principal.class.getName()) instanceof Authentication authentication) {
             return authentication;
         }
-
         throw new OAuthPrincipalNotFoundException();
     }
 }

@@ -1,5 +1,6 @@
 package gr.grodov.grsso.authentication.security.service;
 
+import gr.grodov.grsso.authentication.security.principal.UserPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.NonNull;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;

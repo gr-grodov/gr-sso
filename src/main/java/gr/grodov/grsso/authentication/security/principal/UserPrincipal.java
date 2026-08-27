@@ -2,6 +2,7 @@ package gr.grodov.grsso.authentication.security.principal;
 
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.modulith.NamedInterface;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
+@Builder
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails, OidcUser {
 
@@ -69,28 +71,25 @@ public class UserPrincipal implements UserDetails, OidcUser {
     }
 
     public static UserPrincipal local(UserInfoDto user) {
-        return new UserPrincipal(
-            user.id(),
-            user.email(),
-            user.password(),
-            user.provider(),
-            List.of(user.role()),
-            Map.of(),
-            null,
-            null
-        );
+        return UserPrincipal.builder()
+            .id(user.id())
+            .email(user.email())
+            .password(user.password())
+            .provider(user.provider())
+            .authorities(List.of(user.role()))
+            .attributes(Map.of())
+        .build();
     }
 
     public static UserPrincipal oidc(UserInfoDto user, OidcUser oidcUser) {
-        return new UserPrincipal(
-            user.id(),
-            user.email(),
-            null,
-            user.provider(),
-            List.of(user.role()),
-            oidcUser.getAttributes(),
-            oidcUser.getIdToken(),
-            oidcUser.getUserInfo()
-        );
+        return UserPrincipal.builder()
+            .id(user.id())
+            .email(user.email())
+            .provider(user.provider())
+            .authorities(List.of(user.role()))
+            .attributes(oidcUser.getAttributes())
+            .idToken(oidcUser.getIdToken())
+            .userInfo(oidcUser.getUserInfo())
+        .build();
     }
 }

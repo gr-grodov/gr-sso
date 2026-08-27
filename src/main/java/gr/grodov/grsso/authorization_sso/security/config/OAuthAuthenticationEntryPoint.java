@@ -17,7 +17,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuthAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
-    private final OAuth2FlowService authorizationService;
+    private final OAuth2FlowService oAuth2FlowService;
     private final FrontendAppProperties properties;
 
     @Override
@@ -26,7 +26,7 @@ public class OAuthAuthenticationEntryPoint implements AuthenticationEntryPoint {
         @NonNull HttpServletResponse response,
         @NonNull AuthenticationException authException
     ) throws IOException {
-        authorizationService.saveRedirectRequest(UrlUtils.buildFullRequestUrl(request));
+        oAuth2FlowService.saveRedirectRequest(UrlUtils.buildFullRequestUrl(request));
         response.sendRedirect(properties.loginUrl());
     }
 }

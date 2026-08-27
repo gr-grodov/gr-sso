@@ -13,17 +13,15 @@ import gr.grodov.grsso.integration.flow_components.dto.response.AuthorizeTokenBy
 import gr.grodov.grsso.integration.flow_components.dto.response.RefreshTokenResponse;
 import gr.grodov.grsso.integration.helpers.dto.AuthorizeParams;
 import gr.grodov.grsso.integration.helpers.dto.ConsentPageParams;
+import gr.grodov.grsso.integration.utils.URIParseUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.web.csrf.DefaultCsrfToken;
-import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 
 import java.net.URI;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -82,7 +80,7 @@ public class OAuthFlowTestDriver {
     }
 
     public ConsentPageParams extractConsentPageParams(URI redirectConsentFrontendPage) {
-        MultiValueMap<String, String> params = getQueryParams(redirectConsentFrontendPage);
+        MultiValueMap<String, String> params = URIParseUtils.getQueryParams(redirectConsentFrontendPage);
         return new ConsentPageParams(params.getFirst("state"), params.getFirst("client_id"), params.getFirst("scope"));
     }
 
@@ -91,7 +89,7 @@ public class OAuthFlowTestDriver {
     }
 
     public AuthorizeParams extractAuthorizeParams(String authorizeRequest) {
-        MultiValueMap<String, String> params = getQueryParams(URI.create(authorizeRequest));
+        MultiValueMap<String, String> params = URIParseUtils.getQueryParams(URI.create(authorizeRequest));
         return new AuthorizeParams(params.getFirst("code"), params.getFirst("state"));
     }
 
@@ -142,19 +140,5 @@ public class OAuthFlowTestDriver {
             tokenBody.get("id_token"),
             tokenBody.get("scope")
         );
-    }
-
-
-    private static MultiValueMap<String, String> getQueryParams(URI uri) {
-        String[] queries = uri.getQuery().split("&");
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
-        Pattern pattern = Pattern.compile("^([^=]+)=([^;]*)");
-        for (String query: queries) {
-            Matcher matcher = pattern.matcher(query);
-            if (matcher.find()) {
-                queryParams.add(matcher.group(1), matcher.group(2));
-            }
-        }
-        return queryParams;
     }
 }

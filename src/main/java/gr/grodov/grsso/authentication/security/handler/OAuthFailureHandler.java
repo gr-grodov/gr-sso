@@ -9,6 +9,7 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.modulith.NamedInterface;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.OAuth2ErrorCodes;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -31,8 +32,8 @@ public class OAuthFailureHandler implements AuthenticationFailureHandler {
     ) throws IOException {
         String error = switch (exception) {
             case OAuth2AuthenticationException e -> switch (e.getError().getErrorCode()) {
-                case "access_denied" -> "access_denied";
-                case "invalid_grant", "invalid_client" -> "invalid_grant";
+                case OAuth2ErrorCodes.ACCESS_DENIED -> OAuth2ErrorCodes.ACCESS_DENIED;
+                case OAuth2ErrorCodes.INVALID_GRANT, OAuth2ErrorCodes.INVALID_CLIENT -> OAuth2ErrorCodes.INVALID_GRANT;
                 default -> "unknown";
             };
             default -> "unknown";

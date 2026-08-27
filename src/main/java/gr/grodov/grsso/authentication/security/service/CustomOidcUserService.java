@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class CustomOidcUserService extends OidcUserService {
 
+    private final OidcUserService delegate;
     private final UserInfoService userInfoService;
 
     @Override
     public OidcUser loadUser(@NonNull OidcUserRequest request) throws OAuth2AuthenticationException {
-        OidcUser oidcUser = super.loadUser(request);
-
         AuthProvider provider;
         try {
             provider = AuthProvider.valueOf(request.getClientRegistration().getRegistrationId().toUpperCase());
@@ -31,6 +30,7 @@ public class CustomOidcUserService extends OidcUserService {
             throw new OAuth2AuthenticationException(new OAuth2Error("unknown_provider"));
         }
 
+        OidcUser oidcUser = delegate.loadUser(request);
         UserInfoDto userInfo;
         try {
             userInfo = userInfoService.findByEmailAndProvider(oidcUser.getEmail(), provider);
