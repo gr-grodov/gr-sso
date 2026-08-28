@@ -67,8 +67,8 @@ public class UserInfoService {
     }
 
     @Transactional
-    public void delete(UserInfoDto userInfo) {
-        userInfoRepo.delete(userInfoMapper.toDB(userInfo));
+    public void deleteById(Long userId) {
+        userInfoRepo.deleteById(userId);
     }
 
     @Transactional

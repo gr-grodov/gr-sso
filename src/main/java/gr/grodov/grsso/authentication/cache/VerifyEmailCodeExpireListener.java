@@ -13,6 +13,7 @@ public class VerifyEmailCodeExpireListener implements CacheKeyExpireListener<Ver
 
     @Override
     public void onEvent(String key) {
+        System.out.println(">>>>>>>>>> VerifyEmailCodeExpireListener " + key);
         verifyEmailService.handleExpireId(key);
     }
 }

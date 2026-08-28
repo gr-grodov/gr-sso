@@ -186,13 +186,9 @@ class UserInfoServiceTest {
     }
 
     @Test
-    void delete_withCorrectData_callDelete() {
-        var user = new UserInfo();
-        var userInfo = UserInfoDto.builder().build();
-        when(mapper.toDB(userInfo)).thenReturn(user);
+    void delete_withUserId_callDelete() {
+        userInfoService.deleteById(1L);
 
-        userInfoService.delete(userInfo);
-
-        verify(userInfoRepo).delete(user);
+        verify(userInfoRepo).deleteById(1L);
     }
 }

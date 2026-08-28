@@ -80,11 +80,16 @@ public class VerifyEmailService {
         try {
             UserInfoDto userInfo = userInfoService.findById(getUserIdFromVerifyId(expireId));
             if (!userInfo.enabled()) {
-                userInfoService.delete(userInfo);
+                userInfoService.deleteById(userInfo.id());
             }
         } catch (Exception _) {
             System.out.printf(">>>>>>>>>>>>>>>> Couldn't delete user from the system by expireId: %s%n", expireId);
         }
+    }
+
+    public void cancelVerifyEmail(String verifyId) {
+        verifyEmailCodeStorage.delete(verifyId);
+        handleExpireId(verifyId);
     }
 
     private void sendEmail(String userEmail, String verifyCode, Locale locale) {

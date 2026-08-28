@@ -50,6 +50,12 @@ public class ApiAuthController {
         return SuccessResponse.of(verifyEmailService.verifyEmail(request));
     }
 
+    @DeleteMapping("/cancel-verify-code/{verifyId}")
+    public SuccessResponse<Void> cancelVerifyEmail(@PathVariable String verifyId) {
+        verifyEmailService.cancelVerifyEmail(verifyId);
+        return SuccessResponse.of(true);
+    }
+
     @PostMapping("/refresh-verify-code")
     public SuccessResponse<Void> refreshVerifyCode(@Valid @RequestBody RefreshVerifyCodeRequest request, Locale locale) {
         verifyEmailService.refreshCode(request, locale);

@@ -12,7 +12,6 @@ import gr.grodov.grsso.common.props.EmailAppProperties;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.exception.UserNotFoundException;
 import gr.grodov.grsso.user.service.UserInfoService;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -205,13 +204,23 @@ class VerifyEmailServiceTest {
     }
 
     @Test
+    void cancelVerifyEmail_withVerifyId_callDeleteCacheAndUser() {
+        when(userInfoService.findById("1")).thenReturn(UserInfoDto.builder().id(1L).enabled(false).build());
+
+        verifyEmailService.cancelVerifyEmail("1:ABCDE-12345");
+
+        verify(verifyEmailCodeStorage).delete("1:ABCDE-12345");
+        verify(userInfoService).deleteById(1L);
+    }
+
+    @Test
     void handleExpireId_existUser_deleteUser() {
-        var userinfo = UserInfoDto.builder().id(123456L).email("user@example.com").enabled(false).build();
+        var userinfo = UserInfoDto.builder().id(1L).email("user@example.com").enabled(false).build();
         when(userInfoService.findById("1")).thenReturn(userinfo);
 
         verifyEmailService.handleExpireId("1:ABCDE-12345");
 
-        verify(userInfoService).delete(userinfo);
+        verify(userInfoService).deleteById(1L);
     }
 
     @Test
@@ -219,9 +228,9 @@ class VerifyEmailServiceTest {
         var userinfo = UserInfoDto.builder().id(123456L).email("user@example.com").enabled(true).build();
         when(userInfoService.findById("1")).thenReturn(userinfo);
 
-        verifyEmailService.handleExpireId("1:ABCDE-12345");
+        verifyEmailService.handleExpireId("123456:ABCDE-12345");
 
-        verify(userInfoService, never()).delete(any());
+        verify(userInfoService, never()).deleteById(any());
     }
 
     @Test
@@ -230,6 +239,6 @@ class VerifyEmailServiceTest {
 
         verifyEmailService.handleExpireId("1:ABCDE-12345");
 
-        verify(userInfoService, never()).delete(any());
+        verify(userInfoService, never()).deleteById(any());
     }
 }
