@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,8 +33,8 @@ public class OAuthClientsService {
     private final OAuthClientPropertiesService oAuthClientPropertiesService;
 
     @Transactional(readOnly = true)
-    public List<OAuthClientShortDto> list() {
-        return oAuthClientRepo.findAllByOrderByUpdatedAtDesc().stream().map(oAuthClientShortMapper::fromDB).toList();
+    public List<OAuthClientDto> list() {
+        return oAuthClientRepo.findAllByOrderByUpdatedAtDesc().stream().map(oAuthClientMapper::fromDB).toList();
     }
 
     @Transactional
@@ -54,13 +55,13 @@ public class OAuthClientsService {
             .scopes(clientInfo.getScopes())
             .authorizationGrantTypes(grantTypes)
             .clientAuthenticationMethods(methods)
+            .clientSettings(clientInfo.getClientSettings())
+            .tokenSettings(clientInfo.getTokenSettings())
 
             .id(UUID.randomUUID().toString())
             .clientId(clientID)
             .clientIdIssuedAt(Instant.now())
             .clientSecret(passwordEncoder.encode(clientSecret))
-            .clientSettings(OAuthClientSettings.builder().build())
-            .tokenSettings(OAuthTokenSettings.builder().build())
             .status(OAuthClientStatus.ACTIVE)
         .build();
 
@@ -80,12 +81,21 @@ public class OAuthClientsService {
         client.setScopes(clientInfo.getScopes());
         client.setAuthorizationGrantTypes(grantTypes);
         client.setClientAuthenticationMethods(methods);
+        client.setClientSettings(clientInfo.getClientSettings());
+        client.setTokenSettings(clientInfo.getTokenSettings());
 
         return oAuthClientMapper.fromDB(oAuthClientRepo.save(client));
     }
 
     @Transactional(readOnly = true)
     public OAuthClientDto getById(String id) {
+        if (id == null) {
+            return OAuthClientDto.builder()
+                .scopes(Set.of(OAuthScope.OPEN_ID))
+                .clientSettings(OAuthClientSettings.builder().build())
+                .tokenSettings(OAuthTokenSettings.builder().build())
+            .build();
+        }
         OAuthClient client = oAuthClientRepo.findById(id).orElseThrow(OAuthClientNotFoundException::new);
         return oAuthClientMapper.fromDB(client);
     }
@@ -97,13 +107,13 @@ public class OAuthClientsService {
     }
 
     @Transactional
-    public OAuthClientShortDto changeStatus(OAuthClientChangeStatusRequest statusInfo) {
+    public OAuthClientDto changeStatus(OAuthClientChangeStatusRequest statusInfo) {
         OAuthClient client = oAuthClientRepo.findById(statusInfo.getId()).orElseThrow(OAuthClientNotFoundException::new);
 
         client.setStatus(statusInfo.getStatus());
         oAuthClientRepo.save(client);
 
-        return oAuthClientShortMapper.fromDB(client);
+        return oAuthClientMapper.fromDB(client);
     }
 
     @Transactional

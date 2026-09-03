@@ -3,6 +3,7 @@ package gr.grodov.grsso.infrastructure.http;
 import org.jspecify.annotations.NonNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.client.SimpleClientHttpRequestFactory;
 import org.springframework.web.client.RestTemplate;
 
@@ -21,6 +22,13 @@ public class HttpClientConfig {
                 connection.setInstanceFollowRedirects(false);
             }
         };
+        return new RestTemplate(factory);
+    }
+
+    @Bean
+    @Primary
+    public RestTemplate restTemplate() {
+        SimpleClientHttpRequestFactory factory = new SimpleClientHttpRequestFactory();
         return new RestTemplate(factory);
     }
 }

@@ -2,9 +2,7 @@ package gr.grodov.grsso.oauth_client.api.dto.request;
 
 import gr.grodov.grsso.oauth_client.api.dto.validator.annotation.AllowAuthGrantTypes;
 import gr.grodov.grsso.oauth_client.api.dto.validator.annotation.AllowAuthMethods;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
+import gr.grodov.grsso.oauth_client.domain.entity.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -34,4 +32,8 @@ public class OAuthClientRequest {
 
     @AllowAuthMethods
     private Set<OAuthClientAuthenticationMethod> clientAuthenticationMethods;
+
+    private OAuthClientSettings clientSettings;
+
+    private OAuthTokenSettings tokenSettings;
 }

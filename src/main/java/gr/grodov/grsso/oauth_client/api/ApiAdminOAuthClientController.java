@@ -42,13 +42,13 @@ public class ApiAdminOAuthClientController {
     }
 
     @GetMapping("/list")
-    public List<OAuthClientShortDto> list() throws InterruptedException {
+    public List<OAuthClientDto> list() throws InterruptedException {
         Thread.sleep(2000);
         return oAuthClientsService.list();
     }
 
-    @GetMapping("/{id}")
-    public OAuthClientDto get(@PathVariable String id) throws InterruptedException {
+    @GetMapping("/get")
+    public OAuthClientDto get(@RequestParam(required = false) String id) throws InterruptedException {
         Thread.sleep(2000);
         return oAuthClientsService.getById(id);
     }
@@ -60,7 +60,7 @@ public class ApiAdminOAuthClientController {
     }
 
     @PatchMapping("/status")
-    public OAuthClientShortDto changeStatus(@Valid @RequestBody OAuthClientChangeStatusRequest statusInfo) {
+    public OAuthClientDto changeStatus(@Valid @RequestBody OAuthClientChangeStatusRequest statusInfo) {
         return oAuthClientsService.changeStatus(statusInfo);
     }
 
