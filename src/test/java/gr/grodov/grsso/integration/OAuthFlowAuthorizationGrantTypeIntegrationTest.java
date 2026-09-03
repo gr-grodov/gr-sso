@@ -5,9 +5,7 @@ import gr.grodov.grsso.authorization_sso.api.dto.request.OAuth2ConsentRequest;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.authorization_sso.api.dto.response.RedirectURIResponse;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
+import gr.grodov.grsso.oauth_client.domain.entity.*;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.integration.flow_components.ImitationFrontendApplication;
 import gr.grodov.grsso.integration.flow_components.ImitationOAuthClientApplication;
@@ -94,7 +92,9 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
             Set.of(OAUTH_CLIENT_REDIRECT_URI),
             Set.of(OAuthScope.OPEN_ID, OAuthScope.PROFILE),
             Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE, OAuthAuthorizationGrantType.REFRESH_TOKEN),
-            Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC),
+            OAuthClientSettings.builder().build(),
+            OAuthTokenSettings.builder().build()
         );
         OAuthClientSecretInfoResponse clientInfo = oAuthClientsService.save(clientRequest);
         this.clientSecretInfo = new OAuthClientSecretInfo(clientInfo.clientID(), clientInfo.clientSecret());

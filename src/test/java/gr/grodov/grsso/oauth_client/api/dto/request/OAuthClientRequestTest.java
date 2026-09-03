@@ -2,9 +2,7 @@ package gr.grodov.grsso.oauth_client.api.dto.request;
 
 import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthGrantTypesValidator;
 import gr.grodov.grsso.oauth_client.api.dto.validator.AllowAuthMethodsValidator;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
+import gr.grodov.grsso.oauth_client.domain.entity.*;
 import gr.grodov.grsso.oauth_client.service.OAuthClientPropertiesService;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
@@ -147,7 +145,9 @@ class OAuthClientRequestTest {
             Set.of("http://localhost:8080/login/oauth2/code/grsso"),
             Set.of(OAuthScope.OPEN_ID),
             Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE),
-            Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC)
+            Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC),
+            OAuthClientSettings.builder().build(),
+            OAuthTokenSettings.builder().build()
         );
     }
 }

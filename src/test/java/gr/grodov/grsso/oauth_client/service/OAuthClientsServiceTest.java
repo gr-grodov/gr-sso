@@ -50,11 +50,11 @@ class OAuthClientsServiceTest {
     void list_withExistData_returnNoEmptyList() {
         var client1 = OAuthClient.builder().id("1").clientName("crm-api").build();
         var client2 = OAuthClient.builder().id("2").clientName("front-api").build();
-        var dto1 = OAuthClientShortDto.builder().id("1").clientName("crm-api").build();
-        var dto2 = OAuthClientShortDto.builder().id("2").clientName("front-api").build();
+        var dto1 = OAuthClientDto.builder().id("1").clientName("crm-api").build();
+        var dto2 = OAuthClientDto.builder().id("2").clientName("front-api").build();
         when(repo.findAllByOrderByUpdatedAtDesc()).thenReturn(List.of(client1, client2));
-        when(clientShortMapper.fromDB(client1)).thenReturn(dto1);
-        when(clientShortMapper.fromDB(client2)).thenReturn(dto2);
+        when(clientMapper.fromDB(client1)).thenReturn(dto1);
+        when(clientMapper.fromDB(client2)).thenReturn(dto2);
 
         var result = service.list();
 
@@ -244,13 +244,13 @@ class OAuthClientsServiceTest {
             .clientId("crm-api-123")
             .status(OAuthClientStatus.ACTIVE)
         .build();
-        var expectDto = OAuthClientShortDto.builder()
+        var expectDto = OAuthClientDto.builder()
             .id("1")
             .clientId("crm-api-123")
             .status(OAuthClientStatus.DISABLED)
         .build();
         when(repo.findById("1")).thenReturn(Optional.of(client));
-        when(clientShortMapper.fromDB(client)).thenReturn(expectDto);
+        when(clientMapper.fromDB(client)).thenReturn(expectDto);
 
         ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         var result = service.changeStatus(request);
