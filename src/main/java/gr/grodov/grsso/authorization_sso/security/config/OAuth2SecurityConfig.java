@@ -8,7 +8,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.jdbc.core.JdbcOperations;
-import org.springframework.modulith.NamedInterface;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
@@ -31,7 +30,9 @@ public class OAuth2SecurityConfig {
     public SecurityFilterChain oauth2FilterChain(
         HttpSecurity http,
         OAuthClaimsService oAuthClaimsService,
-        OAuthAuthenticationEntryPoint authAuthenticationEntryPoint,
+        OAuth2AuthenticationEntryPoint oAuth2AuthenticationEntryPoint,
+        OAuth2TokenSuccessHandler oAuth2TokenSuccessHandler,
+        OAuth2AuthorizationSuccessHandler oAuth2AuthorizationSuccessHandler,
         FrontendAppProperties properties
     ) {
         http
@@ -42,7 +43,7 @@ public class OAuth2SecurityConfig {
                         .anyRequest().authenticated()
                     )
                     .exceptionHandling(exception -> exception
-                        .authenticationEntryPoint(authAuthenticationEntryPoint)
+                        .authenticationEntryPoint(oAuth2AuthenticationEntryPoint)
                     );
 
                 authorizationServer
@@ -58,6 +59,10 @@ public class OAuth2SecurityConfig {
                     )
                     .authorizationEndpoint(conf -> conf
                         .consentPage(properties.oauthConsentUrl())
+                        .authorizationResponseHandler(oAuth2AuthorizationSuccessHandler)
+                    )
+                    .tokenEndpoint(conf -> conf
+                        .accessTokenResponseHandler(oAuth2TokenSuccessHandler)
                     );
             });
 

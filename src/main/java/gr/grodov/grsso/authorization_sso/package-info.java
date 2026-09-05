@@ -2,7 +2,8 @@
     "common",
     "user :: service", "user :: domain",
     "oauth_client :: repo",
-    "authentication :: service"
+    "authentication :: service",
+    "session_sso :: service"
 })
 package gr.grodov.grsso.authorization_sso;
 

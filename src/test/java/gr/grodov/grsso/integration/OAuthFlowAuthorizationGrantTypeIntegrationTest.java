@@ -59,13 +59,6 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 @AutoConfigureMockMvc
 class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegrationTest{
 
-    private static final String TEST_EMAIL = "user@example.com";
-    private static final String TEST_PASSWORD = "Password123!";
-    private static final String OAUTH_CLIENT_RESPONSE_TYPE = "code";
-    private static final String OAUTH_CLIENT_REDIRECT_URI = "http://localhost:8080/login/oauth2/code/grsso";
-    private static final List<String> OAUTH_CLIENT_SCOPES = List.of(OAuthScope.OPEN_ID.getScopeValue(), OAuthScope.PROFILE.getScopeValue());
-    private static final String OAUTH_CLIENT_AUTHORIZE_STATE = "STATE-EXAMPLE";
-
     @Autowired
     private OAuthClientsService oAuthClientsService;
     @Autowired
@@ -114,7 +107,7 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("Неаутентифицированный пользователь редиректиться на фронтенд страницу логина")
     void unauthenticatedUser_redirectToFrontendLoginPage() {
         ResponseEntity<Void> authorizeResponse = flowTestDriver.startOAuthAuthorize(new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         ));
         URI loginPage = authorizeResponse.getHeaders().getLocation();
 
@@ -127,7 +120,7 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После успешного логина '/api/oauth2/continue' возвращает oauth authorize URI")
     void afterLogin_getAuthorizeRequest() {
         flowTestDriver.startOAuthAuthorize(new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         ));
         flowTestDriver.loginInSSO(new LoginRequest(TEST_EMAIL, TEST_PASSWORD));
         RedirectURIResponse afterLoginRedirect = flowTestDriver.continueFlow();
@@ -139,7 +132,7 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После успешного логина, возвращенный oauth authorize URI редиректит пользователя на страницу подтверждения соглашений")
     void afterLoginAuthorize_redirectToConsent() {
         flowTestDriver.startOAuthAuthorize(new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         ));
         flowTestDriver.loginInSSO(new LoginRequest(TEST_EMAIL, TEST_PASSWORD));
         RedirectURIResponse afterLoginRedirect = flowTestDriver.continueFlow();
@@ -159,7 +152,7 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После подтверждения разрешений '/api/oauth2/continue' возвращает oauth authorize URI")
     void afterConsent_getAuthorizeRequest() {
         flowTestDriver.startOAuthAuthorize(new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         ));
         flowTestDriver.loginInSSO(new LoginRequest(TEST_EMAIL, TEST_PASSWORD));
         RedirectURIResponse afterLoginRedirect = flowTestDriver.continueFlow();
@@ -178,12 +171,12 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После логина и подтверждения разрешений получаем токены")
     void afterFullFlow_returnGetTokens() {
         var authorizeRequest = new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         );
         var loginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
         AuthorizeParams authorizeParams = flowTestDriver.runFullFlowGetAuthorizeCode(authorizeRequest, loginRequest);
         OAuthClientTokenByCodeRequest codeRequest = new OAuthClientTokenByCodeRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
         );
         AuthorizeTokenByCodeResponse codeResponse = flowTestDriver.authorizeTokenByCode(codeRequest);
 
@@ -198,12 +191,12 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После логина и подтверждения разрешений получаем токены")
     void afterFullFlow_ifRepeatAuthorizeToken_throwsHttpClientErrorException() {
         var authorizeRequest = new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         );
         var loginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
         AuthorizeParams authorizeParams = flowTestDriver.runFullFlowGetAuthorizeCode(authorizeRequest, loginRequest);
         OAuthClientTokenByCodeRequest codeRequest = new OAuthClientTokenByCodeRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
         );
         flowTestDriver.authorizeTokenByCode(codeRequest);
         HttpClientErrorException exception = assertThrows(
@@ -218,16 +211,16 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После аутентификации OAuth-клиента обновляем токены")
     void afterFullFlow_refreshTokens() {
         var authorizeRequest = new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         );
         var loginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
         AuthorizeParams authorizeParams = flowTestDriver.runFullFlowGetAuthorizeCode(authorizeRequest, loginRequest);
         OAuthClientTokenByCodeRequest codeRequest = new OAuthClientTokenByCodeRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
         );
         AuthorizeTokenByCodeResponse codeResponse = flowTestDriver.authorizeTokenByCode(codeRequest);
         RefreshTokenResponse tokenResponse = flowTestDriver.refreshToken(new OAuthClientRefreshTokenRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, codeResponse.refreshToken()
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), codeResponse.refreshToken()
         ));
 
         assertThat(tokenResponse.accessToken()).isNotNull();
@@ -241,19 +234,19 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После аутентификации OAuth-клиента обновляем токены")
     void afterFullFlow_repeatRefreshTokens() {
         var authorizeRequest = new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         );
         var loginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
         AuthorizeParams authorizeParams = flowTestDriver.runFullFlowGetAuthorizeCode(authorizeRequest, loginRequest);
         OAuthClientTokenByCodeRequest codeRequest = new OAuthClientTokenByCodeRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
         );
         AuthorizeTokenByCodeResponse codeResponse = flowTestDriver.authorizeTokenByCode(codeRequest);
         RefreshTokenResponse tokenResponse = flowTestDriver.refreshToken(new OAuthClientRefreshTokenRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, codeResponse.refreshToken()
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), codeResponse.refreshToken()
         ));
         RefreshTokenResponse repeatTokenResponse = flowTestDriver.refreshToken(new OAuthClientRefreshTokenRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, tokenResponse.refreshToken()
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), tokenResponse.refreshToken()
         ));
 
         assertThat(repeatTokenResponse.accessToken()).isNotNull();
@@ -267,32 +260,26 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
     @DisplayName("После аутентификации OAuth-клиента обновляем токены")
     void afterFullFlow_repeatRefreshTokensWithOldToken_throwsHttpClientErrorException() {
         var authorizeRequest = new OAuthClientAuthorizeRequest(
-            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId, OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
+            OAUTH_CLIENT_RESPONSE_TYPE, clientSecretInfo.clientId(), OAUTH_CLIENT_REDIRECT_URI, OAUTH_CLIENT_SCOPES, OAUTH_CLIENT_AUTHORIZE_STATE
         );
         var loginRequest = new LoginRequest(TEST_EMAIL, TEST_PASSWORD);
         AuthorizeParams authorizeParams = flowTestDriver.runFullFlowGetAuthorizeCode(authorizeRequest, loginRequest);
         OAuthClientTokenByCodeRequest codeRequest = new OAuthClientTokenByCodeRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), authorizeParams.code(), OAUTH_CLIENT_REDIRECT_URI
         );
         AuthorizeTokenByCodeResponse codeResponse = flowTestDriver.authorizeTokenByCode(codeRequest);
         flowTestDriver.refreshToken(new OAuthClientRefreshTokenRequest(
-            clientSecretInfo.clientId, clientSecretInfo.clientSecret, codeResponse.refreshToken()
+            clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), codeResponse.refreshToken()
         ));
         HttpClientErrorException exception = assertThrows(
             HttpClientErrorException.class,
             () -> {
                 flowTestDriver.refreshToken(new OAuthClientRefreshTokenRequest(
-                    clientSecretInfo.clientId, clientSecretInfo.clientSecret, codeResponse.refreshToken()
+                    clientSecretInfo.clientId(), clientSecretInfo.clientSecret(), codeResponse.refreshToken()
                 ));
             }
         );
 
         assertThat(exception.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
     }
-
-
-    record  OAuthClientSecretInfo (
-        String clientId,
-        String clientSecret
-    ) {}
 }

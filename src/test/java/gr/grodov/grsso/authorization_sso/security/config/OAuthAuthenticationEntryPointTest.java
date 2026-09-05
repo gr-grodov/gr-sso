@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-class OAuthAuthenticationEntryPointTest {
+class OAuth2AuthenticationEntryPointTest {
 
     @Mock
     private HttpServletRequest httpRequest;
@@ -30,7 +30,7 @@ class OAuthAuthenticationEntryPointTest {
     @Mock
     private FrontendAppProperties frontendAppProperties;
     @InjectMocks
-    private OAuthAuthenticationEntryPoint authenticationEntryPoint;
+    private OAuth2AuthenticationEntryPoint authenticationEntryPoint;
 
     @Test
     void commence_withException_redirectToFrontendLogin() throws IOException {

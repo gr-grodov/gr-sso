@@ -15,7 +15,7 @@ import java.io.IOException;
 
 @Component
 @RequiredArgsConstructor
-public class OAuthAuthenticationEntryPoint implements AuthenticationEntryPoint {
+public class OAuth2AuthenticationEntryPoint implements AuthenticationEntryPoint {
 
     private final OAuth2FlowService oAuth2FlowService;
     private final FrontendAppProperties properties;

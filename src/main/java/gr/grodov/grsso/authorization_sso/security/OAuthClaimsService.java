@@ -1,12 +1,14 @@
 package gr.grodov.grsso.authorization_sso.security;
 
 import gr.grodov.grsso.authorization_sso.security.utils.ScopedClaimsBuilder;
+import gr.grodov.grsso.session_sso.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import gr.grodov.grsso.authorization_sso.exception.OAuthPrincipalNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.modulith.NamedInterface;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.client.oidc.authentication.logout.LogoutTokenClaimNames;
 import org.springframework.security.oauth2.server.authorization.OAuth2Authorization;
 import org.springframework.security.oauth2.server.authorization.OAuth2TokenType;
 import org.springframework.security.oauth2.server.authorization.oidc.authentication.OidcUserInfoAuthenticationContext;
@@ -15,12 +17,14 @@ import org.springframework.stereotype.Service;
 
 import java.security.Principal;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class OAuthClaimsService {
 
     private final UserInfoService userInfoService;
+    private final OAuth2SessionService sessionService;
 
     public Map<String, Object> tokenClaims(OAuth2TokenContext context) {
         Authentication authentication = getUserFromContext(context);
@@ -30,7 +34,12 @@ public class OAuthClaimsService {
             return ScopedClaimsBuilder.accessTokenClaims(userInfo);
         }
 
-        return ScopedClaimsBuilder.idTokenClaims(userInfo, context.getAuthorizedScopes());
+        Map<String, Object> tokenClaims = ScopedClaimsBuilder.idTokenClaims(userInfo, context.getAuthorizedScopes());
+        if (context.getTokenType().getValue().equals("id_token")) {
+            tokenClaims.put(LogoutTokenClaimNames.SID, sessionService.getSID(Objects.requireNonNull(context.getAuthorization())));
+        }
+
+        return tokenClaims;
     }
 
     public Map<String, Object> userInfoClaims(OidcUserInfoAuthenticationContext context) {
