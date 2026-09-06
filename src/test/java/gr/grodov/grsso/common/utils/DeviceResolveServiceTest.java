@@ -1,5 +1,6 @@
 package gr.grodov.grsso.common.utils;
 
+import gr.grodov.grsso.session_sso.service.DeviceResolveService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,29 +10,29 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpHeaders;
 
-import static gr.grodov.grsso.common.utils.DeviceResolveUtils.DEVICE_COOKIE_NAME;
+import static gr.grodov.grsso.session_sso.service.DeviceResolveService.DEVICE_COOKIE_NAME;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class DeviceResolveUtilsTest {
+class DeviceResolveServiceTest {
 
     @Mock
     private HttpServletRequest httpRequest;
 
-    private DeviceResolveUtils deviceResolveUtils;
+    private DeviceResolveService deviceResolveService;
 
     @BeforeEach
     void setUp() {
-        this.deviceResolveUtils = new DeviceResolveUtils();
+        this.deviceResolveService = new DeviceResolveService();
     }
 
     @Test
     void deviceIpAddress_withProxy_returnIpAddress() {
         when(httpRequest.getHeader("X-Forwarded-For")).thenReturn("127.0.0.1");
 
-        var result = deviceResolveUtils.deviceIpAddress(httpRequest);
+        var result = deviceResolveService.deviceIpAddress(httpRequest);
 
         assertThat(result).isEqualTo("127.0.0.1");
     }
@@ -41,7 +42,7 @@ class DeviceResolveUtilsTest {
         when(httpRequest.getHeader("X-Forwarded-For")).thenReturn(null);
         when(httpRequest.getRemoteAddr()).thenReturn("127.0.0.1");
 
-        var result = deviceResolveUtils.deviceIpAddress(httpRequest);
+        var result = deviceResolveService.deviceIpAddress(httpRequest);
 
         assertThat(result).isEqualTo("127.0.0.1");
     }
@@ -52,7 +53,7 @@ class DeviceResolveUtilsTest {
             "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36"
         );
 
-        var result = deviceResolveUtils.deviceUserAgent(httpRequest);
+        var result = deviceResolveService.deviceUserAgent(httpRequest);
 
         assertThat(result).isEqualTo("Desktop: Linux (Browser, Chrome)");
     }
@@ -61,23 +62,23 @@ class DeviceResolveUtilsTest {
     void deviceId_withAttribute_returnDeviceId() {
         when(httpRequest.getAttribute(DEVICE_COOKIE_NAME)).thenReturn("device-id");
 
-        var result = deviceResolveUtils.deviceId(httpRequest);
+        var result = deviceResolveService.deviceId(httpRequest);
 
         assertThat(result).isEqualTo("device-id");
     }
 
     @Test
     void deviceId_withCookie_returnDeviceId() {
-        when(httpRequest.getCookies()).thenReturn(new Cookie[]{new Cookie(DeviceResolveUtils.DEVICE_COOKIE_NAME, "device-id")});
+        when(httpRequest.getCookies()).thenReturn(new Cookie[]{new Cookie(DeviceResolveService.DEVICE_COOKIE_NAME, "device-id")});
 
-        var result = deviceResolveUtils.deviceId(httpRequest);
+        var result = deviceResolveService.deviceId(httpRequest);
 
         assertThat(result).isEqualTo("device-id");
     }
 
     @Test
     void deviceId_withoutAttributeAndCookie() {
-        assertThatThrownBy(() -> deviceResolveUtils.deviceId(httpRequest))
+        assertThatThrownBy(() -> deviceResolveService.deviceId(httpRequest))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -89,7 +90,7 @@ class DeviceResolveUtilsTest {
         );
         when(httpRequest.getAttribute(DEVICE_COOKIE_NAME)).thenReturn("device-id");
 
-        var result = deviceResolveUtils.deviceContext(httpRequest);
+        var result = deviceResolveService.deviceContext(httpRequest);
 
         assertThat(result.deviceId()).isEqualTo("device-id");
         assertThat(result.deviceIpAddress()).isEqualTo("127.0.0.1");

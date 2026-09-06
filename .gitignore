@@ -39,3 +39,5 @@ out/
 
 ### Config files ###
 .env
+
+/src/main/resources/dbip-city-lite-2026-09.mmdb

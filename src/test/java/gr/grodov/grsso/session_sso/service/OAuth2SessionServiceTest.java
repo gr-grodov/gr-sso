@@ -1,9 +1,7 @@
 package gr.grodov.grsso.session_sso.service;
 
-import gr.grodov.grsso.common.utils.DeviceContext;
-import gr.grodov.grsso.oauth_client.domain.entity.OAuthClient;
+import gr.grodov.grsso.session_sso.service.dto.DeviceContext;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
-import gr.grodov.grsso.oauth_client.exception.OAuthClientNotFoundException;
 import gr.grodov.grsso.session_sso.domain.entity.OAuth2Session;
 import gr.grodov.grsso.session_sso.domain.repo.OAuth2SessionRepo;
 import gr.grodov.grsso.session_sso.exception.ErrorCreateOAuth2SessionException;

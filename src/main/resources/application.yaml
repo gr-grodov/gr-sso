@@ -96,3 +96,7 @@ grsso:
       - CLIENT_SECRET_JWT
       - PRIVATE_KEY_JWT
       - NONE
+  geoip:
+    database-path: ${GEOIP_DATABASE_PATH}
+    enabled: true
+    reload-cron: "0 0 6 2 * *"

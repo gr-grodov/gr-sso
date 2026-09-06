@@ -1,6 +1,6 @@
 package gr.grodov.grsso.authorization_sso.security.config;
 
-import gr.grodov.grsso.common.utils.DeviceResolveUtils;
+import gr.grodov.grsso.session_sso.service.DeviceResolveService;
 import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,7 @@ public class OAuth2AuthorizationSuccessHandler implements AuthenticationSuccessH
     private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
     private final OAuth2AuthorizationService authorizationService;
     private final OAuth2SessionService sessionService;
-    private final DeviceResolveUtils deviceResolveUtils;
+    private final DeviceResolveService deviceResolveService;
 
     @Override
     public void onAuthenticationSuccess(
@@ -43,7 +43,7 @@ public class OAuth2AuthorizationSuccessHandler implements AuthenticationSuccessH
         @NonNull Authentication authentication
     ) throws IOException {
         if (authentication instanceof OAuth2AuthorizationCodeRequestAuthenticationToken authenticationToken) {
-            sessionService.createOrUpdateSession(extractAuthorizationId(authenticationToken), deviceResolveUtils.deviceContext(request));
+            sessionService.createOrUpdateSession(extractAuthorizationId(authenticationToken), deviceResolveService.deviceContext(request));
             sendAuthorizationResponse(request, response, authenticationToken);
         }
     }
