@@ -1,0 +1,55 @@
+services:
+  grsso:
+    build: .
+    ports:
+      - "9090:9090"
+    environment:
+      DB_HOST: postgres
+      DB_PORT: 5432
+      DB_NAME: grsso
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      SMTP_MAIL_USERNAME: ${SMTP_MAIL_USERNAME}
+      SMTP_MAIL_PASSWORD: ${SMTP_MAIL_PASSWORD}
+      OAUTH2_GOOGLE_CLIENT_ID: ${OAUTH2_GOOGLE_CLIENT_ID}
+      OAUTH2_GOOGLE_CLIENT_SECRET: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    networks:
+      - grsso-net
+
+  postgres:
+    image: postgres:18-alpine
+    environment:
+      POSTGRES_DB: grsso
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - grsso-net
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    networks:
+      - grsso-net
+
+volumes:
+  postgres-data:
+  redis-data:
+  geoip-data:
+
+networks:
+  grsso-net:
