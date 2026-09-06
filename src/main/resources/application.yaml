@@ -1,0 +1,98 @@
+spring:
+  application:
+    name: gr-sso
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
+      timeout: 3s
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${SMTP_MAIL_USERNAME}
+    password: ${SMTP_MAIL_PASSWORD}
+    transport:
+      protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+        debug: true
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${OAUTH2_GOOGLE_CLIENT_ID}
+            client-secret: ${OAUTH2_GOOGLE_CLIENT_SECRET}
+            scope:
+              - openid
+              - email
+
+logging:
+  level:
+    root: DEBUG
+    org.apache.tomcat.util.net.NioEndpoint: ERROR
+    sun.rmi: ERROR
+    java.io: ERROR
+    javax.management: ERROR
+    org.springframework.security: TRACE
+    org.springframework.web.client: TRACE
+    org.springframework.security.oauth2: TRACE
+
+server:
+  port: 9090
+  servlet:
+    session:
+      cookie:
+        secure: false
+        name: SSO_SESSION
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
+
+
+grsso:
+  frontend:
+    url: http://localhost:5173
+    endpoints:
+      provider-error: /provider-error
+      login: /login
+      oauth-consent: /oauth2/consent
+
+  email:
+    from-address: ${SMTP_MAIL_USERNAME}
+    from-name: GrSSO
+    verify-email-code:
+      minute-time: 15
+      attempt: 5
+      check-cron: "0 */15 * * * ?"
+
+  oauth:
+    authentication-grant-types:
+      - AUTHORIZATION_CODE
+      - REFRESH_TOKEN
+      - CLIENT_CREDENTIALS
+      - DEVICE_CODE
+
+    authentication-methods:
+      - CLIENT_SECRET_BASIC
+      - CLIENT_SECRET_POST
+      - CLIENT_SECRET_JWT
+      - PRIVATE_KEY_JWT
+      - NONE
