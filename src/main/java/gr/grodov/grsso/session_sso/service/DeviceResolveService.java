@@ -20,7 +20,7 @@ import java.util.Set;
 @Service
 public class DeviceResolveService {
 
-    public static final String DEVICE_COOKIE_NAME = "device_id";
+    private static final String DEVICE_COOKIE_NAME = "device_id";
 
     private final UserAgentAnalyzer userAgentAnalyzer;
 
@@ -77,7 +77,6 @@ public class DeviceResolveService {
             userAgent.get(UserAgent.AGENT_NAME_VERSION).getValue()
         );
     }
-
 
     private DeviceType resolveDeviceType(UserAgent userAgent) {
         DeviceClass deviceClass = UserAgentClassifier.getDeviceClass(userAgent);

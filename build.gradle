@@ -76,7 +76,25 @@ dependencies {
     testAnnotationProcessor 'org.projectlombok:lombok'
 }
 
+def loadEnv() {
+    def envFile = rootProject.file('.env')
+    if (!envFile.exists()) {
+        return [:]
+    }
+
+    def env = new Properties()
+    envFile.withInputStream {
+        env.load(it)
+    }
+    return env
+}
+
 tasks.named('test') {
     useJUnitPlatform()
     failOnNoDiscoveredTests = false
+
+    def env = loadEnv()
+    env.each { key, value ->
+        systemProperty(key.toString(), value.toString())
+    }
 }

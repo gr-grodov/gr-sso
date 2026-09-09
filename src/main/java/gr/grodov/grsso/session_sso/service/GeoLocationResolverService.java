@@ -13,7 +13,6 @@ import org.springframework.stereotype.Component;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.nio.file.Files;
-import java.util.Optional;
 
 @NamedInterface("service")
 @Slf4j
@@ -21,17 +20,26 @@ import java.util.Optional;
 public class GeoLocationResolverService {
 
     private volatile DatabaseReader reader;
-    private final GeoIpAppProperties properties;
 
-    public GeoLocationResolverService(GeoIpAppProperties properties) throws IOException {
+    private final GeoIpAppProperties properties;
+    private final GeoIpDatabaseReaderFactory readerFactory;
+
+    public GeoLocationResolverService(
+        GeoIpAppProperties properties,
+        GeoIpDatabaseReaderFactory readerFactory
+    ) throws IOException {
         this.properties = properties;
+        this.readerFactory = readerFactory;
         this.reader = loadReader();
     }
 
     public synchronized void reload() throws IOException {
         DatabaseReader old = this.reader;
         this.reader = loadReader();
-        old.close();
+
+        if (old != null) {
+            old.close();
+        }
     }
 
     private DatabaseReader loadReader() throws IOException {
@@ -40,9 +48,7 @@ public class GeoLocationResolverService {
             return null;
         }
 
-        return new DatabaseReader.Builder(properties.databasePath().toFile())
-            .withCache(new CHMCache())
-            .build();
+        return readerFactory.create(properties.databasePath());
     }
 
     public GeoLocation resolve(String ipAddress) {

@@ -15,7 +15,6 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class GeoIpReloadJob {
 
-    private final GeoIpAppProperties properties;
     private final GeoLocationResolverService resolver;
 
     @Scheduled(cron = "${grsso.geoip.reload-cron}")

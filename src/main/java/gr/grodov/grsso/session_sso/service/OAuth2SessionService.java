@@ -36,7 +36,7 @@ public class OAuth2SessionService {
 
     @Transactional(readOnly = true)
     public List<OAuth2SessionDto> list(String userId, String deviceId) {
-         return sessionRepo.findAllByUserId(Long.parseLong(userId)).stream()
+         return sessionRepo.findAllByUserId(userId).stream()
             .map(session -> {
                 OAuth2SessionDto sessionDto = sessionMapper.fromDB(session);
                 return sessionDto.withCurrentDeviceFlag(session.getDeviceId().equals(deviceId));
@@ -55,8 +55,8 @@ public class OAuth2SessionService {
         if (session == null) {
             createSession(authorization, deviceContext);
         } else {
-            updateSession(session, authorization, deviceContext);
             cleanPrevAuthorization(session, authorization);
+            updateSession(session, authorization, deviceContext);
         }
     }
 
@@ -70,14 +70,15 @@ public class OAuth2SessionService {
 
     @Transactional(readOnly = true)
     public String getSID(OAuth2Authorization authorization) {
-        return sessionRepo.findByAuthorizationId(authorization.getId()).orElseThrow().getSid().toString();
+        return sessionRepo.findByAuthorizationId(authorization.getId())
+            .orElseThrow(OAuth2SessionNotFoundException::new)
+            .getSid().toString();
     }
 
     @Transactional(readOnly = true)
     public OAuth2SessionDto getSessionBySID(String sid, String userId) {
-        return sessionMapper.fromDB(sessionRepo.findBySidAndUserId(UUID.fromString(sid), userId).orElseThrow(
-            OAuth2SessionNotFoundException::new
-        ));
+        return sessionMapper.fromDB(sessionRepo.findBySidAndUserId(UUID.fromString(sid), userId)
+            .orElseThrow(OAuth2SessionNotFoundException::new));
     }
 
     @Transactional
@@ -102,7 +103,7 @@ public class OAuth2SessionService {
             throw new ErrorCreateOAuth2SessionException();
         }
 
-        GeoLocation location = geoLocationResolver.resolve("92.242.22.23");
+        GeoLocation location = geoLocationResolver.resolve(deviceContext.deviceIpAddress());
         return sessionRepo.save(OAuth2Session.builder()
             .authorizationId(authorization.getId())
             .userId(Long.valueOf(authorization.getPrincipalName()))
@@ -124,7 +125,7 @@ public class OAuth2SessionService {
             return;
         }
 
-        GeoLocation location = geoLocationResolver.resolve("92.242.22.23");
+        GeoLocation location = geoLocationResolver.resolve(deviceContext.deviceIpAddress());
         session.setAuthorizationId(currentAuthorization.getId());
         session.setDeviceIpAddress(deviceContext.deviceIpAddress());
         session.setDeviceLocationCountry(location.country());
