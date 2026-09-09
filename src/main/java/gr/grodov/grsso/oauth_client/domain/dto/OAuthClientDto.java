@@ -3,10 +3,12 @@ package gr.grodov.grsso.oauth_client.domain.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.grodov.grsso.oauth_client.domain.entity.*;
 import lombok.Builder;
+import org.springframework.modulith.NamedInterface;
 
 import java.time.Instant;
 import java.util.Set;
 
+@NamedInterface("service")
 @Builder
 public record OAuthClientDto(
     String id,

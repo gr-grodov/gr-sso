@@ -7,6 +7,8 @@ import gr.grodov.grsso.session_sso.service.DeviceResolveService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.Instant;
+
 @Component
 @RequiredArgsConstructor
 public class OAuth2SessionMapper implements Mapper<OAuth2Session, OAuth2SessionDto> {
@@ -21,7 +23,6 @@ public class OAuth2SessionMapper implements Mapper<OAuth2Session, OAuth2SessionD
             .userId(entity.getUserId())
             .clientId(entity.getClientId())
             .clientName(entity.getClientName())
-            .deviceId(entity.getDeviceId())
             .deviceIpAddress(entity.getDeviceIpAddress())
             .deviceLocationCountry(entity.getDeviceLocationCountry())
             .deviceLocationCity(entity.getDeviceLocationCity())
@@ -29,6 +30,7 @@ public class OAuth2SessionMapper implements Mapper<OAuth2Session, OAuth2SessionD
             .deviceType(entity.getDeviceType())
             .deviceInfo(deviceResolveService.deviceInfo(entity.getDeviceUserAgent()))
             .lastUsedAt(entity.getLastUsedAt())
+            .diffNowAndLastEnter(Instant.now().getEpochSecond() - entity.getLastUsedAt().getEpochSecond())
         .build();
     }
 
@@ -40,7 +42,6 @@ public class OAuth2SessionMapper implements Mapper<OAuth2Session, OAuth2SessionD
             .userId(dto.userId())
             .clientId(dto.clientId())
             .clientName(dto.clientName())
-            .deviceId(dto.deviceId())
             .deviceIpAddress(dto.deviceIpAddress())
             .deviceLocationCountry(dto.deviceLocationCountry())
             .deviceLocationCity(dto.deviceLocationCity())

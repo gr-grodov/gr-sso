@@ -12,6 +12,7 @@ import gr.grodov.grsso.oauth_client.exception.OAuthClientInvalidException;
 import gr.grodov.grsso.oauth_client.exception.OAuthClientNotFoundException;
 import gr.grodov.grsso.oauth_client.service.utils.IDGeneratorUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.modulith.NamedInterface;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
+@NamedInterface("service")
 @Service
 @RequiredArgsConstructor
 public class OAuthClientsService {

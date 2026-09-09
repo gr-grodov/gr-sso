@@ -5,12 +5,14 @@ import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMetho
 import gr.grodov.grsso.oauth_client.props.OAuthAppProperties;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.modulith.NamedInterface;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+@NamedInterface("service")
 @Service
 @RequiredArgsConstructor
 public class OAuthClientPropertiesService {

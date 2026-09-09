@@ -71,7 +71,7 @@ public class DeviceResolveService {
     public DeviceInfo deviceInfo(String deviceUserAgent) {
         UserAgent userAgent = userAgentAnalyzer.parse(deviceUserAgent);
         return new DeviceInfo(
-            userAgent.get(UserAgent.DEVICE_CLASS).getValue(),
+            UserAgentClassifier.getDeviceClass(userAgent),
             userAgent.get(UserAgent.OPERATING_SYSTEM_NAME).getValue(),
             userAgent.get(UserAgent.AGENT_CLASS).getValue(),
             userAgent.get(UserAgent.AGENT_NAME_VERSION).getValue()

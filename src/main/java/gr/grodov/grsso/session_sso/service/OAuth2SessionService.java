@@ -1,5 +1,7 @@
 package gr.grodov.grsso.session_sso.service;
 
+import gr.grodov.grsso.common.mapper.Mapper;
+import gr.grodov.grsso.session_sso.domain.dto.OAuth2SessionDto;
 import gr.grodov.grsso.session_sso.service.dto.DeviceContext;
 import gr.grodov.grsso.session_sso.domain.entity.OAuth2Session;
 import gr.grodov.grsso.session_sso.domain.repo.OAuth2SessionRepo;
@@ -17,7 +19,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 @NamedInterface("service")
 @Service
@@ -25,9 +29,20 @@ import java.util.Objects;
 public class OAuth2SessionService {
 
     private final OAuth2SessionRepo sessionRepo;
+    private final Mapper<OAuth2Session, OAuth2SessionDto> sessionMapper;
     private final GeoLocationResolverService geoLocationResolver;
     private final OAuth2AuthorizationService authorizationService;
     private final RegisteredClientRepository registeredClientRepository;
+
+    @Transactional(readOnly = true)
+    public List<OAuth2SessionDto> list(String userId, String deviceId) {
+         return sessionRepo.findAllByUserId(Long.parseLong(userId)).stream()
+            .map(session -> {
+                OAuth2SessionDto sessionDto = sessionMapper.fromDB(session);
+                return sessionDto.withCurrentDeviceFlag(session.getDeviceId().equals(deviceId));
+            })
+            .toList();
+    }
 
     @Transactional
     public void createOrUpdateSession(OAuth2Authorization authorization, DeviceContext deviceContext) {
@@ -56,6 +71,18 @@ public class OAuth2SessionService {
     @Transactional(readOnly = true)
     public String getSID(OAuth2Authorization authorization) {
         return sessionRepo.findByAuthorizationId(authorization.getId()).orElseThrow().getSid().toString();
+    }
+
+    @Transactional(readOnly = true)
+    public OAuth2SessionDto getSessionBySID(String sid, String userId) {
+        return sessionMapper.fromDB(sessionRepo.findBySidAndUserId(UUID.fromString(sid), userId).orElseThrow(
+            OAuth2SessionNotFoundException::new
+        ));
+    }
+
+    @Transactional
+    public void deleteSession(String sid) {
+        sessionRepo.deleteById(UUID.fromString(sid));
     }
 
     private void cleanPrevAuthorization(OAuth2Session session, OAuth2Authorization currentAuthorization) {
@@ -93,7 +120,7 @@ public class OAuth2SessionService {
 
     private void updateSession(OAuth2Session session, OAuth2Authorization currentAuthorization, @Nullable DeviceContext deviceContext) {
         if (deviceContext == null) {
-            sessionRepo.updateAuthorization(session.getSid(), currentAuthorization.getId());
+            sessionRepo.updateAuthorization(session.getSid(), Instant.now(), currentAuthorization.getId());
             return;
         }
 
@@ -104,6 +131,7 @@ public class OAuth2SessionService {
         session.setDeviceLocationCity(location.city());
         session.setDeviceUserAgent(deviceContext.deviceUserAgent());
         session.setDeviceType(deviceContext.deviceType());
+        session.setLastUsedAt(Instant.now());
         sessionRepo.save(session);
     }
 }

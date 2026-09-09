@@ -96,7 +96,7 @@ class OAuth2SessionServiceTest {
 
         sessionService.createOrUpdateSession(authorization, deviceContext);
 
-        verify(sessionRepo).updateAuthorization(SID, "auth-123");
+        verify(sessionRepo).updateAuthorization(eq(SID), any(), eq("auth-123"));
         verify(authorizationService, never()).remove(any());
     }
 
@@ -111,7 +111,7 @@ class OAuth2SessionServiceTest {
 
         sessionService.createOrUpdateSession(authorization, deviceContext);
 
-        verify(sessionRepo).updateAuthorization(SID, "auth-321");
+        verify(sessionRepo).updateAuthorization(eq(SID), any(), eq("auth-123"));
         verify(authorizationService).remove(any());
     }
 

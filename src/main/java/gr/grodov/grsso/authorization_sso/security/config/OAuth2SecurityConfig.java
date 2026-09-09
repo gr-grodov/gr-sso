@@ -1,5 +1,9 @@
 package gr.grodov.grsso.authorization_sso.security.config;
 
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 import gr.grodov.grsso.authorization_sso.security.OAuthClaimsService;
 import gr.grodov.grsso.common.jackson.SpecificJsonMapper;
 import gr.grodov.grsso.common.props.FrontendAppProperties;
@@ -11,15 +15,24 @@ import org.springframework.jdbc.core.JdbcOperations;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.oauth2.core.oidc.OidcUserInfo;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.oauth2.server.authorization.JdbcOAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.OAuth2AuthorizationService;
 import org.springframework.security.oauth2.server.authorization.client.RegisteredClientRepository;
+import org.springframework.security.oauth2.server.authorization.oidc.web.OidcProviderConfigurationEndpointFilter;
 import org.springframework.security.oauth2.server.authorization.token.JwtEncodingContext;
 import org.springframework.security.oauth2.server.authorization.token.OAuth2TokenCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.NoSuchAlgorithmException;
+import java.security.interfaces.RSAPrivateKey;
+import java.security.interfaces.RSAPublicKey;
 import java.util.Map;
+import java.util.UUID;
 
 @Configuration
 @EnableWebSecurity
@@ -35,6 +48,7 @@ public class OAuth2SecurityConfig {
         OAuth2AuthorizationSuccessHandler oAuth2AuthorizationSuccessHandler,
         FrontendAppProperties properties
     ) {
+        //OidcProviderConfigurationEndpointFilter
         http
             .oauth2AuthorizationServer((authorizationServer) -> {
                 http
@@ -54,6 +68,12 @@ public class OAuth2SecurityConfig {
                                 return OidcUserInfo.builder()
                                     .claims(map -> map.putAll(claims))
                                     .build();
+                            })
+                        )
+                        .providerConfigurationEndpoint(config ->
+                            config.providerConfigurationCustomizer(builder -> {
+                                builder.claim("backchannel_logout_supported", true);
+                                builder.claim("backchannel_logout_session_supported", true);
                             })
                         )
                     )
@@ -92,5 +112,10 @@ public class OAuth2SecurityConfig {
         service.setAuthorizationRowMapper(new JdbcOAuth2AuthorizationService.JsonMapperOAuth2AuthorizationRowMapper(clientRepository, mapper));
 
         return service;
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
+        return new NimbusJwtEncoder(jwkSource);
     }
 }

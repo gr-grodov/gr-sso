@@ -68,6 +68,8 @@ server:
 
 
 grsso:
+  app:
+    backend-uri: http://localhost:9090
   frontend:
     url: http://localhost:5173
     endpoints:
