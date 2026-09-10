@@ -1,14 +1,11 @@
 package gr.grodov.grsso.authorization_sso.service;
 
-import com.nimbusds.jwt.JWT;
 import gr.grodov.grsso.common.props.BackendAppProperties;
 import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientSettings;
 import gr.grodov.grsso.oauth_client.service.OAuthClientsService;
-import gr.grodov.grsso.session_sso.domain.dto.OAuth2SessionDto;
-import gr.grodov.grsso.session_sso.domain.entity.OAuth2Session;
-import gr.grodov.grsso.session_sso.exception.OAuth2SessionNotFoundException;
-import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
+import gr.grodov.grsso.oauth_session.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -18,7 +15,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.client.RestTemplate;
 
-import java.time.Instant;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -29,6 +25,7 @@ import static org.mockito.Mockito.*;
 class BackChannelLogoutServiceTest {
 
     private final UUID SID = UUID.randomUUID();
+    private final static UUID USER_ID = UUID.randomUUID();
 
     @Mock
     private Jwt jwtToken;
@@ -49,13 +46,13 @@ class BackChannelLogoutServiceTest {
     void logoutFromClient_withCorrectSIDAndUserID_postLogoutTokenAndDeleteSession() {
         var session = buidlOAuth2SessionDto();
         var client = buildOAuthClientDto();
-        when(sessionService.getSessionBySID(SID.toString(), "1")).thenReturn(session);
+        when(sessionService.getSessionBySID(SID.toString(), USER_ID.toString())).thenReturn(session);
         when(clientsService.getById("client-id")).thenReturn(client);
         when(properties.backendUri()).thenReturn("http://gr-sso.com");
         when(jwtEncoder.encode(any())).thenReturn(jwtToken);
         when(jwtToken.getTokenValue()).thenReturn("logout_token");
 
-        logoutService.logoutFromClient(SID.toString(), "1");
+        logoutService.logoutFromClient(SID.toString(), USER_ID.toString());
 
         verify(restTemplate).postForEntity(eq("https://example.com/logout/connect/back-channel/grsso"), any(), eq(Void.class));
         verify(sessionService).deleteSession(SID.toString());
@@ -65,14 +62,14 @@ class BackChannelLogoutServiceTest {
     void logoutFromClient_errorPostLogoutToken_dontPostLogoutToken() {
         var session = buidlOAuth2SessionDto();
         var client = buildOAuthClientDto();
-        when(sessionService.getSessionBySID(SID.toString(), "1")).thenReturn(session);
+        when(sessionService.getSessionBySID(SID.toString(), USER_ID.toString())).thenReturn(session);
         when(clientsService.getById("client-id")).thenReturn(client);
         when(properties.backendUri()).thenReturn("http://gr-sso.com");
         when(jwtEncoder.encode(any())).thenReturn(jwtToken);
         when(jwtToken.getTokenValue()).thenReturn("logout_token");
         when(restTemplate.postForEntity(anyString(), any(), any())).thenThrow(RuntimeException.class);
 
-        logoutService.logoutFromClient(SID.toString(), "1");
+        logoutService.logoutFromClient(SID.toString(), USER_ID.toString());
 
         verify(sessionService).deleteSession(SID.toString());
     }
@@ -80,7 +77,7 @@ class BackChannelLogoutServiceTest {
     private OAuth2SessionDto buidlOAuth2SessionDto() {
         return OAuth2SessionDto.builder()
             .sid(SID)
-            .userId(1L)
+            .userId(USER_ID)
             .clientId("client-id")
         .build();
     }

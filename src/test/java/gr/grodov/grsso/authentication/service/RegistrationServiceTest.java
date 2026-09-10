@@ -13,6 +13,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Locale;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -35,7 +36,7 @@ class RegistrationServiceTest {
     @Test
     void registration_newUser_createUserAndReturnVerifyId() {
         var request = new RegistrationRequest("user@example.com", "Password123!");
-        var userInfo = UserInfoDto.builder().id(1L).email("user@example.com").build();
+        var userInfo = UserInfoDto.builder().id(UUID.randomUUID()).email("user@example.com").build();
         when(userInfoService.createNewUser(request.getEmail(), request.getPassword(), AuthProvider.LOCAL)).thenReturn(userInfo);
         when(httpRequest.getLocale()).thenReturn(Locale.US);
         when(verifyEmailService.sendVerifyCode(userInfo, Locale.US)).thenReturn("123456");

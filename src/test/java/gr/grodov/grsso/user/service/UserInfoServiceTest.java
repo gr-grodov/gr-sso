@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -28,6 +29,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class UserInfoServiceTest {
+
+    private final static UUID USER_ID = UUID.randomUUID();
 
     @Mock
     private UserInfoRepo userInfoRepo;
@@ -81,39 +84,37 @@ class UserInfoServiceTest {
 
     @Test
     void findById_withEmptyUsers_throwsUserNotFoundException() {
-        String id = "1";
-        when(userInfoRepo.findById(1L)).thenReturn(Optional.empty());
+        when(userInfoRepo.findById(USER_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> userInfoService.findById(id))
+        assertThatThrownBy(() -> userInfoService.findById(USER_ID.toString()))
             .isInstanceOf(UserNotFoundException.class)
             .satisfies(ex -> {
                 var exception = (UserNotFoundException) ex;
                 assertThat(exception.getCode()).isEqualTo("user_not_found");
             });
-        verify(userInfoRepo).findById(anyLong());
+        verify(userInfoRepo).findById(any(UUID.class));
         verifyNoInteractions(mapper, passwordEncoder);
     }
 
     @Test
     void findById_withCorrectId_returnUser() {
-        String id = "1";
         var user = UserInfo.builder()
-            .id(1L)
+            .id(USER_ID)
             .email("test@mail.com")
             .provider(AuthProvider.LOCAL)
             .build();
         var expectDto = UserInfoDto.builder()
-            .id(1L)
+            .id(USER_ID)
             .email("test@mail.com")
             .provider(AuthProvider.LOCAL)
             .build();
-        when(userInfoRepo.findById(1L)).thenReturn(Optional.of(user));
+        when(userInfoRepo.findById(USER_ID)).thenReturn(Optional.of(user));
         when(mapper.fromDB(any(UserInfo.class))).thenReturn(expectDto);
 
-        var result = userInfoService.findById(id);
+        var result = userInfoService.findById(USER_ID.toString());
 
         assertThat(result).isEqualTo(expectDto);
-        verify(userInfoRepo).findById(anyLong());
+        verify(userInfoRepo).findById(any(UUID.class));
         verify(mapper).fromDB(any(UserInfo.class));
         verifyNoInteractions(passwordEncoder);
     }
@@ -138,7 +139,7 @@ class UserInfoServiceTest {
     void createNewUser_withCorrectEmail_returnSave() {
         var user = new UserInfo();
         var expectDto = UserInfoDto.builder()
-            .id(1L)
+            .id(USER_ID)
             .email("test@mail.com")
             .provider(AuthProvider.LOCAL)
             .build();
@@ -166,7 +167,7 @@ class UserInfoServiceTest {
     void createNewUser_withOtherProvider_returnSave() {
         var user = new UserInfo();
         var expectDto = UserInfoDto.builder()
-            .id(1L)
+            .id(USER_ID)
             .email("test@mail.com")
             .provider(AuthProvider.GOOGLE)
             .build();
@@ -187,8 +188,8 @@ class UserInfoServiceTest {
 
     @Test
     void delete_withUserId_callDelete() {
-        userInfoService.deleteById(1L);
+        userInfoService.deleteById(USER_ID);
 
-        verify(userInfoRepo).deleteById(1L);
+        verify(userInfoRepo).deleteById(USER_ID);
     }
 }

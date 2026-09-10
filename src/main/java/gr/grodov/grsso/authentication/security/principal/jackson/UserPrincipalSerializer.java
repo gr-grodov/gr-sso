@@ -16,7 +16,7 @@ public class UserPrincipalSerializer extends ValueSerializer<UserPrincipal> {
     public void serialize(UserPrincipal principal, JsonGenerator gen, SerializationContext ctxt) throws JacksonException {
         gen.writeStartObject();
 
-        gen.writeNumberProperty("id", principal.getId());
+        gen.writeStringProperty("id", principal.getId().toString());
         gen.writeStringProperty("email", principal.getEmail());
         gen.writeStringProperty("provider", principal.getProvider().name());
 
@@ -37,7 +37,7 @@ public class UserPrincipalSerializer extends ValueSerializer<UserPrincipal> {
             gen, context, typeSerializer.typeId(value, JsonToken.START_OBJECT)
         );
 
-        gen.writeNumberProperty("id", value.getId());
+        gen.writeStringProperty("id", value.getId().toString());
         gen.writeStringProperty("email", value.getEmail());
         gen.writeStringProperty("provider", value.getProvider().name());
 

@@ -2,8 +2,8 @@ package gr.grodov.grsso.authorization_sso.api;
 
 import gr.grodov.grsso.authorization_sso.service.BackChannelLogoutService;
 import gr.grodov.grsso.common.api.SuccessResponse;
-import gr.grodov.grsso.session_sso.domain.dto.OAuth2SessionDto;
-import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
+import gr.grodov.grsso.oauth_session.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

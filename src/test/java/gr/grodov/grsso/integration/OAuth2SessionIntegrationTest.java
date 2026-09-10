@@ -15,8 +15,8 @@ import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.oauth_client.domain.entity.*;
 import gr.grodov.grsso.oauth_client.service.OAuthClientsService;
-import gr.grodov.grsso.session_sso.domain.entity.OAuth2Session;
-import gr.grodov.grsso.session_sso.domain.repo.OAuth2SessionRepo;
+import gr.grodov.grsso.oauth_session.domain.entity.OAuth2Session;
+import gr.grodov.grsso.oauth_session.domain.repo.OAuth2SessionRepo;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.user.service.UserInfoService;
 import org.junit.jupiter.api.AfterEach;
@@ -35,7 +35,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatNoException;
 
 @DisplayName("Проверяет создание OAuth2Session и обновлении OAuth2Authorization")
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)

@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.server.authorization.token.OAuth2Toke
 
 import java.security.Principal;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -25,6 +26,8 @@ import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class OAuthClaimsServiceTest {
+
+    private final static UUID USER_ID = UUID.randomUUID();
 
     @Mock
     private OAuth2TokenContext tokenContext;
@@ -43,30 +46,30 @@ class OAuthClaimsServiceTest {
 
     @Test
     void tokenClaims_withAccessToken_returnClaimsWithOnlySub() {
-        UserInfoDto userInfo = UserInfoDto.builder().id(1L).email("test@test.com").build();
+        UserInfoDto userInfo = UserInfoDto.builder().id(USER_ID).email("test@test.com").build();
         when(tokenContext.getPrincipal()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("1");
-        when(userInfoService.findById("1")).thenReturn(userInfo);
+        when(authentication.getName()).thenReturn(USER_ID.toString());
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(userInfo);
         when(tokenContext.getTokenType()).thenReturn(OAuth2TokenType.ACCESS_TOKEN);
 
         var result = oAuthClaimsService.tokenClaims(tokenContext);
 
-        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo("1");
+        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo(USER_ID.toString());
         assertThat(result.size()).isEqualTo(1);
     }
 
     @Test
     void tokenClaims_withRefreshToken_returnClaims() {
-        UserInfoDto userInfo = UserInfoDto.builder().id(1L).email("test@test.com").build();
+        UserInfoDto userInfo = UserInfoDto.builder().id(USER_ID).email("test@test.com").build();
         when(tokenContext.getPrincipal()).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("1");
-        when(userInfoService.findById("1")).thenReturn(userInfo);
+        when(authentication.getName()).thenReturn(USER_ID.toString());
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(userInfo);
         when(tokenContext.getTokenType()).thenReturn(OAuth2TokenType.REFRESH_TOKEN);
         when(tokenContext.getAuthorizedScopes()).thenReturn(Set.of("openid", "email"));
 
         var result = oAuthClaimsService.tokenClaims(tokenContext);
 
-        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo("1");
+        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo(USER_ID.toString());
         assertThat(result.get(StandardClaimNames.EMAIL)).isEqualTo("test@test.com");
         assertThat(result.size()).isEqualTo(2);
     }
@@ -86,16 +89,16 @@ class OAuthClaimsServiceTest {
 
     @Test
     void userInfoClaims_withToken_returnClaims() {
-        UserInfoDto userInfo = UserInfoDto.builder().id(1L).email("test@test.com").build();
+        UserInfoDto userInfo = UserInfoDto.builder().id(USER_ID).email("test@test.com").build();
         when(oidcContext.getAuthorization()).thenReturn(auth2Authorization);
         when(auth2Authorization.getAttribute(Principal.class.getName())).thenReturn(authentication);
-        when(authentication.getName()).thenReturn("1");
-        when(userInfoService.findById("1")).thenReturn(userInfo);
+        when(authentication.getName()).thenReturn(USER_ID.toString());
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(userInfo);
         when(auth2Authorization.getAuthorizedScopes()).thenReturn(Set.of("openid", "email"));
 
         var result = oAuthClaimsService.userInfoClaims(oidcContext);
 
-        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo("1");
+        assertThat(result.get(StandardClaimNames.SUB)).isEqualTo(USER_ID.toString());
         assertThat(result.get(StandardClaimNames.EMAIL)).isEqualTo("test@test.com");
         assertThat(result.size()).isEqualTo(2);
     }

@@ -15,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 
 @NamedInterface("service")
 @Service
@@ -34,10 +36,10 @@ public class UserInfoService {
     @Transactional(readOnly = true)
 
     public UserInfoDto findById(String id) throws UserNotFoundException {
-        long userId;
+        UUID userId;
         try {
-            userId = Long.parseLong(id);
-        } catch (NumberFormatException ex) {
+            userId = UUID.fromString(id);
+        } catch (IllegalArgumentException ex) {
             throw new UserNotFoundException();
         }
 
@@ -67,15 +69,23 @@ public class UserInfoService {
     }
 
     @Transactional
-    public void deleteById(Long userId) {
+    public void deleteById(UUID userId) {
         userInfoRepo.deleteById(userId);
     }
 
     @Transactional
-    public UserInfoDto enabledUserInfo(Long userId, boolean enabled) throws UsernameNotFoundException {
+    public UserInfoDto enabledUserInfo(UUID userId, boolean enabled) throws UsernameNotFoundException {
         UserInfo userInfo = userInfoRepo.findById(userId).orElseThrow(UserNotFoundException::new);
         userInfo.setEnabled(enabled);
 
         return userInfoMapper.fromDB(userInfoRepo.save(userInfo));
+    }
+
+    private UUID getUserId(String id) {
+        try {
+            return UUID.fromString(id);
+        } catch (NumberFormatException ex) {
+            throw new UserNotFoundException();
+        }
     }
 }

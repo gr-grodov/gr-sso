@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 import java.time.Instant;
 import java.util.Map;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -46,8 +47,8 @@ class CustomOidcUserServiceTest {
     @Test
     void loadUser_withExistUser_returnUserPrincipal() {
         OidcUserRequest request = buildRequest("google");
-        OidcUser oidcUser = mockOidcUser("user@example.com");
-        UserInfoDto existingUser = UserInfoDto.builder().id(1L).email("user@test.com").role(Role.USER).build();
+        OidcUser oidcUser = mockOidcUser();
+        UserInfoDto existingUser = UserInfoDto.builder().id(UUID.randomUUID()).email("user@test.com").role(Role.USER).build();
         when(delegate.loadUser(request)).thenReturn(oidcUser);
         when(userInfoService.findByEmailAndProvider("user@example.com", AuthProvider.GOOGLE)).thenReturn(existingUser);
 
@@ -60,8 +61,8 @@ class CustomOidcUserServiceTest {
     @Test
     void loadUser_withNewUser_returnUserPrincipalAndCreateUser() {
         OidcUserRequest request = buildRequest("google");
-        OidcUser oidcUser = mockOidcUser("user@example.com");
-        UserInfoDto user = UserInfoDto.builder().id(1L).email("user@example.com").role(Role.USER).build();
+        OidcUser oidcUser = mockOidcUser();
+        UserInfoDto user = UserInfoDto.builder().id(UUID.randomUUID()).email("user@example.com").role(Role.USER).build();
         when(delegate.loadUser(request)).thenReturn(oidcUser);
         when(userInfoService.findByEmailAndProvider("user@example.com", AuthProvider.GOOGLE)).thenThrow(UsernameNotFoundException.class);
         when(userInfoService.createNewUser("user@example.com", null, AuthProvider.GOOGLE)).thenReturn(user);
@@ -112,9 +113,9 @@ class CustomOidcUserServiceTest {
         return new OidcUserRequest(clientRegistration, accessToken, idToken);
     }
 
-    private OidcUser mockOidcUser(String email) {
+    private OidcUser mockOidcUser() {
         OidcUser oidcUser = mock(OidcUser.class);
-        when(oidcUser.getEmail()).thenReturn(email);
+        when(oidcUser.getEmail()).thenReturn("user@example.com");
         return oidcUser;
     }
 }

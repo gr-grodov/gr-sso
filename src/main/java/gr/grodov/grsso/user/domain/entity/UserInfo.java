@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.jspecify.annotations.Nullable;
+
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -12,32 +15,41 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @AllArgsConstructor
 @NoArgsConstructor
-@SequenceGenerator(
-    name = "user_seq",
-    sequenceName = "users_id_seq"
-)
 @Table(name = "users")
 public class UserInfo extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    private Long id;
+    @Column(
+        columnDefinition = "uuid default uuidv7()",
+        nullable = false,
+        updatable = false
+    )
+    private UUID id;
 
     @NotNull
-    String email;
+    private String email;
 
-    String password;
+    private String password;
 
     @NotNull
-    Boolean enabled;
+    private Boolean enabled;
 
     @Column(name = "external_id")
-    String externalId;
+    private String externalId;
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    AuthProvider provider;
+    private AuthProvider provider;
 
     @NotNull
     @Enumerated(value = EnumType.STRING)
-    Role role;
+    private Role role;
+
+    @Nullable
+    private String firstName;
+
+    @Nullable
+    private String lastName;
+
+    @Nullable
+    private String patronymic;
 }

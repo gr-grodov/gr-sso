@@ -1,7 +1,7 @@
 package gr.grodov.grsso.authorization_sso.security.config;
 
-import gr.grodov.grsso.session_sso.service.DeviceResolveService;
-import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
+import gr.grodov.grsso.oauth_session.service.DeviceResolveService;
+import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;

@@ -11,6 +11,7 @@ import tools.jackson.databind.ObjectMapper;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -27,8 +28,9 @@ class AuthenticationJsonMapperTest {
 
     @Test
     void serialize_withUserInfo_returnCorrectData() {
+        UUID userId = UUID.randomUUID();
         var userInfo = UserInfoDto.builder()
-            .id(1L)
+            .id(userId)
             .email("user@example.com")
             .password("Password123!")
             .enabled(true)
@@ -43,7 +45,7 @@ class AuthenticationJsonMapperTest {
         assertThat(jsonNode.has("@class")).isTrue();
         assertThat(jsonNode.get("@class").stringValue()).isEqualTo(UserPrincipal.class.getName());
         assertThat(jsonNode.has("id")).isTrue();
-        assertThat(jsonNode.get("id").asLong()).isEqualTo(1L);
+        assertThat(jsonNode.get("id").asString()).isEqualTo(userId.toString());
         assertThat(jsonNode.has("email")).isTrue();
         assertThat(jsonNode.get("email").asString()).isEqualTo("user@example.com");
         assertThat(jsonNode.has("provider")).isTrue();
@@ -56,21 +58,22 @@ class AuthenticationJsonMapperTest {
 
     @Test
     void deserialize_withJsonUserPrincipal_returnCorrectData() {
+        UUID userId = UUID.randomUUID();
         String json = """
             {
                 "@class":"gr.grodov.grsso.authentication.security.principal.UserPrincipal",
-                "id":1,
+                "id":%s,
                 "email":"user@example.com",
                 "provider":"LOCAL",
                 "authorities":["USER"]
             }
-        """;
+        """.formatted(userId);
 
         Object deserializeObject = authenticationMapper.readValue(json, Object.class);
 
         assertThat(deserializeObject).isExactlyInstanceOf(UserPrincipal.class);
         UserPrincipal userPrincipal = (UserPrincipal) deserializeObject;
-        assertThat(userPrincipal.getId()).isEqualTo(1L);
+        assertThat(userPrincipal.getId()).isEqualTo(userId);
         assertThat(userPrincipal.getEmail()).isEqualTo("user@example.com");
         assertThat(userPrincipal.getProvider()).isEqualTo(AuthProvider.LOCAL);
         assertThat(userPrincipal.getAuthorities()).isEqualTo(List.of(Role.USER));

@@ -15,6 +15,8 @@ import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import java.util.UUID;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -31,7 +33,7 @@ class CustomUserDetailsServiceTest {
     @Test
     void loadUserByUsername_withCorrectData_getUserPrincipal() {
         UserInfoDto existingUser = UserInfoDto.builder()
-            .id(1L)
+            .id(UUID.randomUUID())
             .password("Password123!")
             .email("user@test.com")
             .role(Role.USER)
@@ -55,7 +57,7 @@ class CustomUserDetailsServiceTest {
     @Test
     void loadUserByUsername_withDisabledUser_throwsDisabledException() {
         UserInfoDto existingUser = UserInfoDto.builder()
-            .id(1L)
+            .id(UUID.randomUUID())
             .password("Password123!")
             .email("user@test.com")
             .role(Role.USER)

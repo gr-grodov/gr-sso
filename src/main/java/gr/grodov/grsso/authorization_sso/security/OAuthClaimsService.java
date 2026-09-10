@@ -1,8 +1,7 @@
 package gr.grodov.grsso.authorization_sso.security;
 
 import gr.grodov.grsso.authorization_sso.security.utils.ScopedClaimsBuilder;
-import gr.grodov.grsso.session_sso.domain.dto.OAuth2SessionDto;
-import gr.grodov.grsso.session_sso.service.OAuth2SessionService;
+import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import gr.grodov.grsso.authorization_sso.exception.OAuthPrincipalNotFoundException;

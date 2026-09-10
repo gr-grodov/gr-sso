@@ -12,6 +12,7 @@ import tools.jackson.databind.JsonNode;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 import org.springframework.security.core.GrantedAuthority;
 
@@ -23,7 +24,7 @@ public class UserPrincipalDeserializer extends ObjectValueDeserializer<UserPrinc
         @NonNull DeserializationContext context,
         JsonNode json
     ) {
-        Long id = json.get("id").asLong();
+        UUID id = UUID.fromString(json.get("id").asString());
         String email = json.get("email").asString();
         AuthProvider provider = AuthProvider.valueOf(json.get("provider").asString());
 

@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import java.time.Instant;
 import java.util.Optional;
+import java.util.UUID;
 
 @Repository
-public interface UserInfoRepo extends JpaRepository<UserInfo, Long> {
+public interface UserInfoRepo extends JpaRepository<UserInfo, UUID> {
     Optional<UserInfo> findByEmailAndProvider(String email, AuthProvider provider);
     Optional<UserInfo> findByEmail(String email);
     Boolean existsByEmailAndProvider(String email, AuthProvider provider);

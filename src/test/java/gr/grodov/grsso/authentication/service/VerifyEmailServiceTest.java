@@ -23,6 +23,7 @@ import org.springframework.context.ApplicationEventPublisher;
 
 import java.util.Locale;
 import java.util.Optional;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
@@ -32,6 +33,9 @@ import static org.mockito.Mockito.verifyNoInteractions;
 
 @ExtendWith(MockitoExtension.class)
 class VerifyEmailServiceTest {
+
+    private final static UUID USER_ID = UUID.randomUUID();
+    private final static String VERIFY_ID = "%s:ABCDE-12345".formatted(USER_ID);
 
     @Mock
     private EmailAppProperties.VerifyEmailCode verifyEmailCodeProperties;
@@ -55,7 +59,7 @@ class VerifyEmailServiceTest {
         when(emailProperties.verifyEmailCode()).thenReturn(verifyEmailCodeProperties);
         when(verifyEmailCodeProperties.attempt()).thenReturn(5);
         when(verifyEmailCodeProperties.minuteTime()).thenReturn(15);
-        var userinfo = UserInfoDto.builder().id(123456L).email("user@example.com").build();
+        var userinfo = UserInfoDto.builder().id(USER_ID).email("user@example.com").build();
         ArgumentCaptor<FromResourceEmailEvent> emailEvent = ArgumentCaptor.forClass(FromResourceEmailEvent.class);
 
         var result = verifyEmailService.sendVerifyCode(userinfo, Locale.forLanguageTag("ru"));
@@ -69,26 +73,26 @@ class VerifyEmailServiceTest {
             assertThat(event.contextTemplate().get("expiresInMinutes")).isNotNull();
             assertThat(event.locale()).isEqualTo(Locale.forLanguageTag("ru"));
         });
-        assertThat(result).contains("123456");
+        assertThat(result).contains(USER_ID.toString());
     }
 
     @Test
     void verifyEmail_withCorrectCode_returnTrue() {
-        var request = new VerifyEmailRequest("1:ABCDE-12345", "123456");
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 5);
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
+        var request = new VerifyEmailRequest(VERIFY_ID, "123456");
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 5);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
 
         var result = verifyEmailService.verifyEmail(request);
 
         assertThat(result).isTrue();
-        verify(userInfoService).enabledUserInfo(1L, true);
-        verify(verifyEmailCodeStorage).delete("1:ABCDE-12345");
+        verify(userInfoService).enabledUserInfo(USER_ID, true);
+        verify(verifyEmailCodeStorage).delete(VERIFY_ID);
     }
 
     @Test
     void verifyEmail_expireKey_throwsVerifyEmailCodeNotFoundException() {
-        var request = new VerifyEmailRequest("1:ABCDE-12345", "123456");
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.empty());
+        var request = new VerifyEmailRequest(VERIFY_ID, "123456");
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> verifyEmailService.verifyEmail(request))
             .isExactlyInstanceOf(VerifyEmailCodeNotFoundException.class)
@@ -102,9 +106,9 @@ class VerifyEmailServiceTest {
 
     @Test
     void verifyEmail_endAttempt_throwsVerifyEmailCodeEndAttemptException() {
-        var request = new VerifyEmailRequest("1:ABCDE-12345", "123456");
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 1);
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
+        var request = new VerifyEmailRequest(VERIFY_ID, "123456");
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 1);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
 
         assertThatThrownBy(() -> verifyEmailService.verifyEmail(request))
             .isExactlyInstanceOf(VerifyEmailCodeEndAttemptException.class)
@@ -118,9 +122,9 @@ class VerifyEmailServiceTest {
 
     @Test
     void verifyEmail_invalidInvalidCodeAndInvalidUpdateEntity_throwsVerifyEmailCodeNotFoundException() {
-        var request = new VerifyEmailRequest("1:ABCDE-12345", "654321");
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 5);
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
+        var request = new VerifyEmailRequest(VERIFY_ID, "654321");
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 5);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
         when(verifyEmailCodeStorage.update(anyString(), any())).thenReturn(false);
 
         assertThatThrownBy(() -> verifyEmailService.verifyEmail(request))
@@ -135,9 +139,9 @@ class VerifyEmailServiceTest {
 
     @Test
     void verifyEmail_invalidVerifyCode_throwsVerifyEmailCodeInvalidCodeException() {
-        var request = new VerifyEmailRequest("1:ABCDE-12345", "654321");
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 5);
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
+        var request = new VerifyEmailRequest(VERIFY_ID, "654321");
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 5);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
         when(verifyEmailCodeStorage.update(anyString(), any())).thenReturn(true);
 
         assertThatThrownBy(() -> verifyEmailService.verifyEmail(request))
@@ -158,13 +162,13 @@ class VerifyEmailServiceTest {
         when(verifyEmailCodeProperties.attempt()).thenReturn(5);
         when(verifyEmailCodeProperties.minuteTime()).thenReturn(15);
 
-        var request = new RefreshVerifyCodeRequest("1:ABCDE-12345");
-        var userinfo = UserInfoDto.builder().id(123456L).email("user@example.com").build();
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 0);
+        var request = new RefreshVerifyCodeRequest(VERIFY_ID);
+        var userinfo = UserInfoDto.builder().id(USER_ID).email("user@example.com").build();
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 0);
         ArgumentCaptor<VerifyEmailCode> refreshVerifyEmailCode = ArgumentCaptor.forClass(VerifyEmailCode.class);
 
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
-        when(userInfoService.findById("1")).thenReturn(userinfo);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(userinfo);
 
 
         verifyEmailService.refreshCode(request, Locale.forLanguageTag("ru"));
@@ -173,7 +177,7 @@ class VerifyEmailServiceTest {
 
         verify(publisher).publishEvent(any(FromResourceEmailEvent.class));
         assertThat(refreshVerifyEmailCode.getValue()).isNotNull().satisfies(emailCode -> {
-            assertThat(emailCode.userId()).isEqualTo(1L);
+            assertThat(emailCode.userId()).isEqualTo(USER_ID);
             assertThat(emailCode.verifyCode()).isNotNull();
             assertThat(emailCode.remainAttempt()).isEqualTo(emailProperties.verifyEmailCode().attempt());
         });
@@ -181,8 +185,8 @@ class VerifyEmailServiceTest {
 
     @Test
     void refreshCode_expireKey_throwsVerifyEmailCodeNotFoundException() {
-        var request = new RefreshVerifyCodeRequest("1:ABCDE-12345");
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.empty());
+        var request = new RefreshVerifyCodeRequest(VERIFY_ID);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> verifyEmailService.refreshCode(request, Locale.forLanguageTag("ru")))
             .isExactlyInstanceOf(VerifyEmailCodeNotFoundException.class)
@@ -194,10 +198,10 @@ class VerifyEmailServiceTest {
 
     @Test
     void refreshCode_deleteUser_throwsVerifyEmailCodeNotFoundException() {
-        var request = new RefreshVerifyCodeRequest("1:ABCDE-12345");
-        var verifyEmailCode = new VerifyEmailCode(1L, "123456", 0);
-        when(verifyEmailCodeStorage.get("1:ABCDE-12345")).thenReturn(Optional.of(verifyEmailCode));
-        when(userInfoService.findById("1")).thenThrow(UserNotFoundException.class);
+        var request = new RefreshVerifyCodeRequest(VERIFY_ID);
+        var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 0);
+        when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
+        when(userInfoService.findById(USER_ID.toString())).thenThrow(UserNotFoundException.class);
 
         assertThatThrownBy(() -> verifyEmailService.refreshCode(request, Locale.forLanguageTag("ru")))
             .isExactlyInstanceOf(UserNotFoundException.class);
@@ -205,27 +209,27 @@ class VerifyEmailServiceTest {
 
     @Test
     void cancelVerifyEmail_withVerifyId_callDeleteCacheAndUser() {
-        when(userInfoService.findById("1")).thenReturn(UserInfoDto.builder().id(1L).enabled(false).build());
+        when(userInfoService.findById("1")).thenReturn(UserInfoDto.builder().id(USER_ID).enabled(false).build());
 
-        verifyEmailService.cancelVerifyEmail("1:ABCDE-12345");
+        verifyEmailService.cancelVerifyEmail(VERIFY_ID);
 
-        verify(verifyEmailCodeStorage).delete("1:ABCDE-12345");
-        verify(userInfoService).deleteById(1L);
+        verify(verifyEmailCodeStorage).delete(VERIFY_ID);
+        verify(userInfoService).deleteById(USER_ID);
     }
 
     @Test
     void handleExpireId_existUser_deleteUser() {
-        var userinfo = UserInfoDto.builder().id(1L).email("user@example.com").enabled(false).build();
-        when(userInfoService.findById("1")).thenReturn(userinfo);
+        var userinfo = UserInfoDto.builder().id(USER_ID).email("user@example.com").enabled(false).build();
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(userinfo);
 
-        verifyEmailService.handleExpireId("1:ABCDE-12345");
+        verifyEmailService.handleExpireId(VERIFY_ID);
 
-        verify(userInfoService).deleteById(1L);
+        verify(userInfoService).deleteById(USER_ID);
     }
 
     @Test
     void handleExpireId_existEnabledUser_noChange() {
-        var userinfo = UserInfoDto.builder().id(123456L).email("user@example.com").enabled(true).build();
+        var userinfo = UserInfoDto.builder().id(USER_ID).email("user@example.com").enabled(true).build();
         when(userInfoService.findById("1")).thenReturn(userinfo);
 
         verifyEmailService.handleExpireId("123456:ABCDE-12345");
@@ -237,7 +241,7 @@ class VerifyEmailServiceTest {
     void handleExpireId_noExistEnabledUser_log() {
         when(userInfoService.findById("1")).thenThrow(UserNotFoundException.class);
 
-        verifyEmailService.handleExpireId("1:ABCDE-12345");
+        verifyEmailService.handleExpireId(VERIFY_ID);
 
         verify(userInfoService, never()).deleteById(any());
     }

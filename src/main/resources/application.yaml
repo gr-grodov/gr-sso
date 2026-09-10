@@ -98,6 +98,7 @@ grsso:
       - CLIENT_SECRET_JWT
       - PRIVATE_KEY_JWT
       - NONE
+
   geoip:
     database-path: ${GEOIP_DATABASE_PATH}
     enabled: true

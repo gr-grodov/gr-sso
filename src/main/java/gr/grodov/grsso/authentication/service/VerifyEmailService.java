@@ -110,8 +110,8 @@ public class VerifyEmailService {
         return String.format("%06d", random.nextInt(999999));
     }
 
-    private String generateVerifyId(Long userId) {
-        return "%d:%s".formatted(userId, UUID.randomUUID());
+    private String generateVerifyId(UUID userId) {
+        return "%s:%s".formatted(userId.toString(), UUID.randomUUID());
     }
 
     private String getUserIdFromVerifyId(String verifyId) {

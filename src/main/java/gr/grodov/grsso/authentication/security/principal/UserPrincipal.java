@@ -15,13 +15,14 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @Getter
 @Builder
 @RequiredArgsConstructor
 public class UserPrincipal implements UserDetails, OidcUser {
 
-    private final Long id;
+    private final UUID id;
     private final String email;
     private final String password;
     private final AuthProvider provider;

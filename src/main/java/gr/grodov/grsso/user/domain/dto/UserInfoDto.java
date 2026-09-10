@@ -8,11 +8,13 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import org.springframework.modulith.NamedInterface;
 
+import java.util.UUID;
+
 @NamedInterface("domain")
 @Builder
 public record UserInfoDto(
     @NotNull
-    Long id,
+    UUID id,
 
     @NotNull
     @Email
