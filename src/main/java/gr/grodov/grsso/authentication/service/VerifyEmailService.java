@@ -67,7 +67,7 @@ public class VerifyEmailService {
     public void refreshCode(RefreshVerifyCodeRequest request, Locale locale) {
         VerifyEmailCode verifyEmailCode = verifyEmailCodeStorage.get(request.getVerifyId())
             .orElseThrow(VerifyEmailCodeNotFoundException::new);
-        UserInfoDto userInfo = userInfoService.findById(verifyEmailCode.userId().toString());
+        UserInfoDto userInfo = userInfoService.findById(verifyEmailCode.userId());
 
         String verifyCode = getVerifyCode();
         VerifyEmailCode refreshVerifyEmailCode = new VerifyEmailCode(verifyEmailCode.userId(), verifyCode, emailProperties.verifyEmailCode().attempt());

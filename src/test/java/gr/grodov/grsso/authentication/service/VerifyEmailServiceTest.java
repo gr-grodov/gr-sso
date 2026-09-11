@@ -168,7 +168,7 @@ class VerifyEmailServiceTest {
         ArgumentCaptor<VerifyEmailCode> refreshVerifyEmailCode = ArgumentCaptor.forClass(VerifyEmailCode.class);
 
         when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
-        when(userInfoService.findById(USER_ID.toString())).thenReturn(userinfo);
+        when(userInfoService.findById(USER_ID)).thenReturn(userinfo);
 
 
         verifyEmailService.refreshCode(request, Locale.forLanguageTag("ru"));
@@ -201,7 +201,7 @@ class VerifyEmailServiceTest {
         var request = new RefreshVerifyCodeRequest(VERIFY_ID);
         var verifyEmailCode = new VerifyEmailCode(USER_ID, "123456", 0);
         when(verifyEmailCodeStorage.get(VERIFY_ID)).thenReturn(Optional.of(verifyEmailCode));
-        when(userInfoService.findById(USER_ID.toString())).thenThrow(UserNotFoundException.class);
+        when(userInfoService.findById(USER_ID)).thenThrow(UserNotFoundException.class);
 
         assertThatThrownBy(() -> verifyEmailService.refreshCode(request, Locale.forLanguageTag("ru")))
             .isExactlyInstanceOf(UserNotFoundException.class);

@@ -15,7 +15,7 @@ import java.util.UUID;
 public interface OAuth2SessionRepo extends JpaRepository<OAuth2Session, UUID> {
     Optional<OAuth2Session> findByAuthorizationId(String authorizationId);
     Optional<OAuth2Session> findByUserIdAndClientIdAndDeviceId(UUID userId, String clientId, String deviceId);
-    Optional<OAuth2Session> findBySidAndUserId(UUID sid, String userId);
+    Optional<OAuth2Session> findBySidAndUserId(UUID sid, UUID userId);
     @Modifying
     @Query("UPDATE OAuth2Session s SET s.lastUsedAt = :lastUsedAt, s.authorizationId = :authorizationId WHERE s.sid = :sid")
     void updateAuthorization(UUID sid, Instant lastUsedAt, String authorizationId);

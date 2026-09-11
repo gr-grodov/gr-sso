@@ -39,7 +39,7 @@ public class BackChannelLogoutService {
     private final RestTemplate restTemplate;
 
     @Transactional
-    public void logoutFromClient(String sid, String userId) {
+    public void logoutFromClient(String sid, UUID userId) {
         OAuth2SessionDto session = sessionService.getSessionBySID(sid, userId);
         OAuthClientDto client = clientsService.getById(session.clientId());
 

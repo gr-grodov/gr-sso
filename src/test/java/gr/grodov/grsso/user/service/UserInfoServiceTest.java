@@ -1,6 +1,7 @@
 package gr.grodov.grsso.user.service;
 
 import gr.grodov.grsso.common.api.ErrorFieldDto;
+import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.user.domain.entity.Role;
@@ -191,5 +192,23 @@ class UserInfoServiceTest {
         userInfoService.deleteById(USER_ID);
 
         verify(userInfoRepo).deleteById(USER_ID);
+    }
+
+    @Test
+    void editProfile_withCorrectData_saveWithProfileData() {
+        var request = new UserProfileInfoRequest("Ivan", "Ivanov", "Ivanovich");
+        var user = new UserInfo();
+        when(userInfoRepo.findById(USER_ID)).thenReturn(Optional.of(user));
+
+        userInfoService.editProfile(USER_ID, request);
+
+        ArgumentCaptor<UserInfo> savedUser = ArgumentCaptor.forClass(UserInfo.class);
+        verify(userInfoRepo).save(savedUser.capture());
+        assertThat(savedUser.getValue()).isNotNull()
+            .satisfies(userInfo -> {
+                assertThat(userInfo.getFirstName()).isEqualTo("Ivan");
+                assertThat(userInfo.getLastName()).isEqualTo("Ivanov");
+                assertThat(userInfo.getPatronymic()).isEqualTo("Ivanovich");
+            });
     }
 }

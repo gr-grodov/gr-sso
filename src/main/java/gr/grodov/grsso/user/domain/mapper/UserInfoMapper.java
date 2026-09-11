@@ -17,6 +17,9 @@ public class UserInfoMapper implements Mapper<UserInfo, UserInfoDto> {
             .externalId(user.getExternalId())
             .provider(user.getProvider())
             .role(user.getRole())
+            .firstName(user.getFirstName())
+            .lastName(user.getLastName())
+            .patronymic(user.getPatronymic())
         .build();
     }
 
@@ -30,6 +33,9 @@ public class UserInfoMapper implements Mapper<UserInfo, UserInfoDto> {
             .externalId(user.externalId())
             .provider(user.provider())
             .role(user.role())
+            .firstName(user.firstName())
+            .lastName(user.lastName())
+            .patronymic(user.patronymic())
         .build();
     }
 }

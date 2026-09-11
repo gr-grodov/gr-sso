@@ -29,7 +29,13 @@ public record UserInfoDto(
 
     AuthProvider provider,
 
-    Role role
+    Role role,
+
+    String firstName,
+
+    String lastName,
+
+    String patronymic
 ) {
 }
 

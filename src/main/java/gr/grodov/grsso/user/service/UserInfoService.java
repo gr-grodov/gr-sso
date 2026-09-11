@@ -1,5 +1,6 @@
 package gr.grodov.grsso.user.service;
 
+import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.user.domain.entity.Role;
@@ -33,8 +34,8 @@ public class UserInfoService {
             .map(userInfoMapper::fromDB)
             .orElseThrow(() -> new UsernameNotFoundException(email));
     }
-    @Transactional(readOnly = true)
 
+    @Transactional(readOnly = true)
     public UserInfoDto findById(String id) throws UserNotFoundException {
         UUID userId;
         try {
@@ -43,7 +44,12 @@ public class UserInfoService {
             throw new UserNotFoundException();
         }
 
-        return userInfoRepo.findById(userId)
+        return findById(userId);
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfoDto findById(UUID id) throws UserNotFoundException {
+        return userInfoRepo.findById(id)
             .map(userInfoMapper::fromDB)
             .orElseThrow(UserNotFoundException::new);
     }
@@ -81,11 +87,14 @@ public class UserInfoService {
         return userInfoMapper.fromDB(userInfoRepo.save(userInfo));
     }
 
-    private UUID getUserId(String id) {
-        try {
-            return UUID.fromString(id);
-        } catch (NumberFormatException ex) {
-            throw new UserNotFoundException();
-        }
+    @Transactional
+    public UserInfoDto editProfile(UUID userId, UserProfileInfoRequest profileInfoRequest) {
+        UserInfo userInfo = userInfoRepo.findById(userId).orElseThrow(UserNotFoundException::new);
+
+        userInfo.setFirstName(profileInfoRequest.firstName());
+        userInfo.setLastName(profileInfoRequest.lastName());
+        userInfo.setPatronymic(profileInfoRequest.patronymic());
+
+        return userInfoMapper.fromDB(userInfoRepo.save(userInfo));
     }
 }

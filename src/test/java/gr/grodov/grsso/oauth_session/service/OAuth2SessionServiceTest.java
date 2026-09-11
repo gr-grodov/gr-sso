@@ -202,9 +202,9 @@ class OAuth2SessionServiceTest {
         var session = buildOAuth2Session();
         var sessionDto = OAuth2SessionDto.builder().sid(SID).build();
         when(sessionMapper.fromDB(session)).thenReturn(sessionDto);
-        when(sessionRepo.findBySidAndUserId(SID, "1")).thenReturn(Optional.of(session));
+        when(sessionRepo.findBySidAndUserId(SID, USER_ID)).thenReturn(Optional.of(session));
 
-        var result = sessionService.getSessionBySID(SID.toString(), "1");
+        var result = sessionService.getSessionBySID(SID.toString(), USER_ID);
 
         assertThat(result).isExactlyInstanceOf(OAuth2SessionDto.class);
         assertThat(result.sid()).isEqualTo(SID);
@@ -212,9 +212,9 @@ class OAuth2SessionServiceTest {
 
     @Test
     void getSessionBySID_withNoExistSession_throwsOAuth2SessionNotFoundException() {
-        when(sessionRepo.findBySidAndUserId(SID, USER_ID.toString())).thenReturn(Optional.empty());
+        when(sessionRepo.findBySidAndUserId(SID, USER_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> sessionService.getSessionBySID(SID.toString(), USER_ID.toString()))
+        assertThatThrownBy(() -> sessionService.getSessionBySID(SID.toString(), USER_ID))
             .isExactlyInstanceOf(OAuth2SessionNotFoundException.class)
             .satisfies((ex) -> {
                 var exception = (OAuth2SessionNotFoundException) ex;

@@ -77,7 +77,7 @@ public class OAuth2SessionService {
     }
 
     @Transactional(readOnly = true)
-    public OAuth2SessionDto getSessionBySID(String sid, String userId) {
+    public OAuth2SessionDto getSessionBySID(String sid, UUID userId) {
         return sessionMapper.fromDB(sessionRepo.findBySidAndUserId(UUID.fromString(sid), userId)
             .orElseThrow(OAuth2SessionNotFoundException::new));
     }

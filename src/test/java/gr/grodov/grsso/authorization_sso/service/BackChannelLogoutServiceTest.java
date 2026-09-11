@@ -46,13 +46,13 @@ class BackChannelLogoutServiceTest {
     void logoutFromClient_withCorrectSIDAndUserID_postLogoutTokenAndDeleteSession() {
         var session = buidlOAuth2SessionDto();
         var client = buildOAuthClientDto();
-        when(sessionService.getSessionBySID(SID.toString(), USER_ID.toString())).thenReturn(session);
+        when(sessionService.getSessionBySID(SID.toString(), USER_ID)).thenReturn(session);
         when(clientsService.getById("client-id")).thenReturn(client);
         when(properties.backendUri()).thenReturn("http://gr-sso.com");
         when(jwtEncoder.encode(any())).thenReturn(jwtToken);
         when(jwtToken.getTokenValue()).thenReturn("logout_token");
 
-        logoutService.logoutFromClient(SID.toString(), USER_ID.toString());
+        logoutService.logoutFromClient(SID.toString(), USER_ID);
 
         verify(restTemplate).postForEntity(eq("https://example.com/logout/connect/back-channel/grsso"), any(), eq(Void.class));
         verify(sessionService).deleteSession(SID.toString());
@@ -62,14 +62,14 @@ class BackChannelLogoutServiceTest {
     void logoutFromClient_errorPostLogoutToken_dontPostLogoutToken() {
         var session = buidlOAuth2SessionDto();
         var client = buildOAuthClientDto();
-        when(sessionService.getSessionBySID(SID.toString(), USER_ID.toString())).thenReturn(session);
+        when(sessionService.getSessionBySID(SID.toString(), USER_ID)).thenReturn(session);
         when(clientsService.getById("client-id")).thenReturn(client);
         when(properties.backendUri()).thenReturn("http://gr-sso.com");
         when(jwtEncoder.encode(any())).thenReturn(jwtToken);
         when(jwtToken.getTokenValue()).thenReturn("logout_token");
         when(restTemplate.postForEntity(anyString(), any(), any())).thenThrow(RuntimeException.class);
 
-        logoutService.logoutFromClient(SID.toString(), USER_ID.toString());
+        logoutService.logoutFromClient(SID.toString(), USER_ID);
 
         verify(sessionService).deleteSession(SID.toString());
     }

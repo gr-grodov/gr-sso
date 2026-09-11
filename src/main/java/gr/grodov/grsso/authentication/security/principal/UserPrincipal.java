@@ -1,11 +1,11 @@
 package gr.grodov.grsso.authentication.security.principal;
 
+import gr.grodov.grsso.common.security.AuthPrincipal;
 import gr.grodov.grsso.user.domain.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.modulith.NamedInterface;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.oidc.OidcIdToken;
@@ -20,7 +20,7 @@ import java.util.UUID;
 @Getter
 @Builder
 @RequiredArgsConstructor
-public class UserPrincipal implements UserDetails, OidcUser {
+public class UserPrincipal implements UserDetails, OidcUser, AuthPrincipal {
 
     private final UUID id;
     private final String email;
