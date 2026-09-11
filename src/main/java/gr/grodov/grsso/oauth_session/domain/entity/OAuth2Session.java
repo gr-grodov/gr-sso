@@ -19,11 +19,8 @@ import java.util.UUID;
 @Table(name = "oauth2_session")
 public class OAuth2Session extends BaseEntity {
     @Id
-    @Column(
-        columnDefinition = "uuid default uuidv7()",
-        nullable = false,
-        updatable = false
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid default uuidv7()", nullable = false, updatable = false)
     private UUID sid;
 
     @Column(name = "authorization_id", nullable = false)

@@ -8,7 +8,6 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.List;
 
-@Testcontainers
 public class AbstractIntegrationTest {
     protected static final String TEST_EMAIL = "user@example.com";
     protected static final String TEST_PASSWORD = "Password123!";
@@ -17,10 +16,12 @@ public class AbstractIntegrationTest {
     protected static final List<String> OAUTH_CLIENT_SCOPES = List.of(OAuthScope.OPEN_ID.getScopeValue(), OAuthScope.PROFILE.getScopeValue());
     protected static final String OAUTH_CLIENT_AUTHORIZE_STATE = "STATE-EXAMPLE";
 
-    @Container
     @ServiceConnection
-    static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18")
-        .withReuse(true);
+    static final PostgreSQLContainer<?> POSTGRES_CONTAINER = new PostgreSQLContainer<>("postgres:18");
+
+    static {
+        POSTGRES_CONTAINER.start();
+    }
 
     record OAuthClientSecretInfo (
         String clientId,

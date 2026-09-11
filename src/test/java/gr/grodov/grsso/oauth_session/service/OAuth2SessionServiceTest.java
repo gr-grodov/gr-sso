@@ -60,7 +60,7 @@ class OAuth2SessionServiceTest {
     void list_returnSessions() {
         var session = buildOAuth2Session();
         var sessionDto = OAuth2SessionDto.builder().sid(SID).build();
-        when(sessionRepo.findAllByUserId(USER_ID.toString())).thenReturn(List.of(session));
+        when(sessionRepo.findAllByUserId(USER_ID)).thenReturn(List.of(session));
         when(sessionMapper.fromDB(session)).thenReturn(sessionDto);
 
         var result = sessionService.list(USER_ID.toString(), "device-id");
@@ -74,7 +74,7 @@ class OAuth2SessionServiceTest {
         var client = buildRegisteredClient();
         var authorization = buildAuthorization(client);
         var deviceContext = buildDeviceContext();
-        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID.toString(), "crm-id-1", "device-id")).thenReturn(Optional.empty());
+        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID, "crm-id-1", "device-id")).thenReturn(Optional.empty());
         when(registeredClientRepository.findById("crm-id-1")).thenReturn(client);
         when(geoLocationResolver.resolve("127.0.0.1")).thenReturn(new GeoLocation("COUNTRY", "CITY"));
 
@@ -101,7 +101,7 @@ class OAuth2SessionServiceTest {
         var client = buildRegisteredClient();
         var authorization = buildAuthorization(client);
         var deviceContext = buildDeviceContext();
-        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID.toString(), "crm-id-1", "device-id")).thenReturn(Optional.empty());
+        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID, "crm-id-1", "device-id")).thenReturn(Optional.empty());
         when(registeredClientRepository.findById("crm-id-1")).thenReturn(null);
 
         assertThatThrownBy(() -> sessionService.createOrUpdateSession(authorization, deviceContext))
@@ -120,12 +120,12 @@ class OAuth2SessionServiceTest {
         var authorization = buildAuthorization(client);
         var deviceContext = buildDeviceContext();
         var session = buildOAuth2Session();
-        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID.toString(), "crm-id-1", "device-id")).thenReturn(Optional.of(session));
+        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID, "crm-id-1", "device-id")).thenReturn(Optional.of(session));
         when(geoLocationResolver.resolve("127.0.0.1")).thenReturn(new GeoLocation("COUNTRY", "CITY"));
 
         sessionService.createOrUpdateSession(authorization, deviceContext);
 
-        verify(sessionRepo).save(any());
+        verify(sessionRepo).saveAndFlush(any());
         verify(authorizationService, never()).remove(any());
     }
 
@@ -135,14 +135,14 @@ class OAuth2SessionServiceTest {
         var authorization = OAuth2Authorization.from(buildAuthorization(client)).id("auth-321").build();
         var deviceContext = buildDeviceContext();
         var session = buildOAuth2Session();
-        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID.toString(), "crm-id-1", "device-id")).thenReturn(Optional.of(session));
+        when(sessionRepo.findByUserIdAndClientIdAndDeviceId(USER_ID, "crm-id-1", "device-id")).thenReturn(Optional.of(session));
         when(authorizationService.findById("auth-123")).thenReturn(buildAuthorization(client));
         when(geoLocationResolver.resolve("127.0.0.1")).thenReturn(new GeoLocation("COUNTRY", "CITY"));
 
         sessionService.createOrUpdateSession(authorization, deviceContext);
 
+        verify(sessionRepo).saveAndFlush(any());
         verify(authorizationService).remove(any());
-        verify(sessionRepo).save(any());
     }
 
     @Test

@@ -103,6 +103,12 @@ public class OAuthClientsService {
     }
 
     @Transactional(readOnly = true)
+    public OAuthClientShortDto getShortInfoClient(String clientId) {
+        OAuthClient client = oAuthClientRepo.findByClientId(clientId).orElseThrow(OAuthClientNotFoundException::new);
+        return oAuthClientShortMapper.fromDB(client);
+    }
+
+    @Transactional(readOnly = true)
     public OAuthClientDto getByClientId(String clientId) {
         OAuthClient client = oAuthClientRepo.findByClientId(clientId).orElseThrow(OAuthClientNotFoundException::new);
         return oAuthClientMapper.fromDB(client);

@@ -36,7 +36,7 @@ public class OAuth2SessionService {
 
     @Transactional(readOnly = true)
     public List<OAuth2SessionDto> list(String userId, String deviceId) {
-         return sessionRepo.findAllByUserId(userId).stream()
+         return sessionRepo.findAllByUserId(UUID.fromString(userId)).stream()
             .map(session -> {
                 OAuth2SessionDto sessionDto = sessionMapper.fromDB(session);
                 return sessionDto.withCurrentDeviceFlag(session.getDeviceId().equals(deviceId));
@@ -47,7 +47,7 @@ public class OAuth2SessionService {
     @Transactional
     public void createOrUpdateSession(OAuth2Authorization authorization, DeviceContext deviceContext) {
         OAuth2Session session = sessionRepo.findByUserIdAndClientIdAndDeviceId(
-            authorization.getPrincipalName(),
+            UUID.fromString(authorization.getPrincipalName()),
             authorization.getRegisteredClientId(),
             deviceContext.deviceId()
         ).orElse(null);
@@ -55,8 +55,9 @@ public class OAuth2SessionService {
         if (session == null) {
             createSession(authorization, deviceContext);
         } else {
-            cleanPrevAuthorization(session, authorization);
+            String prevAuthorizationId = session.getAuthorizationId();
             updateSession(session, authorization, deviceContext);
+            cleanPrevAuthorization(authorization, prevAuthorizationId);
         }
     }
 
@@ -84,17 +85,6 @@ public class OAuth2SessionService {
     @Transactional
     public void deleteSession(String sid) {
         sessionRepo.deleteById(UUID.fromString(sid));
-    }
-
-    private void cleanPrevAuthorization(OAuth2Session session, OAuth2Authorization currentAuthorization) {
-        if (Objects.equals(session.getAuthorizationId(), currentAuthorization.getId())) {
-            return;
-        }
-
-        OAuth2Authorization prevAuthorization = authorizationService.findById(session.getAuthorizationId());
-        if (prevAuthorization != null) {
-            authorizationService.remove(prevAuthorization);
-        }
     }
 
     private OAuth2Session createSession(OAuth2Authorization authorization, DeviceContext deviceContext) {
@@ -133,6 +123,17 @@ public class OAuth2SessionService {
         session.setDeviceUserAgent(deviceContext.deviceUserAgent());
         session.setDeviceType(deviceContext.deviceType());
         session.setLastUsedAt(Instant.now());
-        sessionRepo.save(session);
+        sessionRepo.saveAndFlush(session);
+    }
+
+    private void cleanPrevAuthorization(OAuth2Authorization currentAuthorization, String prevAuthorizationId) {
+        if (Objects.equals(prevAuthorizationId, currentAuthorization.getId())) {
+            return;
+        }
+
+        OAuth2Authorization prevAuthorization = authorizationService.findById(prevAuthorizationId);
+        if (prevAuthorization != null) {
+            authorizationService.remove(prevAuthorization);
+        }
     }
 }

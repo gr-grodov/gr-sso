@@ -15,6 +15,6 @@ public class DatabaseCleaner {
 
     @Transactional
     public void cleanAll() {
-        jdbcTemplate.execute("TRUNCATE TABLE oauth2_authorization, oauth2_authorization_consent, oauth2_registered_client, users RESTART IDENTITY CASCADE");
+        jdbcTemplate.execute("TRUNCATE TABLE oauth2_authorization, oauth2_authorization_consent, oauth2_registered_client, users, oauth2_session RESTART IDENTITY CASCADE");
     }
 }

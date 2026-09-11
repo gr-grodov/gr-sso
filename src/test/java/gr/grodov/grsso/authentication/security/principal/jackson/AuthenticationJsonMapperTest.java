@@ -62,7 +62,7 @@ class AuthenticationJsonMapperTest {
         String json = """
             {
                 "@class":"gr.grodov.grsso.authentication.security.principal.UserPrincipal",
-                "id":%s,
+                "id":"%s",
                 "email":"user@example.com",
                 "provider":"LOCAL",
                 "authorities":["USER"]

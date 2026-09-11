@@ -15,8 +15,6 @@ public record OAuthClientShortDto(
     String id,
     String clientId,
     String clientName,
-    Set<OAuthAuthorizationGrantType> authorizationGrantTypes,
-    Set<String> redirectUris,
     Set<OAuthScope> scopes,
     OAuthClientStatus status,
     Instant createdAt,

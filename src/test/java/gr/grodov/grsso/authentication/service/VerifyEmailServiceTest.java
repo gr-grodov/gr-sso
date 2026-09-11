@@ -209,7 +209,7 @@ class VerifyEmailServiceTest {
 
     @Test
     void cancelVerifyEmail_withVerifyId_callDeleteCacheAndUser() {
-        when(userInfoService.findById("1")).thenReturn(UserInfoDto.builder().id(USER_ID).enabled(false).build());
+        when(userInfoService.findById(USER_ID.toString())).thenReturn(UserInfoDto.builder().id(USER_ID).enabled(false).build());
 
         verifyEmailService.cancelVerifyEmail(VERIFY_ID);
 

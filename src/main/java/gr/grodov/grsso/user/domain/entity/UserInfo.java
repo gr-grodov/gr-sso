@@ -18,11 +18,8 @@ import java.util.UUID;
 @Table(name = "users")
 public class UserInfo extends BaseEntity {
     @Id
-    @Column(
-        columnDefinition = "uuid default uuidv7()",
-        nullable = false,
-        updatable = false
-    )
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "uuid default uuidv7()", nullable = false, updatable = false)
     private UUID id;
 
     @NotNull
