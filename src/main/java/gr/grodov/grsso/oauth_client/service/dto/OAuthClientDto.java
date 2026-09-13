@@ -1,4 +1,4 @@
-package gr.grodov.grsso.oauth_client.domain.dto;
+package gr.grodov.grsso.oauth_client.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import gr.grodov.grsso.oauth_client.domain.entity.*;

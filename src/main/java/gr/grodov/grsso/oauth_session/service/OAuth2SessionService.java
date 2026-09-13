@@ -1,7 +1,7 @@
 package gr.grodov.grsso.oauth_session.service;
 
 import gr.grodov.grsso.common.mapper.Mapper;
-import gr.grodov.grsso.oauth_session.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.oauth_session.service.dto.OAuth2SessionDto;
 import gr.grodov.grsso.oauth_session.service.dto.DeviceContext;
 import gr.grodov.grsso.oauth_session.domain.entity.OAuth2Session;
 import gr.grodov.grsso.oauth_session.domain.repo.OAuth2SessionRepo;

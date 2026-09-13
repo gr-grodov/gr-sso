@@ -1,7 +1,7 @@
 package gr.grodov.grsso.authentication.security.principal;
 
 import gr.grodov.grsso.common.security.AuthPrincipal;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import lombok.Builder;
 import lombok.Getter;

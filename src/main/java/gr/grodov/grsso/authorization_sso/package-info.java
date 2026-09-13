@@ -1,6 +1,6 @@
 @ApplicationModule(allowedDependencies = {
     "common",
-    "user :: service", "user :: domain",
+    "user :: service",
     "oauth_client :: repo", "oauth_client :: service",
     "authentication :: service",
     "oauth_session :: service"

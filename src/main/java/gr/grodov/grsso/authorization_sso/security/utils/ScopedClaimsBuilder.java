@@ -1,10 +1,8 @@
 package gr.grodov.grsso.authorization_sso.security.utils;
 
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
-import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;

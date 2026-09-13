@@ -3,6 +3,7 @@ package gr.grodov.grsso.infrastructure.api;
 import gr.grodov.grsso.common.api.ErrorFieldDto;
 import gr.grodov.grsso.common.api.ErrorResponse;
 import gr.grodov.grsso.common.exception.BaseErrorFieldException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.AuthenticationException;
@@ -11,8 +12,10 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
 import java.util.List;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionAdvice {
 
@@ -31,6 +34,8 @@ public class GlobalExceptionAdvice {
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(Exception ex) {
+        log.error(ex.getMessage());
+        log.error(ex.getMessage(), ex);
         return ErrorResponse.of("unknown", ex.getMessage());
     }
 

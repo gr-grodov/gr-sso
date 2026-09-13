@@ -1,6 +1,6 @@
 package gr.grodov.grsso.authorization_sso.security.utils;
 
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.oauth2.core.oidc.StandardClaimNames;
 

@@ -1,7 +1,6 @@
-package gr.grodov.grsso.oauth_session.domain.dto;
+package gr.grodov.grsso.oauth_session.service.dto;
 
 import gr.grodov.grsso.oauth_session.domain.entity.DeviceType;
-import gr.grodov.grsso.oauth_session.service.dto.DeviceInfo;
 import lombok.Builder;
 import org.springframework.modulith.NamedInterface;
 

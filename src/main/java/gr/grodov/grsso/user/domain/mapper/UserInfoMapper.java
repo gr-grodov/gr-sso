@@ -1,7 +1,7 @@
 package gr.grodov.grsso.user.domain.mapper;
 
 import gr.grodov.grsso.common.mapper.Mapper;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.UserInfo;
 import org.springframework.stereotype.Component;
 

@@ -1,7 +1,7 @@
 package gr.grodov.grsso.authorization_sso.security;
 
 import gr.grodov.grsso.authorization_sso.exception.OAuthPrincipalNotFoundException;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

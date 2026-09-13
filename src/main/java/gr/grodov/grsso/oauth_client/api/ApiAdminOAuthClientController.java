@@ -4,8 +4,7 @@ import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusReque
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
 import gr.grodov.grsso.common.api.SuccessResponse;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientShortDto;
+import gr.grodov.grsso.oauth_client.service.dto.OAuthClientDto;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthAuthorizationGrantType;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientAuthenticationMethod;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;

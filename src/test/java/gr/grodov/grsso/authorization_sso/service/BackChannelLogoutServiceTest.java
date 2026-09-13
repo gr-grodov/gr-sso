@@ -1,20 +1,23 @@
 package gr.grodov.grsso.authorization_sso.service;
 
+import gr.grodov.grsso.common.event.OAuthLogoutEvent;
 import gr.grodov.grsso.common.props.BackendAppProperties;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
+import gr.grodov.grsso.oauth_client.service.dto.OAuthClientDto;
 import gr.grodov.grsso.oauth_client.domain.entity.OAuthClientSettings;
 import gr.grodov.grsso.oauth_client.service.OAuthClientsService;
-import gr.grodov.grsso.oauth_session.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.oauth_session.service.dto.OAuth2SessionDto;
 import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -39,6 +42,7 @@ class BackChannelLogoutServiceTest {
     private JwtEncoder jwtEncoder;
     @Mock
     private RestTemplate restTemplate;
+    @Spy
     @InjectMocks
     private BackChannelLogoutService logoutService;
 
@@ -72,6 +76,43 @@ class BackChannelLogoutServiceTest {
         logoutService.logoutFromClient(SID.toString(), USER_ID);
 
         verify(sessionService).deleteSession(SID.toString());
+    }
+
+    @Test
+    void handle_withOneSids_callOnceLogoutFromClient() {
+        var event = new OAuthLogoutEvent(List.of(SID), USER_ID);
+        doNothing().when(logoutService).logoutFromClient(anyString(), eq(USER_ID));
+
+        logoutService.handle(event);
+
+        verify(logoutService).logoutFromClient(SID.toString(), USER_ID);
+    }
+
+    @Test
+    void handle_withManySids_callManyLogoutFromClient() {
+        var sid1 = UUID.randomUUID();
+        var sid2 =  UUID.randomUUID();
+        var event = new OAuthLogoutEvent(List.of(sid1, sid2), USER_ID);
+        doNothing().when(logoutService).logoutFromClient(anyString(), eq(USER_ID));
+
+        logoutService.handle(event);
+
+        verify(logoutService).logoutFromClient(sid1.toString(), USER_ID);
+        verify(logoutService).logoutFromClient(sid2.toString(), USER_ID);
+    }
+
+    @Test
+    void handle_withManySids_callContinueLogoutFromClientAfterException() {
+        var sid1 = UUID.randomUUID();
+        var sid2 =  UUID.randomUUID();
+        var event = new OAuthLogoutEvent(List.of(sid1, sid2), USER_ID);
+        doThrow(RuntimeException.class).when(logoutService).logoutFromClient(sid1.toString(), USER_ID);
+        doNothing().when(logoutService).logoutFromClient(sid2.toString(), USER_ID);
+
+        logoutService.handle(event);
+
+        verify(logoutService).logoutFromClient(sid1.toString(), USER_ID);
+        verify(logoutService).logoutFromClient(sid2.toString(), USER_ID);
     }
 
     private OAuth2SessionDto buidlOAuth2SessionDto() {

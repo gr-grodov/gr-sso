@@ -3,8 +3,8 @@ package gr.grodov.grsso.oauth_client.service;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusRequest;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientShortDto;
+import gr.grodov.grsso.oauth_client.service.dto.OAuthClientDto;
+import gr.grodov.grsso.oauth_client.service.dto.OAuthClientShortDto;
 import gr.grodov.grsso.common.mapper.Mapper;
 import gr.grodov.grsso.oauth_client.domain.repo.OAuthClientRepo;
 import gr.grodov.grsso.oauth_client.domain.entity.*;
@@ -19,7 +19,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 

@@ -1,6 +1,6 @@
 @ApplicationModule(allowedDependencies = {
     "common",
-    "user :: service", "user :: domain"
+    "user :: service"
 })
 package gr.grodov.grsso.authentication;
 

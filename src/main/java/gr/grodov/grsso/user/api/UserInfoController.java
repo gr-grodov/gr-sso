@@ -2,7 +2,7 @@ package gr.grodov.grsso.user.api;
 
 import gr.grodov.grsso.common.security.AuthPrincipal;
 import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

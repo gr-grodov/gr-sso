@@ -1,6 +1,6 @@
 @ApplicationModule(allowedDependencies = {
     "common",
-    "user :: domain"
+    "user :: service"
 })
 package gr.grodov.grsso.infrastructure;
 

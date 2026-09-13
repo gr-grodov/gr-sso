@@ -9,7 +9,7 @@ import gr.grodov.grsso.authentication.exception.VerifyEmailCodeNotFoundException
 import gr.grodov.grsso.common.cache.CacheStorage;
 import gr.grodov.grsso.common.event.FromResourceEmailEvent;
 import gr.grodov.grsso.common.props.EmailAppProperties;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;

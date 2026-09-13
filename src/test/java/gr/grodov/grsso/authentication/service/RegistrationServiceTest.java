@@ -1,7 +1,7 @@
 package gr.grodov.grsso.authentication.service;
 
 import gr.grodov.grsso.authentication.api.dto.request.RegistrationRequest;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.user.exception.EmailAlreadyExistsException;
 import gr.grodov.grsso.user.service.UserInfoService;

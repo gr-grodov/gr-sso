@@ -1,15 +1,17 @@
 package gr.grodov.grsso.authorization_sso.service;
 
+import gr.grodov.grsso.common.event.OAuthLogoutEvent;
 import gr.grodov.grsso.common.props.BackendAppProperties;
-import gr.grodov.grsso.oauth_client.domain.dto.OAuthClientDto;
+import gr.grodov.grsso.oauth_client.service.dto.OAuthClientDto;
 import gr.grodov.grsso.oauth_client.service.OAuthClientsService;
-import gr.grodov.grsso.oauth_session.domain.dto.OAuth2SessionDto;
+import gr.grodov.grsso.oauth_session.service.dto.OAuth2SessionDto;
 import gr.grodov.grsso.oauth_session.service.OAuth2SessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.modulith.events.ApplicationModuleListener;
 import org.springframework.security.oauth2.client.oidc.authentication.logout.LogoutTokenClaimNames;
 import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -58,6 +60,17 @@ public class BackChannelLogoutService {
             log.warn("Failed to send back-channel logout to {}: {}", logoutURI, ex.getMessage());
         } finally {
             sessionService.deleteSession(sid);
+        }
+    }
+
+    @ApplicationModuleListener
+    public void handle(OAuthLogoutEvent logoutEvent) {
+        for (UUID sid: logoutEvent.sids()) {
+            try {
+                logoutFromClient(sid.toString(), logoutEvent.userId());
+            } catch (Exception ex) {
+                log.warn("Failed logout user {} with SID ({}): {}", logoutEvent.userId(), sid, ex.getMessage());
+            }
         }
     }
 

@@ -2,7 +2,7 @@ package gr.grodov.grsso.user.service;
 
 import gr.grodov.grsso.common.api.ErrorFieldDto;
 import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
-import gr.grodov.grsso.user.domain.dto.UserInfoDto;
+import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
 import gr.grodov.grsso.user.domain.entity.Role;
 import gr.grodov.grsso.user.domain.entity.UserInfo;

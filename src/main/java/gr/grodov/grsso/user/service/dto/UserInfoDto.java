@@ -1,4 +1,4 @@
-package gr.grodov.grsso.user.domain.dto;
+package gr.grodov.grsso.user.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
@@ -10,7 +10,7 @@ import org.springframework.modulith.NamedInterface;
 
 import java.util.UUID;
 
-@NamedInterface("domain")
+@NamedInterface("service")
 @Builder
 public record UserInfoDto(
     @NotNull
