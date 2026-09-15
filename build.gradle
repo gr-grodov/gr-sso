@@ -45,6 +45,7 @@ dependencies {
     implementation 'com.maxmind.geoip2:geoip2:5.2.0'
     implementation 'nl.basjes.parse.useragent:yauaa:8.2.0'
     implementation 'org.bouncycastle:bcprov-jdk18on:1.84'
+    implementation 'com.github.lookfirst:sardine:5.13'
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-security-oauth2-authorization-server'

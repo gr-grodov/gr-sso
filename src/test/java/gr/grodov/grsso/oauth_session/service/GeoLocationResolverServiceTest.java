@@ -1,7 +1,7 @@
 package gr.grodov.grsso.oauth_session.service;
 
 import com.maxmind.geoip2.DatabaseReader;
-import gr.grodov.grsso.common.props.GeoIpAppProperties;
+import gr.grodov.grsso.oauth_session.props.GeoIpAppProperties;
 import gr.grodov.grsso.oauth_session.service.dto.GeoLocation;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -64,10 +64,28 @@ services:
     networks:
       - grsso-net
 
+  webdav:
+    image: bytemark/webdav:2.4
+    container_name: myapp-webdav
+    restart: unless-stopped
+
+    environment:
+      AUTH_TYPE: Basic
+      USERNAME: ${WEB_DAV_USERNAME}
+      PASSWORD: ${WEB_DAVE_PASSWORD}
+      LOCATION: /webdav
+
+    ports:
+      - "8081:80"
+
+    volumes:
+      - webdav_data:/var/lib/dav
+
 volumes:
   postgres-data:
   redis-data:
   geoip-data:
+  webdav_data:
 
 networks:
   grsso-net:

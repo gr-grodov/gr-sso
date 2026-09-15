@@ -103,3 +103,13 @@ grsso:
     database-path: ${GEOIP_DATABASE_PATH}
     enabled: true
     reload-cron: "0 0 6 2 * *"
+
+  storage:
+    default-type: INTERNAL
+    delay-delete-temporary-attachment: 15
+    internal:
+      path-to-save: /home/grshgrdvvv/grsso-files/
+    webdav:
+      base-url: ${WEB_DAV_URL}
+      username: ${WEB_DAV_USERNAME}
+      password: ${WEB_DAVE_PASSWORD}

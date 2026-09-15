@@ -3,7 +3,7 @@ package gr.grodov.grsso.oauth_session.service;
 import com.maxmind.geoip2.DatabaseReader;
 import com.maxmind.geoip2.exception.AddressNotFoundException;
 import com.maxmind.geoip2.model.CityResponse;
-import gr.grodov.grsso.common.props.GeoIpAppProperties;
+import gr.grodov.grsso.oauth_session.props.GeoIpAppProperties;
 import gr.grodov.grsso.oauth_session.service.dto.GeoLocation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.modulith.NamedInterface;
