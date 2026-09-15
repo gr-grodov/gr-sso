@@ -1,5 +1,6 @@
 @ApplicationModule(allowedDependencies = {
-    "common"
+    "common",
+    "attachment :: service"
 })
 package gr.grodov.grsso.oauth_client;
 

@@ -105,7 +105,7 @@ grsso:
     reload-cron: "0 0 6 2 * *"
 
   storage:
-    default-type: INTERNAL
+    default-type: WEB_DAV
     delay-delete-temporary-attachment: 15
     internal:
       path-to-save: /home/grshgrdvvv/grsso-files/

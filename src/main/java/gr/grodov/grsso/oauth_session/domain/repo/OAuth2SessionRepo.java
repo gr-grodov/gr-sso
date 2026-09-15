@@ -29,7 +29,7 @@ public interface OAuth2SessionRepo extends JpaRepository<OAuth2Session, UUID> {
 
     @Query(
         value = """
-            SELECT DISTINCT user_id AS userId, user_email AS userEmail
+            SELECT DISTINCT user_id AS userId, user_email AS userEmail, user_avatar_id AS userAvatarId
             FROM v_user_client_sessions
             WHERE client_name ILIKE CONCAT('%', :searchPhrase, '%') OR user_email ILIKE CONCAT('%', :searchPhrase, '%')
             ORDER BY user_email
@@ -45,7 +45,7 @@ public interface OAuth2SessionRepo extends JpaRepository<OAuth2Session, UUID> {
 
     @Query(
         value = """
-            SELECT DISTINCT user_id AS userId, user_email AS userEmail
+            SELECT DISTINCT user_id AS userId, user_email AS userEmail, user_avatar_id AS userAvatarId
             FROM v_user_client_sessions
             ORDER BY user_email
             """,
@@ -60,7 +60,8 @@ public interface OAuth2SessionRepo extends JpaRepository<OAuth2Session, UUID> {
     @Query(
         value = """
             SELECT user_id AS userId, sid AS sid, client_id AS clientId,
-                   client_name AS clientName, last_used_at AS lastUsedAt
+                   client_name AS clientName, last_used_at AS lastUsedAt,
+                   client_avatar_id AS clientAvatarId
             FROM v_user_client_sessions
             WHERE user_id IN (:userIds)
             ORDER BY user_id, last_used_at DESC
@@ -72,7 +73,8 @@ public interface OAuth2SessionRepo extends JpaRepository<OAuth2Session, UUID> {
     @Query(
         value = """
             SELECT user_id AS userId, sid AS sid, client_id AS clientId,
-                   client_name AS clientName, last_used_at AS lastUsedAt
+                   client_name AS clientName, last_used_at AS lastUsedAt,
+                   client_avatar_id AS clientAvatarId
             FROM v_user_client_sessions
             WHERE user_id = :userId AND client_id = :clientId
             """,

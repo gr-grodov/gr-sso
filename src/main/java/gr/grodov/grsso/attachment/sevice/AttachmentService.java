@@ -11,7 +11,7 @@ import gr.grodov.grsso.attachment.storage.FileStorage;
 import gr.grodov.grsso.attachment.storage.FileStorageResolver;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.core.io.Resource;
+import org.springframework.modulith.NamedInterface;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+@NamedInterface("service")
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -86,5 +87,33 @@ public class AttachmentService {
         }
 
         attachmentRepo.deleteAll(attachmentsForDelete);
+    }
+
+    @Transactional
+    public void attachAttachment(UUID id) {
+        if (id == null) {
+            return;
+        }
+
+        Attachment attachment = attachmentRepo.findById(id).orElseThrow(AttachmentNotFoundException::new);
+        if (attachment.getStatus().equals(AttachmentStatus.ATTACHED)) {
+            return;
+        }
+
+        attachment.setStatus(AttachmentStatus.ATTACHED);
+        attachmentRepo.save(attachment);
+    }
+
+    @Transactional
+    public void detachAttachment(UUID id) {
+        if (id == null) {
+            return;
+        }
+
+        Attachment attachment = attachmentRepo.findById(id).orElse(null);
+        if (attachment != null && !attachment.getStatus().equals(AttachmentStatus.TEMPORARY)) {
+            attachment.setStatus(AttachmentStatus.TEMPORARY);
+            attachmentRepo.save(attachment);
+        }
     }
 }

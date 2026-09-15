@@ -35,7 +35,9 @@ public record UserInfoDto(
 
     String lastName,
 
-    String patronymic
+    String patronymic,
+
+    UUID avatarId
 ) {
 }
 

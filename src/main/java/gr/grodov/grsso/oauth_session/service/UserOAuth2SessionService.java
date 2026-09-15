@@ -42,6 +42,7 @@ public class UserOAuth2SessionService {
             .map(user ->new UserOAuth2SessionDto(
                 user.getUserId(),
                 user.getUserEmail(),
+                user.getUserAvatarId(),
                 usersSessions.get(user.getUserId())
             ))
             .toList();
@@ -73,6 +74,7 @@ public class UserOAuth2SessionService {
             .map(clientSessions -> new OAuthClientShortInfo(
                 clientSessions.getFirst().getClientId(),
                 clientSessions.getFirst().getClientName(),
+                clientSessions.getFirst().getClientAvatarId(),
                 clientSessions.size()
             ))
             .toList();

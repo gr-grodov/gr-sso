@@ -1,4 +1,4 @@
-package gr.grodov.grsso.attachment.api.dto.request;
+package gr.grodov.grsso.attachment.api.dto.response;
 
 import java.util.UUID;
 

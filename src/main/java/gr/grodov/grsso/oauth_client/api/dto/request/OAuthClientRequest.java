@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.Set;
+import java.util.UUID;
 
 @Data
 @AllArgsConstructor
@@ -36,4 +37,6 @@ public class OAuthClientRequest {
     private OAuthClientSettings clientSettings;
 
     private OAuthTokenSettings tokenSettings;
+
+    private UUID avatarId;
 }

@@ -8,5 +8,6 @@ public interface UserOAuth2SessionProjection {
     UUID getSid();
     String getClientId();
     String getClientName();
+    UUID getClientAvatarId();
     Instant getLastUsedAt();
 }

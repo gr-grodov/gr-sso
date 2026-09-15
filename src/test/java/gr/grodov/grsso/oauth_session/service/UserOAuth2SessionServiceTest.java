@@ -164,6 +164,11 @@ class UserOAuth2SessionServiceTest {
             public String getUserEmail() {
                 return "user@example.com";
             }
+
+            @Override
+            public UUID getUserAvatarId() {
+                return UUID.randomUUID();
+            }
         };
     }
 
@@ -188,6 +193,11 @@ class UserOAuth2SessionServiceTest {
             @Override
             public String getClientName() {
                 return "client_%s".formatted(clientId);
+            }
+
+            @Override
+            public UUID getClientAvatarId() {
+                return UUID.randomUUID();
             }
 
             @Override

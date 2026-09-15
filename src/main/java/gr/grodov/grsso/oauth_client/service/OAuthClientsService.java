@@ -1,5 +1,6 @@
 package gr.grodov.grsso.oauth_client.service;
 
+import gr.grodov.grsso.attachment.sevice.AttachmentService;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusRequest;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.oauth_client.api.dto.response.OAuthClientSecretInfoResponse;
@@ -32,6 +33,7 @@ public class OAuthClientsService {
     private final Mapper<OAuthClient, OAuthClientDto> oAuthClientMapper;
     private final Mapper<OAuthClient, OAuthClientShortDto> oAuthClientShortMapper;
     private final OAuthClientPropertiesService oAuthClientPropertiesService;
+    private final AttachmentService attachmentService;
 
     @Transactional(readOnly = true)
     public List<OAuthClientDto> list() {
@@ -50,6 +52,8 @@ public class OAuthClientsService {
         String clientID = IDGeneratorUtils.randomID(clientInfo.getClientName());
         String clientSecret = UUID.randomUUID().toString();
 
+        attachmentService.attachAttachment(clientInfo.getAvatarId());
+
         OAuthClient client = OAuthClient.builder()
             .clientName(clientInfo.getClientName())
             .redirectUris(clientInfo.getRedirectUris())
@@ -64,6 +68,7 @@ public class OAuthClientsService {
             .clientIdIssuedAt(Instant.now())
             .clientSecret(passwordEncoder.encode(clientSecret))
             .status(OAuthClientStatus.ACTIVE)
+            .avatarId(clientInfo.getAvatarId())
         .build();
 
         oAuthClientRepo.save(client);
@@ -77,6 +82,9 @@ public class OAuthClientsService {
         Set<OAuthAuthorizationGrantType> grantTypes = oAuthClientPropertiesService.filterAuthorizationGrantTypes(clientInfo.getAuthorizationGrantTypes());
         Set<OAuthClientAuthenticationMethod> methods = oAuthClientPropertiesService.filterAuthenticationMethods(clientInfo.getClientAuthenticationMethods());
 
+        attachmentService.detachAttachment(client.getAvatarId());
+        attachmentService.attachAttachment(clientInfo.getAvatarId());
+
         client.setClientName(clientInfo.getClientName());
         client.setRedirectUris(clientInfo.getRedirectUris());
         client.setScopes(clientInfo.getScopes());
@@ -84,6 +92,7 @@ public class OAuthClientsService {
         client.setClientAuthenticationMethods(methods);
         client.setClientSettings(clientInfo.getClientSettings());
         client.setTokenSettings(clientInfo.getTokenSettings());
+        client.setAvatarId(clientInfo.getAvatarId());
 
         return oAuthClientMapper.fromDB(oAuthClientRepo.save(client));
     }

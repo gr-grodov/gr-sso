@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -147,7 +148,8 @@ class OAuthClientRequestTest {
             Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE),
             Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC),
             OAuthClientSettings.builder().build(),
-            OAuthTokenSettings.builder().build()
+            OAuthTokenSettings.builder().build(),
+            UUID.randomUUID()
         );
     }
 }

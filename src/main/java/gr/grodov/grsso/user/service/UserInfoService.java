@@ -1,5 +1,6 @@
 package gr.grodov.grsso.user.service;
 
+import gr.grodov.grsso.attachment.sevice.AttachmentService;
 import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
 import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.domain.entity.AuthProvider;
@@ -27,6 +28,7 @@ public class UserInfoService {
     private final UserInfoRepo userInfoRepo;
     private final PasswordEncoder passwordEncoder;
     private final Mapper<UserInfo, UserInfoDto> userInfoMapper;
+    private final AttachmentService attachmentService;
 
     @Transactional(readOnly = true)
     public UserInfoDto findByEmailAndProvider(String email, AuthProvider provider) throws UsernameNotFoundException {
@@ -91,9 +93,13 @@ public class UserInfoService {
     public UserInfoDto editProfile(UUID userId, UserProfileInfoRequest profileInfoRequest) {
         UserInfo userInfo = userInfoRepo.findById(userId).orElseThrow(UserNotFoundException::new);
 
+        attachmentService.detachAttachment(userInfo.getAvatarId());
+        attachmentService.attachAttachment(profileInfoRequest.avatarId());
+
         userInfo.setFirstName(profileInfoRequest.firstName());
         userInfo.setLastName(profileInfoRequest.lastName());
         userInfo.setPatronymic(profileInfoRequest.patronymic());
+        userInfo.setAvatarId(profileInfoRequest.avatarId());
 
         return userInfoMapper.fromDB(userInfoRepo.save(userInfo));
     }

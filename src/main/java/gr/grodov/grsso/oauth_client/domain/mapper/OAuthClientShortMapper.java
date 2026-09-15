@@ -16,6 +16,7 @@ public class OAuthClientShortMapper implements Mapper<OAuthClient, OAuthClientSh
             .clientName(oAuthClient.getClientName())
             .scopes(oAuthClient.getScopes())
             .status(oAuthClient.getStatus())
+            .avatarId(oAuthClient.getAvatarId())
             .createdAt(oAuthClient.getCreatedAt())
             .updatedAt(oAuthClient.getUpdatedAt())
         .build();
@@ -29,6 +30,7 @@ public class OAuthClientShortMapper implements Mapper<OAuthClient, OAuthClientSh
             .clientName(oAuthClient.clientName())
             .scopes(oAuthClient.scopes())
             .status(oAuthClient.status())
+            .avatarId(oAuthClient.avatarId())
             .createdAt(oAuthClient.createdAt())
             .updatedAt(oAuthClient.updatedAt())
         .build();

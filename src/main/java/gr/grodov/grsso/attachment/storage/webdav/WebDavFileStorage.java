@@ -1,4 +1,4 @@
-package gr.grodov.grsso.attachment.storage;
+package gr.grodov.grsso.attachment.storage.webdav;
 
 import com.github.sardine.Sardine;
 import com.github.sardine.SardineFactory;
@@ -8,6 +8,7 @@ import gr.grodov.grsso.attachment.exception.FileStorageDeleteException;
 import gr.grodov.grsso.attachment.exception.FileStorageLoadException;
 import gr.grodov.grsso.attachment.exception.FileStorageSaveException;
 import gr.grodov.grsso.attachment.props.StorageAppProperties;
+import gr.grodov.grsso.attachment.storage.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
@@ -23,14 +24,14 @@ public class WebDavFileStorage implements FileStorage {
     private final Sardine sardine;
     private final String baseUrl;
 
-    public WebDavFileStorage(StorageAppProperties properties) {
+    public WebDavFileStorage(StorageAppProperties properties, Sardine sardine) {
         this.baseUrl = properties.webdav().baseUrl().replaceAll("/$", "");
-        this.sardine = SardineFactory.begin(properties.webdav().username(), properties.webdav().password());
+        this.sardine = sardine;
     }
 
     @Override
     public StorageType type() {
-        return StorageType.WEB_DAVE;
+        return StorageType.WEB_DAV;
     }
 
     @Override

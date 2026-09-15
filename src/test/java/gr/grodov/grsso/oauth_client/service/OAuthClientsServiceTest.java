@@ -1,8 +1,11 @@
 package gr.grodov.grsso.oauth_client.service;
 
+import gr.grodov.grsso.attachment.sevice.AttachmentService;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientChangeStatusRequest;
 import gr.grodov.grsso.oauth_client.api.dto.request.OAuthClientRequest;
 import gr.grodov.grsso.common.api.ErrorFieldDto;
+import gr.grodov.grsso.oauth_client.domain.mapper.OAuthClientMapper;
+import gr.grodov.grsso.oauth_client.domain.mapper.OAuthClientShortMapper;
 import gr.grodov.grsso.oauth_client.service.dto.OAuthClientDto;
 import gr.grodov.grsso.oauth_client.service.dto.OAuthClientShortDto;
 import gr.grodov.grsso.common.mapper.Mapper;
@@ -14,6 +17,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -39,11 +43,21 @@ class OAuthClientsServiceTest {
     private Mapper<OAuthClient, OAuthClientShortDto> clientShortMapper;
     @Mock
     private OAuthClientPropertiesService propertiesService;
+    @Mock
+    private AttachmentService attachmentService;
+    @InjectMocks
     private OAuthClientsService service;
 
     @BeforeEach
     void setUp() {
-        service = new OAuthClientsService(passwordEncoder, repo, clientMapper, clientShortMapper, propertiesService);
+        service = new OAuthClientsService(
+            passwordEncoder,
+            repo,
+            clientMapper,
+            clientShortMapper,
+            propertiesService,
+            attachmentService
+        );
     }
 
     @Test
@@ -93,10 +107,11 @@ class OAuthClientsServiceTest {
         when(propertiesService.filterAuthorizationGrantTypes(anySet())).thenReturn(Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE));
         when(propertiesService.filterAuthenticationMethods(anySet())).thenReturn(Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC));
 
-        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         var result = service.save(request);
 
+        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         verify(repo).save(captor.capture());
+        verify(attachmentService).attachAttachment(any());
         var savedClient = captor.getValue();
         assertThat(savedClient.getClientName()).isEqualTo("crm");
         assertThat(savedClient.getRedirectUris()).isEqualTo(Set.of("http://example.com/oauth/code"));
@@ -144,10 +159,12 @@ class OAuthClientsServiceTest {
         when(propertiesService.filterAuthorizationGrantTypes(anySet())).thenReturn(Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE));
         when(propertiesService.filterAuthenticationMethods(anySet())).thenReturn(Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC));
 
-        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         service.edit(request);
 
+        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         verify(repo).save(captor.capture());
+        verify(attachmentService).detachAttachment(any());
+        verify(attachmentService).attachAttachment(any());
         var savedClient = captor.getValue();
         assertThat(savedClient.getId()).isEqualTo("1");
         assertThat(savedClient.getClientName()).isEqualTo("crm");
@@ -252,9 +269,9 @@ class OAuthClientsServiceTest {
         when(repo.findById("1")).thenReturn(Optional.of(client));
         when(clientMapper.fromDB(client)).thenReturn(expectDto);
 
-        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         var result = service.changeStatus(request);
 
+        ArgumentCaptor<OAuthClient> captor = ArgumentCaptor.forClass(OAuthClient.class);
         verify(repo).save(captor.capture());
         var savedClient = captor.getValue();
         assertThat(savedClient.getStatus()).isEqualTo(OAuthClientStatus.DISABLED);

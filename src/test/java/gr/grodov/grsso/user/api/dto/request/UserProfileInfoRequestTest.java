@@ -11,6 +11,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -25,7 +26,7 @@ class UserProfileInfoRequestTest {
 
     @Test
     void validate_withCorrectProfileData_returnValidRequest() {
-        var request = new UserProfileInfoRequest("Ivan", "Ivanov", "Ivanovich");
+        var request = new UserProfileInfoRequest("Ivan", "Ivanov", "Ivanovich", UUID.randomUUID());
 
         Set<ConstraintViolation<UserProfileInfoRequest>> violations = validator.validate(request);
 
@@ -40,7 +41,7 @@ class UserProfileInfoRequestTest {
         "Ivan "
     })
     void validate_withIncorrectFirstName_returnInvalidRequest(String firstName) {
-        var request = new UserProfileInfoRequest(firstName, "Ivanov", "Ivanovich");
+        var request = new UserProfileInfoRequest(firstName, "Ivanov", "Ivanovich", UUID.randomUUID());
 
         Set<ConstraintViolation<UserProfileInfoRequest>> violations = validator.validate(request);
 
@@ -57,7 +58,7 @@ class UserProfileInfoRequestTest {
         "Ivanov "
     })
     void validate_withIncorrectLastName_returnInvalidRequest(String lastName) {
-        var request = new UserProfileInfoRequest("Ivan", lastName, "Ivanovich");
+        var request = new UserProfileInfoRequest("Ivan", lastName, "Ivanovich", UUID.randomUUID());
 
         Set<ConstraintViolation<UserProfileInfoRequest>> violations = validator.validate(request);
 
@@ -74,7 +75,7 @@ class UserProfileInfoRequestTest {
         "Ivanovich "
     })
     void validate_withIncorrectPatronymic_returnInvalidRequest(String patronymic) {
-        var request = new UserProfileInfoRequest("Ivan", "Ivanov", patronymic);
+        var request = new UserProfileInfoRequest("Ivan", "Ivanov", patronymic, UUID.randomUUID());
 
         Set<ConstraintViolation<UserProfileInfoRequest>> violations = validator.validate(request);
 

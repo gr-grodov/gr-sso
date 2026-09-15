@@ -20,6 +20,7 @@ public class UserInfoMapper implements Mapper<UserInfo, UserInfoDto> {
             .firstName(user.getFirstName())
             .lastName(user.getLastName())
             .patronymic(user.getPatronymic())
+            .avatarId(user.getAvatarId())
         .build();
     }
 
@@ -36,6 +37,7 @@ public class UserInfoMapper implements Mapper<UserInfo, UserInfoDto> {
             .firstName(user.firstName())
             .lastName(user.lastName())
             .patronymic(user.patronymic())
+            .avatarId(user.avatarId())
         .build();
     }
 }

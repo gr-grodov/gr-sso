@@ -8,6 +8,7 @@ import org.springframework.modulith.NamedInterface;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 @NamedInterface("service")
 @Builder
@@ -18,6 +19,8 @@ public record OAuthClientShortDto(
     Set<OAuthScope> scopes,
     OAuthClientStatus status,
     Instant createdAt,
-    Instant updatedAt
+    Instant updatedAt,
+    UUID avatarId
 ) {
+
 }

@@ -25,6 +25,7 @@ public class OAuthClientMapper implements Mapper<OAuthClient, OAuthClientDto> {
             .clientSettings(oAuthClient.getClientSettings())
             .tokenSettings(oAuthClient.getTokenSettings())
             .status(oAuthClient.getStatus())
+            .avatarId(oAuthClient.getAvatarId())
             .createdAt(oAuthClient.getCreatedAt())
             .updatedAt(oAuthClient.getUpdatedAt())
         .build();
@@ -47,6 +48,7 @@ public class OAuthClientMapper implements Mapper<OAuthClient, OAuthClientDto> {
             .clientSecret(oAuthClient.clientSecret())
             .tokenSettings(oAuthClient.tokenSettings())
             .status(oAuthClient.status())
+            .avatarId(oAuthClient.avatarId())
             .createdAt(oAuthClient.createdAt())
             .updatedAt(oAuthClient.updatedAt())
         .build();

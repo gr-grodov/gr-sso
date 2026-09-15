@@ -68,7 +68,8 @@ public class OAuth2SessionIntegrationTest extends AbstractIntegrationTest {
             Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE, OAuthAuthorizationGrantType.REFRESH_TOKEN),
             Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC),
             OAuthClientSettings.builder().build(),
-            OAuthTokenSettings.builder().build()
+            OAuthTokenSettings.builder().build(),
+            null
         );
         OAuthClientSecretInfoResponse clientInfo = oAuthClientsService.save(clientRequest);
         this.clientSecretInfo = new OAuthFlowAuthorizationGrantTypeIntegrationTest.OAuthClientSecretInfo(clientInfo.clientID(), clientInfo.clientSecret());

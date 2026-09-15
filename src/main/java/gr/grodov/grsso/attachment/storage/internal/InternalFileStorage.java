@@ -1,10 +1,11 @@
-package gr.grodov.grsso.attachment.storage;
+package gr.grodov.grsso.attachment.storage.internal;
 
 import gr.grodov.grsso.attachment.domain.entity.StorageType;
 import gr.grodov.grsso.attachment.exception.FileNotFoundException;
 import gr.grodov.grsso.attachment.exception.FileStorageDeleteException;
 import gr.grodov.grsso.attachment.exception.FileStorageSaveException;
 import gr.grodov.grsso.attachment.props.StorageAppProperties;
+import gr.grodov.grsso.attachment.storage.FileStorage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.FileSystemResource;

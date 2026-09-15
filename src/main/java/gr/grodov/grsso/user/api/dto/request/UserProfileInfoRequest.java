@@ -3,6 +3,8 @@ package gr.grodov.grsso.user.api.dto.request;
 import jakarta.validation.constraints.Pattern;
 import org.jspecify.annotations.Nullable;
 
+import java.util.UUID;
+
 public record UserProfileInfoRequest(
     @Nullable
     @Pattern(regexp = "^\\p{L}[\\p{L}\\s]*\\p{L}$", message = "invalid")
@@ -12,6 +14,8 @@ public record UserProfileInfoRequest(
     String lastName,
     @Nullable
     @Pattern(regexp = "^\\p{L}[\\p{L}\\s]*\\p{L}$", message = "invalid")
-    String patronymic
+    String patronymic,
+    @Nullable
+    UUID avatarId
 ) {
 }

@@ -49,4 +49,7 @@ public class UserInfo extends BaseEntity {
 
     @Nullable
     private String patronymic;
+
+    @Nullable
+    private UUID avatarId;
 }

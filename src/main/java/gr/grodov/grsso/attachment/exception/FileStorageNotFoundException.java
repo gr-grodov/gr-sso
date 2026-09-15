@@ -4,6 +4,6 @@ import gr.grodov.grsso.common.exception.BaseErrorFieldException;
 
 public class FileStorageNotFoundException extends BaseErrorFieldException {
     public FileStorageNotFoundException() {
-        super("file_stoage_not_found");
+        super("file_storage_not_found");
     }
 }

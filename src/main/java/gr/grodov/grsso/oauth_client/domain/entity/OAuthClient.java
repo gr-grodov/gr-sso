@@ -10,10 +10,12 @@ import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
+import org.jspecify.annotations.Nullable;
 import org.springframework.modulith.NamedInterface;
 
 import java.time.Instant;
 import java.util.Set;
+import java.util.UUID;
 
 
 @NamedInterface("domain")
@@ -76,4 +78,8 @@ public class OAuthClient extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OAuthClientStatus status;
+
+    @Nullable
+    @Column(name = "avatar_id")
+    private UUID avatarId;
 }

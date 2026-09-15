@@ -7,12 +7,14 @@ import java.util.UUID;
 public record UserOAuth2SessionDto(
     UUID userId,
     String userEmail,
+    UUID userAvatarId,
     List<OAuthClientShortInfo> clients
 ) {
 
     public record OAuthClientShortInfo(
         String clientId,
         String clientName,
+        UUID clientAvatarId,
         int countSessions
     ) { }
 }

@@ -1,5 +1,6 @@
 package gr.grodov.grsso.user.service;
 
+import gr.grodov.grsso.attachment.sevice.AttachmentService;
 import gr.grodov.grsso.common.api.ErrorFieldDto;
 import gr.grodov.grsso.user.api.dto.request.UserProfileInfoRequest;
 import gr.grodov.grsso.user.service.dto.UserInfoDto;
@@ -16,6 +17,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -39,6 +41,9 @@ class UserInfoServiceTest {
     private PasswordEncoder passwordEncoder;
     @Mock
     private Mapper<UserInfo, UserInfoDto> mapper;
+    @Autowired
+    @Mock
+    private AttachmentService attachmentService;
     @InjectMocks
     private UserInfoService userInfoService;
 
@@ -196,7 +201,8 @@ class UserInfoServiceTest {
 
     @Test
     void editProfile_withCorrectData_saveWithProfileData() {
-        var request = new UserProfileInfoRequest("Ivan", "Ivanov", "Ivanovich");
+        UUID avatarId = UUID.randomUUID();
+        var request = new UserProfileInfoRequest("Ivan", "Ivanov", "Ivanovich", avatarId);
         var user = new UserInfo();
         when(userInfoRepo.findById(USER_ID)).thenReturn(Optional.of(user));
 
@@ -204,11 +210,14 @@ class UserInfoServiceTest {
 
         ArgumentCaptor<UserInfo> savedUser = ArgumentCaptor.forClass(UserInfo.class);
         verify(userInfoRepo).save(savedUser.capture());
+        verify(attachmentService).detachAttachment(any());
+        verify(attachmentService).attachAttachment(any());
         assertThat(savedUser.getValue()).isNotNull()
             .satisfies(userInfo -> {
                 assertThat(userInfo.getFirstName()).isEqualTo("Ivan");
                 assertThat(userInfo.getLastName()).isEqualTo("Ivanov");
                 assertThat(userInfo.getPatronymic()).isEqualTo("Ivanovich");
+                assertThat(userInfo.getAvatarId()).isEqualTo(avatarId);
             });
     }
 }

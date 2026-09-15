@@ -36,6 +36,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -87,7 +88,8 @@ class OAuthFlowAuthorizationGrantTypeIntegrationTest extends AbstractIntegration
             Set.of(OAuthAuthorizationGrantType.AUTHORIZATION_CODE, OAuthAuthorizationGrantType.REFRESH_TOKEN),
             Set.of(OAuthClientAuthenticationMethod.CLIENT_SECRET_BASIC),
             OAuthClientSettings.builder().build(),
-            OAuthTokenSettings.builder().build()
+            OAuthTokenSettings.builder().build(),
+            null
         );
         OAuthClientSecretInfoResponse clientInfo = oAuthClientsService.save(clientRequest);
         this.clientSecretInfo = new OAuthClientSecretInfo(clientInfo.clientID(), clientInfo.clientSecret());

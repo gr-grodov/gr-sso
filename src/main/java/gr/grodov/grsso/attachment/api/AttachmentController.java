@@ -1,6 +1,6 @@
 package gr.grodov.grsso.attachment.api;
 
-import gr.grodov.grsso.attachment.api.dto.request.AttachmentUploadResponse;
+import gr.grodov.grsso.attachment.api.dto.response.AttachmentUploadResponse;
 import gr.grodov.grsso.attachment.sevice.AttachmentService;
 import gr.grodov.grsso.attachment.sevice.dto.AttachmentResource;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,7 @@ public class AttachmentController {
     private final AttachmentService attachmentService;
 
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public AttachmentUploadResponse upload(
-        @RequestParam("file") MultipartFile file
-    ) throws InterruptedException {
-        Thread.sleep(1000L);
+    public AttachmentUploadResponse upload(@RequestParam("file") MultipartFile file) {
         UUID id = attachmentService.upload(file);
         return new AttachmentUploadResponse(id);
     }

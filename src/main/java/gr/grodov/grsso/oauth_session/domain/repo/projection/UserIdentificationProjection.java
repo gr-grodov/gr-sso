@@ -5,4 +5,5 @@ import java.util.UUID;
 public interface UserIdentificationProjection {
     UUID getUserId();
     String getUserEmail();
+    UUID getUserAvatarId();
 }
