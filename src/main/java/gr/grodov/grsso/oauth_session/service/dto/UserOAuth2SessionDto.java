@@ -1,6 +1,5 @@
 package gr.grodov.grsso.oauth_session.service.dto;
 
-import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 

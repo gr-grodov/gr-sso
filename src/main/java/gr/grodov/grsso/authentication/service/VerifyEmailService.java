@@ -12,12 +12,14 @@ import gr.grodov.grsso.common.props.EmailAppProperties;
 import gr.grodov.grsso.user.service.dto.UserInfoDto;
 import gr.grodov.grsso.user.service.UserInfoService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VerifyEmailService {
@@ -83,7 +85,7 @@ public class VerifyEmailService {
                 userInfoService.deleteById(userInfo.id());
             }
         } catch (Exception _) {
-            System.out.printf(">>>>>>>>>>>>>>>> Couldn't delete user from the system by expireId: %s%n", expireId);
+            log.error("Couldn't delete user from the system by expireId: {}", expireId);
         }
     }
 

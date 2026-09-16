@@ -2,6 +2,7 @@ package gr.grodov.grsso.infrastructure.cache;
 
 import gr.grodov.grsso.common.cache.CacheEntry;
 import gr.grodov.grsso.common.cache.CacheKeyExpireListener;
+import lombok.extern.slf4j.Slf4j;
 import org.jspecify.annotations.Nullable;
 import org.springframework.core.ResolvableType;
 import org.springframework.data.redis.connection.Message;
@@ -14,6 +15,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Component
 public class CacheKeyExpireDispatcher implements MessageListener {
 
@@ -33,10 +35,10 @@ public class CacheKeyExpireDispatcher implements MessageListener {
         String namespace = expiredKey.substring(0, separatorNamespace);
         CacheKeyExpireListener<?> listener = namespaceListeners.get(namespace);
         if (listener == null) {
-            System.out.println(">>>>>>>>>>>>>>>>>>>>> not message with key: %s".formatted(expiredKey));
+            log.debug("not message with key: {}", expiredKey);
             return;
         }
-        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>> publish key: %s to listener: %s".formatted(expiredKey, listener.getClass().getName()));
+        log.debug("publish key: {} to listener: {}", expiredKey, listener.getClass().getName());
         String logicalKey = expiredKey.substring(separatorNamespace + 1);
         listener.onEvent(logicalKey);
     }

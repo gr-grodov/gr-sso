@@ -1,6 +1,5 @@
 package gr.grodov.grsso.user.api.dto.request;
 
-import gr.grodov.grsso.authentication.api.dto.request.LoginRequest;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
