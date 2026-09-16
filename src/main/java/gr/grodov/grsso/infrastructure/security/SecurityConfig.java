@@ -2,6 +2,7 @@ package gr.grodov.grsso.infrastructure.security;
 
 import gr.grodov.grsso.common.props.FrontendAppProperties;
 import gr.grodov.grsso.infrastructure.security.filters.DeviceIdFilter;
+import gr.grodov.grsso.infrastructure.security.filters.LoggingFilter;
 import gr.grodov.grsso.user.domain.entity.Role;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,8 +17,8 @@ import org.springframework.security.crypto.argon2.Argon2PasswordEncoder;
 import org.springframework.security.crypto.password.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
-import org.springframework.security.web.csrf.CsrfFilter;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
 
 @Configuration
@@ -30,6 +31,7 @@ public class SecurityConfig {
     public SecurityFilterChain apiFilterChain(
         HttpSecurity http,
         DeviceIdFilter deviceIdFilter,
+        LoggingFilter loggingFilter,
         ApiAuthenticationEntryPoint apiAuthenticationEntryPoint,
         ApiAccessDeniedHandler apiAccessDeniedHandler,
         AuthLogoutSuccessHandler authLogoutSuccessHandler,
@@ -37,6 +39,7 @@ public class SecurityConfig {
     ) {
         http
             .addFilterBefore(deviceIdFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterAfter(loggingFilter, SecurityContextHolderFilter.class)
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/config/**", "/error/**").permitAll()
                 .requestMatchers("/api/auth/**").anonymous()

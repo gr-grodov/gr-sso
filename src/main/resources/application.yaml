@@ -44,15 +44,17 @@ spring:
               - email
 
 logging:
-  level:
-    root: DEBUG
-    org.apache.tomcat.util.net.NioEndpoint: ERROR
-    sun.rmi: ERROR
-    java.io: ERROR
-    javax.management: ERROR
-    org.springframework.security: TRACE
-    org.springframework.web.client: TRACE
-    org.springframework.security.oauth2: TRACE
+  file:
+    name: ${LOGS_FILENAME}
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%X{userId:-anonymous}] [%X{sessionId:-nosession}] %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} %-5level [%X{userId:-anonymous}] [%X{sessionId:-nosession}] %logger{36} - %msg%n"
+
+  logback:
+    rollingpolicy:
+      max-file-size: 10MB
+      max-history: 30
+      total-size-cap: 1GB
 
 server:
   port: 9090

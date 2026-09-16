@@ -1,0 +1,16 @@
+logging:
+  level:
+    root: INFO
+    org.springframework.security: INFO
+    org.springframework.web.client: INFO
+    org.springframework.security.oauth2: INFO
+    org.apache.tomcat.util.net.NioEndpoint: ERROR
+    sun.rmi: ERROR
+    java.io: ERROR
+    javax.management: ERROR
+
+  logback:
+    rollingpolicy:
+      max-file-size: 50MB
+      max-history: 30
+      total-size-cap: 2GB

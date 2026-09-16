@@ -1,7 +1,6 @@
 package gr.grodov.grsso.attachment.storage.webdav;
 
 import com.github.sardine.Sardine;
-import com.github.sardine.SardineFactory;
 import gr.grodov.grsso.attachment.domain.entity.StorageType;
 import gr.grodov.grsso.attachment.exception.FileNotFoundException;
 import gr.grodov.grsso.attachment.exception.FileStorageDeleteException;

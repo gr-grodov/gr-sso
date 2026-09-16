@@ -1,0 +1,14 @@
+logging:
+  level:
+    root: INFO
+
+    gr.grodov.grsso: DEBUG
+
+    org.springframework.security: INFO
+    org.springframework.web.client: INFO
+    org.springframework.security.oauth2: INFO
+
+    org.apache.tomcat.util.net.NioEndpoint: ERROR
+    sun.rmi: ERROR
+    java.io: ERROR
+    javax.management: ERROR
