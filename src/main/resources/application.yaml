@@ -110,7 +110,7 @@ grsso:
     default-type: WEB_DAV
     delay-delete-temporary-attachment: 15
     internal:
-      path-to-save: /home/grshgrdvvv/grsso-files/
+      path-to-save: ${INTERNAL_STORAGE_PATH}
     webdav:
       base-url: ${WEB_DAV_URL}
       username: ${WEB_DAV_USERNAME}
