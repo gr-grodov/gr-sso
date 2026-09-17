@@ -77,7 +77,7 @@ grsso:
     endpoints:
       provider-error: /provider-error
       login: /login
-      oauth-consent: /oauth2/consent
+      oauth-consent: /consent-scopes
 
   email:
     from-address: ${SMTP_MAIL_USERNAME}
