@@ -56,28 +56,15 @@ logging:
       max-history: 30
       total-size-cap: 1GB
 
-server:
-  port: 9090
-  servlet:
-    session:
-      cookie:
-        secure: false
-        name: SSO_SESSION
-  error:
-    include-stacktrace: never
-    include-message: never
-    include-binding-errors: never
-
-
 grsso:
   app:
-    backend-uri: http://localhost:9090
+    backend-uri: ${BACKEND_URL}
   frontend:
-    url: http://localhost:5173
+    url: ${FRONTEND_URL}
     endpoints:
-      provider-error: /provider-error
-      login: /login
-      oauth-consent: /consent-scopes
+      provider-error: ${FRONTEND_ENDPOINT_PROVIDER_ERROR:/provider-error}
+      login: ${FRONTEND_ENDPOINT_LOGIN:/login}
+      oauth-consent: ${FRONTEND_ENDPOINT_OAUTH_CONSENT:/consent-scopes}
 
   email:
     from-address: ${SMTP_MAIL_USERNAME}

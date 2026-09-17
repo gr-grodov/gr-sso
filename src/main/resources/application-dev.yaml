@@ -12,3 +12,15 @@ logging:
     sun.rmi: ERROR
     java.io: ERROR
     javax.management: ERROR
+
+server:
+  port: 9090
+  servlet:
+    session:
+      cookie:
+        secure: false
+        name: SSO_SESSION
+  error:
+    include-stacktrace: never
+    include-message: never
+    include-binding-errors: never
