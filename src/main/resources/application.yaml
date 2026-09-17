@@ -114,4 +114,4 @@ grsso:
     webdav:
       base-url: ${WEB_DAV_URL}
       username: ${WEB_DAV_USERNAME}
-      password: ${WEB_DAVE_PASSWORD}
+      password: ${WEB_DAV_PASSWORD}
