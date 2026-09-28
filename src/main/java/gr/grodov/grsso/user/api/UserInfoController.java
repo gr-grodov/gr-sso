@@ -18,7 +18,6 @@ public class UserInfoController {
 
     @GetMapping
     public UserInfoDto getUserInfo(@AuthenticationPrincipal AuthPrincipal principal) throws InterruptedException {
-        Thread.sleep(1000L);
         return userInfoService.findById(principal.getId());
     }
 

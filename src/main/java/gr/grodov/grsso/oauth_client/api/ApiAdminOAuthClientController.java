@@ -42,19 +42,16 @@ public class ApiAdminOAuthClientController {
 
     @GetMapping("/list")
     public List<OAuthClientDto> list() throws InterruptedException {
-        Thread.sleep(2000);
         return oAuthClientsService.list();
     }
 
     @GetMapping("/get")
     public OAuthClientDto get(@RequestParam(required = false) String id) throws InterruptedException {
-        Thread.sleep(2000);
         return oAuthClientsService.getById(id);
     }
 
     @GetMapping("/search")
     public OAuthClientDto search(@RequestParam(required = false) String clientId) throws InterruptedException {
-        Thread.sleep(2000);
         return oAuthClientsService.getByClientId(clientId);
     }
 

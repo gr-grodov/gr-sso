@@ -25,7 +25,6 @@ public class OAuth2SessionController {
         Principal principal,
         @CookieValue(name = "device_id", required = false) String currentDeviceId
     ) throws InterruptedException {
-        Thread.sleep(2000);
         return sessionService.list(principal.getName(), currentDeviceId);
     }
 

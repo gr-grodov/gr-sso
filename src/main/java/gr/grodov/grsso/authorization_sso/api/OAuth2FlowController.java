@@ -41,7 +41,6 @@ public class OAuth2FlowController {
 
     @GetMapping("/client/{clientId}")
     public OAuthClientShortDto get(@PathVariable String clientId) throws InterruptedException {
-        Thread.sleep(2000);
         return oAuthClientsService.getShortInfoClient(clientId);
     }
 }
