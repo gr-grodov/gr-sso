@@ -10,7 +10,7 @@ import java.util.Set;
 
 public class ScopedClaimsBuilder {
 
-    public static Map<String, Object> idTokenClaims(UserInfoDto user, Set<String> scopes) {
+    public static Map<String, Object> tokenClaims(UserInfoDto user, Set<String> scopes) {
         Map<String, Object> claims = new HashMap<>();
 
         if (scopes.contains(OAuthScope.OPEN_ID.getScopeValue())) {
@@ -19,6 +19,13 @@ public class ScopedClaimsBuilder {
 
         if (scopes.contains(OAuthScope.EMAIL.getScopeValue())) {
             claims.put(StandardClaimNames.EMAIL, user.email());
+        }
+
+        if (scopes.contains(OAuthScope.PROFILE.getScopeValue())) {
+            claims.put("first_name", user.firstName());
+            claims.put("last_name", user.lastName());
+            claims.put("patronymic", user.patronymic());
+            claims.put("avatar_id", user.avatarId());
         }
 
         return claims;

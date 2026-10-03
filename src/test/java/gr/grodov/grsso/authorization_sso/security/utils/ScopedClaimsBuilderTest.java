@@ -14,11 +14,11 @@ class ScopedClaimsBuilderTest {
     private final static UUID USER_ID = UUID.randomUUID();
 
     @Test
-    void idTokenClaims_withCorrectData_returnIdTokenClaims() {
+    void idTokenClaims_withCorrectData_returnTokenClaims() {
         var user = UserInfoDto.builder().id(USER_ID).email("test@test.com").build();
         var scopes = Set.of("openid", "email");
 
-        var result = ScopedClaimsBuilder.idTokenClaims(user, scopes);
+        var result = ScopedClaimsBuilder.tokenClaims(user, scopes);
 
         assertThat(result.get(StandardClaimNames.SUB)).isEqualTo(USER_ID.toString());
         assertThat(result.get(StandardClaimNames.EMAIL)).isEqualTo("test@test.com");
@@ -26,11 +26,11 @@ class ScopedClaimsBuilderTest {
     }
 
     @Test
-    void idTokenClaims_withUnknownScope_returnIdTokenClaimsWithoutUnknownScopes() {
+    void idTokenClaims_withUnknownScope_returnTokenClaimsWithoutUnknownScopes() {
         var user = UserInfoDto.builder().id(USER_ID).email("test@test.com").build();
         var scopes = Set.of("openid", "email", "icon");
 
-        var result = ScopedClaimsBuilder.idTokenClaims(user, scopes);
+        var result = ScopedClaimsBuilder.tokenClaims(user, scopes);
 
         assertThat(result.get(StandardClaimNames.SUB)).isEqualTo(USER_ID.toString());
         assertThat(result.get(StandardClaimNames.EMAIL)).isEqualTo("test@test.com");

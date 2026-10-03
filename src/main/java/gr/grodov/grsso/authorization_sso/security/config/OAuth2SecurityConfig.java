@@ -7,6 +7,7 @@ import com.nimbusds.jose.proc.SecurityContext;
 import gr.grodov.grsso.authorization_sso.security.OAuthClaimsService;
 import gr.grodov.grsso.common.jackson.SpecificJsonMapper;
 import gr.grodov.grsso.common.props.FrontendAppProperties;
+import gr.grodov.grsso.oauth_client.domain.entity.OAuthScope;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,6 +32,8 @@ import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -48,7 +51,6 @@ public class OAuth2SecurityConfig {
         OAuth2AuthorizationSuccessHandler oAuth2AuthorizationSuccessHandler,
         FrontendAppProperties properties
     ) {
-        //OidcProviderConfigurationEndpointFilter
         http
             .oauth2AuthorizationServer((authorizationServer) -> {
                 http
@@ -74,6 +76,9 @@ public class OAuth2SecurityConfig {
                             config.providerConfigurationCustomizer(builder -> {
                                 builder.claim("backchannel_logout_supported", true);
                                 builder.claim("backchannel_logout_session_supported", true);
+
+                                List<String> supportedScopes = Arrays.stream(OAuthScope.values()).map(OAuthScope::getScopeValue).toList();
+                                builder.claim("scopes_supported", supportedScopes);
                             })
                         )
                     )

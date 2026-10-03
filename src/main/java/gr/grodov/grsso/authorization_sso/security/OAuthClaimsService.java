@@ -33,7 +33,7 @@ public class OAuthClaimsService {
             return ScopedClaimsBuilder.accessTokenClaims(userInfo);
         }
 
-        Map<String, Object> tokenClaims = ScopedClaimsBuilder.idTokenClaims(userInfo, context.getAuthorizedScopes());
+        Map<String, Object> tokenClaims = ScopedClaimsBuilder.tokenClaims(userInfo, context.getAuthorizedScopes());
         if (context.getTokenType().getValue().equals("id_token")) {
             tokenClaims.put(LogoutTokenClaimNames.SID, sessionService.getSID(Objects.requireNonNull(context.getAuthorization())));
         }
@@ -46,7 +46,7 @@ public class OAuthClaimsService {
         Authentication authentication = getUserFromContext(authorization);
         UserInfoDto userInfo = userInfoService.findById(authentication.getName());
 
-        return ScopedClaimsBuilder.idTokenClaims(userInfo, authorization.getAuthorizedScopes());
+        return ScopedClaimsBuilder.tokenClaims(userInfo, authorization.getAuthorizedScopes());
     }
 
     private Authentication getUserFromContext(OAuth2TokenContext context) {
